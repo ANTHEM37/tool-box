@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 桥接模式将抽象部分与它的实现部分分离，使它们都可以独立地变化。
 
 ### 意图
+
 - 将抽象与实现解耦，使二者可以独立变化
 - 通过组合而不是继承来连接抽象和实现
 - 避免在多个维度上的类爆炸
@@ -20,29 +22,29 @@ classDiagram
         +Abstraction(Implementor)
         +operation(): void
     }
-    
+
     class RefinedAbstraction {
         +operation(): void
         +extendedOperation(): void
     }
-    
+
     class Implementor {
         <<interface>>
         +operationImpl(): void
     }
-    
+
     class ConcreteImplementorA {
         +operationImpl(): void
     }
-    
+
     class ConcreteImplementorB {
         +operationImpl(): void
     }
-    
+
     class Client {
         +main(): void
     }
-    
+
     Abstraction <|-- RefinedAbstraction
     Abstraction --> Implementor
     Implementor <|.. ConcreteImplementorA
@@ -57,17 +59,15 @@ sequenceDiagram
     participant Client
     participant RefinedAbstraction
     participant ConcreteImplementor
-    
-    Client->>RefinedAbstraction: operation()
-    RefinedAbstraction->>ConcreteImplementor: operationImpl()
-    ConcreteImplementor-->>RefinedAbstraction: result
-    RefinedAbstraction-->>Client: result
-    
-    Client->>RefinedAbstraction: extendedOperation()
-    RefinedAbstraction->>ConcreteImplementor: operationImpl()
-    ConcreteImplementor-->>RefinedAbstraction: result
-    RefinedAbstraction->>RefinedAbstraction: 额外处理
-    RefinedAbstraction-->>Client: enhanced result
+    Client ->> RefinedAbstraction: operation()
+    RefinedAbstraction ->> ConcreteImplementor: operationImpl()
+    ConcreteImplementor -->> RefinedAbstraction: result
+    RefinedAbstraction -->> Client: result
+    Client ->> RefinedAbstraction: extendedOperation()
+    RefinedAbstraction ->> ConcreteImplementor: operationImpl()
+    ConcreteImplementor -->> RefinedAbstraction: result
+    RefinedAbstraction ->> RefinedAbstraction: 额外处理
+    RefinedAbstraction -->> Client: enhanced result
 ```
 
 ## 💻 代码实现
@@ -107,11 +107,11 @@ public class ConcreteImplementorB implements Implementor {
  */
 public abstract class Abstraction {
     protected Implementor implementor;
-    
+
     public Abstraction(Implementor implementor) {
         this.implementor = implementor;
     }
-    
+
     public abstract void operation();
 }
 
@@ -122,13 +122,13 @@ public class RefinedAbstraction extends Abstraction {
     public RefinedAbstraction(Implementor implementor) {
         super(implementor);
     }
-    
+
     @Override
     public void operation() {
         System.out.println("RefinedAbstraction: 执行操作");
         implementor.operationImpl();
     }
-    
+
     public void extendedOperation() {
         System.out.println("RefinedAbstraction: 执行扩展操作");
         implementor.operationImpl();
@@ -147,7 +147,9 @@ public class RefinedAbstraction extends Abstraction {
  */
 public interface DrawingAPI {
     void drawCircle(double x, double y, double radius);
+
     void drawRectangle(double x, double y, double width, double height);
+
     void drawLine(double x1, double y1, double x2, double y2);
 }
 
@@ -159,12 +161,12 @@ public class WindowsDrawingAPI implements DrawingAPI {
     public void drawCircle(double x, double y, double radius) {
         System.out.printf("Windows API: 在 (%.1f, %.1f) 绘制半径为 %.1f 的圆%n", x, y, radius);
     }
-    
+
     @Override
     public void drawRectangle(double x, double y, double width, double height) {
         System.out.printf("Windows API: 在 (%.1f, %.1f) 绘制 %.1f x %.1f 的矩形%n", x, y, width, height);
     }
-    
+
     @Override
     public void drawLine(double x1, double y1, double x2, double y2) {
         System.out.printf("Windows API: 从 (%.1f, %.1f) 到 (%.1f, %.1f) 绘制直线%n", x1, y1, x2, y2);
@@ -179,12 +181,12 @@ public class LinuxDrawingAPI implements DrawingAPI {
     public void drawCircle(double x, double y, double radius) {
         System.out.printf("Linux API: 在 (%.1f, %.1f) 绘制半径为 %.1f 的圆%n", x, y, radius);
     }
-    
+
     @Override
     public void drawRectangle(double x, double y, double width, double height) {
         System.out.printf("Linux API: 在 (%.1f, %.1f) 绘制 %.1f x %.1f 的矩形%n", x, y, width, height);
     }
-    
+
     @Override
     public void drawLine(double x1, double y1, double x2, double y2) {
         System.out.printf("Linux API: 从 (%.1f, %.1f) 到 (%.1f, %.1f) 绘制直线%n", x1, y1, x2, y2);
@@ -199,12 +201,12 @@ public class WebDrawingAPI implements DrawingAPI {
     public void drawCircle(double x, double y, double radius) {
         System.out.printf("Web Canvas: 在 (%.1f, %.1f) 绘制半径为 %.1f 的圆%n", x, y, radius);
     }
-    
+
     @Override
     public void drawRectangle(double x, double y, double width, double height) {
         System.out.printf("Web Canvas: 在 (%.1f, %.1f) 绘制 %.1f x %.1f 的矩形%n", x, y, width, height);
     }
-    
+
     @Override
     public void drawLine(double x1, double y1, double x2, double y2) {
         System.out.printf("Web Canvas: 从 (%.1f, %.1f) 到 (%.1f, %.1f) 绘制直线%n", x1, y1, x2, y2);
@@ -217,16 +219,17 @@ public class WebDrawingAPI implements DrawingAPI {
 public abstract class Shape {
     protected DrawingAPI drawingAPI;
     protected double x, y;
-    
+
     public Shape(DrawingAPI drawingAPI, double x, double y) {
         this.drawingAPI = drawingAPI;
         this.x = x;
         this.y = y;
     }
-    
+
     public abstract void draw();
+
     public abstract void resize(double factor);
-    
+
     public void move(double newX, double newY) {
         this.x = newX;
         this.y = newY;
@@ -238,23 +241,23 @@ public abstract class Shape {
  */
 public class Circle extends Shape {
     private double radius;
-    
+
     public Circle(DrawingAPI drawingAPI, double x, double y, double radius) {
         super(drawingAPI, x, y);
         this.radius = radius;
     }
-    
+
     @Override
     public void draw() {
         drawingAPI.drawCircle(x, y, radius);
     }
-    
+
     @Override
     public void resize(double factor) {
         radius *= factor;
         System.out.printf("圆形大小调整为原来的 %.1f 倍，新半径: %.1f%n", factor, radius);
     }
-    
+
     public double getRadius() {
         return radius;
     }
@@ -265,27 +268,32 @@ public class Circle extends Shape {
  */
 public class Rectangle extends Shape {
     private double width, height;
-    
+
     public Rectangle(DrawingAPI drawingAPI, double x, double y, double width, double height) {
         super(drawingAPI, x, y);
         this.width = width;
         this.height = height;
     }
-    
+
     @Override
     public void draw() {
         drawingAPI.drawRectangle(x, y, width, height);
     }
-    
+
     @Override
     public void resize(double factor) {
         width *= factor;
         height *= factor;
         System.out.printf("矩形大小调整为原来的 %.1f 倍，新尺寸: %.1f x %.1f%n", factor, width, height);
     }
-    
-    public double getWidth() { return width; }
-    public double getHeight() { return height; }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
 }
 
 /**
@@ -293,18 +301,18 @@ public class Rectangle extends Shape {
  */
 public class Line extends Shape {
     private double x2, y2;
-    
+
     public Line(DrawingAPI drawingAPI, double x1, double y1, double x2, double y2) {
         super(drawingAPI, x1, y1);
         this.x2 = x2;
         this.y2 = y2;
     }
-    
+
     @Override
     public void draw() {
         drawingAPI.drawLine(x, y, x2, y2);
     }
-    
+
     @Override
     public void resize(double factor) {
         // 线段的缩放是相对于起点的
@@ -312,9 +320,14 @@ public class Line extends Shape {
         y2 = y + (y2 - y) * factor;
         System.out.printf("线段长度调整为原来的 %.1f 倍%n", factor);
     }
-    
-    public double getX2() { return x2; }
-    public double getY2() { return y2; }
+
+    public double getX2() {
+        return x2;
+    }
+
+    public double getY2() {
+        return y2;
+    }
 }
 
 // 使用示例
@@ -324,40 +337,40 @@ public class DrawingBridgeDemo {
         DrawingAPI windowsAPI = new WindowsDrawingAPI();
         DrawingAPI linuxAPI = new LinuxDrawingAPI();
         DrawingAPI webAPI = new WebDrawingAPI();
-        
+
         // 使用Windows API绘制图形
         System.out.println("=== 使用Windows API ===");
         Shape circle1 = new Circle(windowsAPI, 10, 10, 5);
         Shape rectangle1 = new Rectangle(windowsAPI, 20, 20, 10, 8);
         Shape line1 = new Line(windowsAPI, 0, 0, 10, 10);
-        
+
         circle1.draw();
         rectangle1.draw();
         line1.draw();
-        
+
         // 使用Linux API绘制相同的图形
         System.out.println("\n=== 使用Linux API ===");
         Shape circle2 = new Circle(linuxAPI, 10, 10, 5);
         Shape rectangle2 = new Rectangle(linuxAPI, 20, 20, 10, 8);
         Shape line2 = new Line(linuxAPI, 0, 0, 10, 10);
-        
+
         circle2.draw();
         rectangle2.draw();
         line2.draw();
-        
+
         // 使用Web API绘制图形
         System.out.println("\n=== 使用Web API ===");
         Shape circle3 = new Circle(webAPI, 15, 15, 7);
         circle3.draw();
         circle3.resize(1.5);
         circle3.draw();
-        
+
         // 移动和缩放操作
         System.out.println("\n=== 图形操作 ===");
         circle1.move(30, 30);
         circle1.resize(2.0);
         circle1.draw();
-        
+
         rectangle1.resize(0.5);
         rectangle1.draw();
     }
@@ -372,7 +385,9 @@ public class DrawingBridgeDemo {
  */
 public interface MessageSender {
     void sendMessage(String message, String recipient);
+
     boolean isAvailable();
+
     String getSenderInfo();
 }
 
@@ -382,12 +397,12 @@ public interface MessageSender {
 public class EmailSender implements MessageSender {
     private String smtpServer;
     private int port;
-    
+
     public EmailSender(String smtpServer, int port) {
         this.smtpServer = smtpServer;
         this.port = port;
     }
-    
+
     @Override
     public void sendMessage(String message, String recipient) {
         System.out.println("通过邮件发送消息:");
@@ -395,13 +410,13 @@ public class EmailSender implements MessageSender {
         System.out.println("收件人: " + recipient);
         System.out.println("内容: " + message);
     }
-    
+
     @Override
     public boolean isAvailable() {
         // 模拟检查SMTP服务器可用性
         return true;
     }
-    
+
     @Override
     public String getSenderInfo() {
         return "邮件发送器 (" + smtpServer + ":" + port + ")";
@@ -414,12 +429,12 @@ public class EmailSender implements MessageSender {
 public class SMSSender implements MessageSender {
     private String apiKey;
     private String provider;
-    
+
     public SMSSender(String provider, String apiKey) {
         this.provider = provider;
         this.apiKey = apiKey;
     }
-    
+
     @Override
     public void sendMessage(String message, String recipient) {
         System.out.println("通过短信发送消息:");
@@ -427,13 +442,13 @@ public class SMSSender implements MessageSender {
         System.out.println("接收号码: " + recipient);
         System.out.println("内容: " + message);
     }
-    
+
     @Override
     public boolean isAvailable() {
         // 模拟检查短信服务可用性
         return true;
     }
-    
+
     @Override
     public String getSenderInfo() {
         return "短信发送器 (" + provider + ")";
@@ -446,12 +461,12 @@ public class SMSSender implements MessageSender {
 public class WeChatSender implements MessageSender {
     private String appId;
     private String appSecret;
-    
+
     public WeChatSender(String appId, String appSecret) {
         this.appId = appId;
         this.appSecret = appSecret;
     }
-    
+
     @Override
     public void sendMessage(String message, String recipient) {
         System.out.println("通过微信发送消息:");
@@ -459,13 +474,13 @@ public class WeChatSender implements MessageSender {
         System.out.println("接收用户: " + recipient);
         System.out.println("内容: " + message);
     }
-    
+
     @Override
     public boolean isAvailable() {
         // 模拟检查微信API可用性
         return true;
     }
-    
+
     @Override
     public String getSenderInfo() {
         return "微信发送器 (" + appId + ")";
@@ -480,23 +495,31 @@ public abstract class Message {
     protected String content;
     protected String recipient;
     protected Date timestamp;
-    
+
     public Message(MessageSender sender, String content, String recipient) {
         this.sender = sender;
         this.content = content;
         this.recipient = recipient;
         this.timestamp = new Date();
     }
-    
+
     public abstract void send();
-    
+
     public void setSender(MessageSender sender) {
         this.sender = sender;
     }
-    
-    public String getContent() { return content; }
-    public String getRecipient() { return recipient; }
-    public Date getTimestamp() { return timestamp; }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
 }
 
 /**
@@ -506,7 +529,7 @@ public class SimpleMessage extends Message {
     public SimpleMessage(MessageSender sender, String content, String recipient) {
         super(sender, content, recipient);
     }
-    
+
     @Override
     public void send() {
         if (sender.isAvailable()) {
@@ -524,12 +547,12 @@ public class SimpleMessage extends Message {
  */
 public class UrgentMessage extends Message {
     private int priority;
-    
+
     public UrgentMessage(MessageSender sender, String content, String recipient, int priority) {
         super(sender, content, recipient);
         this.priority = priority;
     }
-    
+
     @Override
     public void send() {
         if (sender.isAvailable()) {
@@ -541,8 +564,10 @@ public class UrgentMessage extends Message {
             System.out.println("紧急消息发送失败: " + sender.getSenderInfo() + " 不可用");
         }
     }
-    
-    public int getPriority() { return priority; }
+
+    public int getPriority() {
+        return priority;
+    }
 }
 
 /**
@@ -550,12 +575,12 @@ public class UrgentMessage extends Message {
  */
 public class EncryptedMessage extends Message {
     private String encryptionKey;
-    
+
     public EncryptedMessage(MessageSender sender, String content, String recipient, String encryptionKey) {
         super(sender, content, recipient);
         this.encryptionKey = encryptionKey;
     }
-    
+
     @Override
     public void send() {
         if (sender.isAvailable()) {
@@ -567,7 +592,7 @@ public class EncryptedMessage extends Message {
             System.out.println("加密消息发送失败: " + sender.getSenderInfo() + " 不可用");
         }
     }
-    
+
     private String encrypt(String content) {
         // 简单的加密模拟
         return "[加密:" + encryptionKey + "] " + content;
@@ -581,29 +606,29 @@ public class MessageBridgeDemo {
         MessageSender emailSender = new EmailSender("smtp.gmail.com", 587);
         MessageSender smsSender = new SMSSender("阿里云", "your-api-key");
         MessageSender wechatSender = new WeChatSender("wx123456", "secret123");
-        
+
         // 创建不同类型的消息
         Message simpleEmail = new SimpleMessage(emailSender, "这是一封普通邮件", "user@example.com");
         Message urgentSMS = new UrgentMessage(smsSender, "系统故障，请立即处理", "13800138000", 1);
         Message encryptedWeChat = new EncryptedMessage(wechatSender, "机密信息", "wechat_user_id", "AES256");
-        
+
         // 发送消息
         System.out.println("=== 发送消息 ===");
         simpleEmail.send();
         System.out.println();
-        
+
         urgentSMS.send();
         System.out.println();
-        
+
         encryptedWeChat.send();
         System.out.println();
-        
+
         // 切换发送方式
         System.out.println("=== 切换发送方式 ===");
         simpleEmail.setSender(smsSender);
         simpleEmail.send();
         System.out.println();
-        
+
         urgentSMS.setSender(wechatSender);
         urgentSMS.send();
     }

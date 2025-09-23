@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 解释器模式定义了一个语言的文法表示，并定义一个解释器来处理这个文法。它使用类来表示文法规则，可以容易地改变和扩展文法。
 
 ### 意图
+
 - 定义一个语言的文法表示
 - 定义一个解释器来解释语言中的句子
 - 提供一种评估语言文法的方式
@@ -19,27 +21,27 @@ classDiagram
         <<abstract>>
         +interpret(Context): void
     }
-    
+
     class TerminalExpression {
         +interpret(Context): void
     }
-    
+
     class NonterminalExpression {
         -expression1: AbstractExpression
         -expression2: AbstractExpression
         +interpret(Context): void
     }
-    
+
     class Context {
         -variables: Map~String, Integer~
         +setVariable(String, Integer): void
         +getVariable(String): Integer
     }
-    
+
     class Client {
         +main(): void
     }
-    
+
     AbstractExpression <|-- TerminalExpression
     AbstractExpression <|-- NonterminalExpression
     NonterminalExpression --> AbstractExpression
@@ -57,17 +59,16 @@ sequenceDiagram
     participant Expression
     participant TerminalExpr
     participant NonterminalExpr
-    
-    Client->>Context: setVariable("x", 10)
-    Client->>Context: setVariable("y", 5)
-    Client->>Expression: interpret(context)
-    Expression->>NonterminalExpr: interpret(context)
-    NonterminalExpr->>TerminalExpr: interpret(context)
-    TerminalExpr->>Context: getVariable("x")
-    Context-->>TerminalExpr: 10
-    TerminalExpr-->>NonterminalExpr: result
-    NonterminalExpr-->>Expression: final result
-    Expression-->>Client: result
+    Client ->> Context: setVariable("x", 10)
+    Client ->> Context: setVariable("y", 5)
+    Client ->> Expression: interpret(context)
+    Expression ->> NonterminalExpr: interpret(context)
+    NonterminalExpr ->> TerminalExpr: interpret(context)
+    TerminalExpr ->> Context: getVariable("x")
+    Context -->> TerminalExpr: 10
+    TerminalExpr -->> NonterminalExpr: result
+    NonterminalExpr -->> Expression: final result
+    Expression -->> Client: result
 ```
 
 ## 💻 代码实现
@@ -80,16 +81,16 @@ sequenceDiagram
  */
 public class Context {
     private Map<String, Integer> variables;
-    
+
     public Context() {
         this.variables = new HashMap<>();
     }
-    
+
     public void setVariable(String name, int value) {
         variables.put(name, value);
         System.out.println("设置变量 " + name + " = " + value);
     }
-    
+
     public int getVariable(String name) {
         Integer value = variables.get(name);
         if (value == null) {
@@ -97,11 +98,11 @@ public class Context {
         }
         return value;
     }
-    
+
     public boolean hasVariable(String name) {
         return variables.containsKey(name);
     }
-    
+
     public void showVariables() {
         System.out.println("当前变量: " + variables);
     }
@@ -119,18 +120,18 @@ public abstract class AbstractExpression {
  */
 public class VariableExpression extends AbstractExpression {
     private String name;
-    
+
     public VariableExpression(String name) {
         this.name = name;
     }
-    
+
     @Override
     public int interpret(Context context) {
         int value = context.getVariable(name);
         System.out.println("解释变量 " + name + " = " + value);
         return value;
     }
-    
+
     @Override
     public String toString() {
         return name;
@@ -142,17 +143,17 @@ public class VariableExpression extends AbstractExpression {
  */
 public class NumberExpression extends AbstractExpression {
     private int number;
-    
+
     public NumberExpression(int number) {
         this.number = number;
     }
-    
+
     @Override
     public int interpret(Context context) {
         System.out.println("解释数字 " + number);
         return number;
     }
-    
+
     @Override
     public String toString() {
         return String.valueOf(number);
@@ -165,12 +166,12 @@ public class NumberExpression extends AbstractExpression {
 public class AddExpression extends AbstractExpression {
     private AbstractExpression left;
     private AbstractExpression right;
-    
+
     public AddExpression(AbstractExpression left, AbstractExpression right) {
         this.left = left;
         this.right = right;
     }
-    
+
     @Override
     public int interpret(Context context) {
         int leftValue = left.interpret(context);
@@ -179,7 +180,7 @@ public class AddExpression extends AbstractExpression {
         System.out.println("执行加法: " + leftValue + " + " + rightValue + " = " + result);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "(" + left + " + " + right + ")";
@@ -192,12 +193,12 @@ public class AddExpression extends AbstractExpression {
 public class SubtractExpression extends AbstractExpression {
     private AbstractExpression left;
     private AbstractExpression right;
-    
+
     public SubtractExpression(AbstractExpression left, AbstractExpression right) {
         this.left = left;
         this.right = right;
     }
-    
+
     @Override
     public int interpret(Context context) {
         int leftValue = left.interpret(context);
@@ -206,7 +207,7 @@ public class SubtractExpression extends AbstractExpression {
         System.out.println("执行减法: " + leftValue + " - " + rightValue + " = " + result);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "(" + left + " - " + right + ")";
@@ -219,12 +220,12 @@ public class SubtractExpression extends AbstractExpression {
 public class MultiplyExpression extends AbstractExpression {
     private AbstractExpression left;
     private AbstractExpression right;
-    
+
     public MultiplyExpression(AbstractExpression left, AbstractExpression right) {
         this.left = left;
         this.right = right;
     }
-    
+
     @Override
     public int interpret(Context context) {
         int leftValue = left.interpret(context);
@@ -233,7 +234,7 @@ public class MultiplyExpression extends AbstractExpression {
         System.out.println("执行乘法: " + leftValue + " * " + rightValue + " = " + result);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "(" + left + " * " + right + ")";
@@ -244,27 +245,27 @@ public class MultiplyExpression extends AbstractExpression {
 public class InterpreterDemo {
     public static void main(String[] args) {
         Context context = new Context();
-        
+
         // 设置变量
         context.setVariable("x", 10);
         context.setVariable("y", 5);
         context.setVariable("z", 2);
-        
+
         // 构建表达式: (x + y) * z - 3
         AbstractExpression expression = new SubtractExpression(
-            new MultiplyExpression(
-                new AddExpression(
-                    new VariableExpression("x"),
-                    new VariableExpression("y")
+                new MultiplyExpression(
+                        new AddExpression(
+                                new VariableExpression("x"),
+                                new VariableExpression("y")
+                        ),
+                        new VariableExpression("z")
                 ),
-                new VariableExpression("z")
-            ),
-            new NumberExpression(3)
+                new NumberExpression(3)
         );
-        
+
         System.out.println("表达式: " + expression);
         context.showVariables();
-        
+
         System.out.println("\n=== 开始解释执行 ===");
         int result = expression.interpret(context);
         System.out.println("\n最终结果: " + result);
@@ -284,13 +285,13 @@ public class Lexer {
     private String input;
     private int position;
     private char currentChar;
-    
+
     public Lexer(String input) {
         this.input = input;
         this.position = 0;
         this.currentChar = input.length() > 0 ? input.charAt(0) : '\0';
     }
-    
+
     private void advance() {
         position++;
         if (position >= input.length()) {
@@ -299,13 +300,13 @@ public class Lexer {
             currentChar = input.charAt(position);
         }
     }
-    
+
     private void skipWhitespace() {
         while (currentChar != '\0' && Character.isWhitespace(currentChar)) {
             advance();
         }
     }
-    
+
     private int parseNumber() {
         StringBuilder sb = new StringBuilder();
         while (currentChar != '\0' && Character.isDigit(currentChar)) {
@@ -314,7 +315,7 @@ public class Lexer {
         }
         return Integer.parseInt(sb.toString());
     }
-    
+
     private String parseVariable() {
         StringBuilder sb = new StringBuilder();
         while (currentChar != '\0' && (Character.isLetter(currentChar) || Character.isDigit(currentChar))) {
@@ -323,15 +324,15 @@ public class Lexer {
         }
         return sb.toString();
     }
-    
+
     public List<Token> tokenize() {
         List<Token> tokens = new ArrayList<>();
-        
+
         while (currentChar != '\0') {
             skipWhitespace();
-            
+
             if (currentChar == '\0') break;
-            
+
             if (Character.isDigit(currentChar)) {
                 tokens.add(new Token(TokenType.NUMBER, String.valueOf(parseNumber())));
             } else if (Character.isLetter(currentChar)) {
@@ -361,7 +362,7 @@ public class Lexer {
                 throw new RuntimeException("无效字符: " + currentChar);
             }
         }
-        
+
         tokens.add(new Token(TokenType.EOF, ""));
         return tokens;
     }
@@ -371,7 +372,7 @@ public class Lexer {
  * 标记类型
  */
 public enum TokenType {
-    NUMBER, VARIABLE, PLUS, MINUS, MULTIPLY, DIVIDE, 
+    NUMBER, VARIABLE, PLUS, MINUS, MULTIPLY, DIVIDE,
     LPAREN, RPAREN, ASSIGN, EOF
 }
 
@@ -381,15 +382,20 @@ public enum TokenType {
 public class Token {
     private TokenType type;
     private String value;
-    
+
     public Token(TokenType type, String value) {
         this.type = type;
         this.value = value;
     }
-    
-    public TokenType getType() { return type; }
-    public String getValue() { return value; }
-    
+
+    public TokenType getType() {
+        return type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public String toString() {
         return String.format("Token{%s, '%s'}", type, value);
@@ -403,20 +409,20 @@ public class Parser {
     private List<Token> tokens;
     private int position;
     private Token currentToken;
-    
+
     public Parser(List<Token> tokens) {
         this.tokens = tokens;
         this.position = 0;
         this.currentToken = tokens.get(0);
     }
-    
+
     private void advance() {
         position++;
         if (position < tokens.size()) {
             currentToken = tokens.get(position);
         }
     }
-    
+
     private void consume(TokenType expectedType) {
         if (currentToken.getType() == expectedType) {
             advance();
@@ -424,55 +430,55 @@ public class Parser {
             throw new RuntimeException("期望 " + expectedType + " 但得到 " + currentToken.getType());
         }
     }
-    
+
     /**
      * 解析表达式: expression = term ((PLUS | MINUS) term)*
      */
     public AbstractExpression parseExpression() {
         AbstractExpression node = parseTerm();
-        
+
         while (currentToken.getType() == TokenType.PLUS || currentToken.getType() == TokenType.MINUS) {
             TokenType op = currentToken.getType();
             advance();
             AbstractExpression right = parseTerm();
-            
+
             if (op == TokenType.PLUS) {
                 node = new AddExpression(node, right);
             } else {
                 node = new SubtractExpression(node, right);
             }
         }
-        
+
         return node;
     }
-    
+
     /**
      * 解析项: term = factor ((MULTIPLY | DIVIDE) factor)*
      */
     private AbstractExpression parseTerm() {
         AbstractExpression node = parseFactor();
-        
+
         while (currentToken.getType() == TokenType.MULTIPLY || currentToken.getType() == TokenType.DIVIDE) {
             TokenType op = currentToken.getType();
             advance();
             AbstractExpression right = parseFactor();
-            
+
             if (op == TokenType.MULTIPLY) {
                 node = new MultiplyExpression(node, right);
             } else {
                 node = new DivideExpression(node, right);
             }
         }
-        
+
         return node;
     }
-    
+
     /**
      * 解析因子: factor = NUMBER | VARIABLE | LPAREN expression RPAREN
      */
     private AbstractExpression parseFactor() {
         Token token = currentToken;
-        
+
         if (token.getType() == TokenType.NUMBER) {
             advance();
             return new NumberExpression(Integer.parseInt(token.getValue()));
@@ -488,7 +494,7 @@ public class Parser {
             throw new RuntimeException("无效的因子: " + token);
         }
     }
-    
+
     /**
      * 解析赋值语句: assignment = VARIABLE ASSIGN expression
      */
@@ -496,12 +502,12 @@ public class Parser {
         if (currentToken.getType() != TokenType.VARIABLE) {
             throw new RuntimeException("期望变量名");
         }
-        
+
         String varName = currentToken.getValue();
         advance();
         consume(TokenType.ASSIGN);
         AbstractExpression expression = parseExpression();
-        
+
         return new AssignmentExpression(varName, expression);
     }
 }
@@ -512,26 +518,26 @@ public class Parser {
 public class DivideExpression extends AbstractExpression {
     private AbstractExpression left;
     private AbstractExpression right;
-    
+
     public DivideExpression(AbstractExpression left, AbstractExpression right) {
         this.left = left;
         this.right = right;
     }
-    
+
     @Override
     public int interpret(Context context) {
         int leftValue = left.interpret(context);
         int rightValue = right.interpret(context);
-        
+
         if (rightValue == 0) {
             throw new RuntimeException("除零错误");
         }
-        
+
         int result = leftValue / rightValue;
         System.out.println("执行除法: " + leftValue + " / " + rightValue + " = " + result);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "(" + left + " / " + right + ")";
@@ -544,12 +550,12 @@ public class DivideExpression extends AbstractExpression {
 public class AssignmentExpression extends AbstractExpression {
     private String variableName;
     private AbstractExpression expression;
-    
+
     public AssignmentExpression(String variableName, AbstractExpression expression) {
         this.variableName = variableName;
         this.expression = expression;
     }
-    
+
     @Override
     public int interpret(Context context) {
         int value = expression.interpret(context);
@@ -557,7 +563,7 @@ public class AssignmentExpression extends AbstractExpression {
         System.out.println("赋值: " + variableName + " = " + value);
         return value;
     }
-    
+
     @Override
     public String toString() {
         return variableName + " = " + expression;
@@ -569,40 +575,40 @@ public class AssignmentExpression extends AbstractExpression {
  */
 public class Calculator {
     private Context context;
-    
+
     public Calculator() {
         this.context = new Context();
     }
-    
+
     public int evaluate(String expression) {
         System.out.println("输入表达式: " + expression);
-        
+
         // 词法分析
         Lexer lexer = new Lexer(expression);
         List<Token> tokens = lexer.tokenize();
         System.out.println("词法分析结果: " + tokens);
-        
+
         // 语法分析
         Parser parser = new Parser(tokens);
         AbstractExpression ast;
-        
+
         // 检查是否是赋值语句
-        if (tokens.size() >= 3 && tokens.get(0).getType() == TokenType.VARIABLE 
-            && tokens.get(1).getType() == TokenType.ASSIGN) {
+        if (tokens.size() >= 3 && tokens.get(0).getType() == TokenType.VARIABLE
+                && tokens.get(1).getType() == TokenType.ASSIGN) {
             ast = parser.parseAssignment();
         } else {
             ast = parser.parseExpression();
         }
-        
+
         System.out.println("抽象语法树: " + ast);
-        
+
         // 解释执行
         System.out.println("开始解释执行:");
         int result = ast.interpret(context);
-        
+
         return result;
     }
-    
+
     public void showVariables() {
         context.showVariables();
     }
@@ -612,36 +618,36 @@ public class Calculator {
 public class CalculatorDemo {
     public static void main(String[] args) {
         Calculator calculator = new Calculator();
-        
+
         try {
             System.out.println("=== 简单计算器演示 ===\n");
-            
+
             // 基本运算
             System.out.println("结果: " + calculator.evaluate("3 + 5 * 2"));
             System.out.println();
-            
+
             // 带括号的运算
             System.out.println("结果: " + calculator.evaluate("(3 + 5) * 2"));
             System.out.println();
-            
+
             // 变量赋值
             System.out.println("结果: " + calculator.evaluate("x = 10"));
             System.out.println("结果: " + calculator.evaluate("y = 20"));
             calculator.showVariables();
             System.out.println();
-            
+
             // 使用变量进行运算
             System.out.println("结果: " + calculator.evaluate("x + y * 2"));
             System.out.println();
-            
+
             // 复杂表达式
             System.out.println("结果: " + calculator.evaluate("z = (x + y) / 3"));
             calculator.showVariables();
             System.out.println();
-            
+
             // 使用所有变量
             System.out.println("结果: " + calculator.evaluate("x * y - z + 5"));
-            
+
         } catch (Exception e) {
             System.err.println("错误: " + e.getMessage());
         }
@@ -657,16 +663,16 @@ public class CalculatorDemo {
  */
 public class BooleanContext {
     private Map<String, Boolean> variables;
-    
+
     public BooleanContext() {
         this.variables = new HashMap<>();
     }
-    
+
     public void setVariable(String name, boolean value) {
         variables.put(name, value);
         System.out.println("设置布尔变量 " + name + " = " + value);
     }
-    
+
     public boolean getVariable(String name) {
         Boolean value = variables.get(name);
         if (value == null) {
@@ -674,7 +680,7 @@ public class BooleanContext {
         }
         return value;
     }
-    
+
     public void showVariables() {
         System.out.println("当前布尔变量: " + variables);
     }
@@ -692,17 +698,17 @@ public abstract class BooleanExpression {
  */
 public class BooleanConstant extends BooleanExpression {
     private boolean value;
-    
+
     public BooleanConstant(boolean value) {
         this.value = value;
     }
-    
+
     @Override
     public boolean interpret(BooleanContext context) {
         System.out.println("解释布尔常量: " + value);
         return value;
     }
-    
+
     @Override
     public String toString() {
         return String.valueOf(value);
@@ -714,18 +720,18 @@ public class BooleanConstant extends BooleanExpression {
  */
 public class BooleanVariable extends BooleanExpression {
     private String name;
-    
+
     public BooleanVariable(String name) {
         this.name = name;
     }
-    
+
     @Override
     public boolean interpret(BooleanContext context) {
         boolean value = context.getVariable(name);
         System.out.println("解释布尔变量 " + name + " = " + value);
         return value;
     }
-    
+
     @Override
     public String toString() {
         return name;
@@ -738,12 +744,12 @@ public class BooleanVariable extends BooleanExpression {
 public class AndExpression extends BooleanExpression {
     private BooleanExpression left;
     private BooleanExpression right;
-    
+
     public AndExpression(BooleanExpression left, BooleanExpression right) {
         this.left = left;
         this.right = right;
     }
-    
+
     @Override
     public boolean interpret(BooleanContext context) {
         boolean leftValue = left.interpret(context);
@@ -752,7 +758,7 @@ public class AndExpression extends BooleanExpression {
         System.out.println("执行AND: " + leftValue + " && " + rightValue + " = " + result);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "(" + left + " && " + right + ")";
@@ -765,12 +771,12 @@ public class AndExpression extends BooleanExpression {
 public class OrExpression extends BooleanExpression {
     private BooleanExpression left;
     private BooleanExpression right;
-    
+
     public OrExpression(BooleanExpression left, BooleanExpression right) {
         this.left = left;
         this.right = right;
     }
-    
+
     @Override
     public boolean interpret(BooleanContext context) {
         boolean leftValue = left.interpret(context);
@@ -779,7 +785,7 @@ public class OrExpression extends BooleanExpression {
         System.out.println("执行OR: " + leftValue + " || " + rightValue + " = " + result);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "(" + left + " || " + right + ")";
@@ -791,11 +797,11 @@ public class OrExpression extends BooleanExpression {
  */
 public class NotExpression extends BooleanExpression {
     private BooleanExpression expression;
-    
+
     public NotExpression(BooleanExpression expression) {
         this.expression = expression;
     }
-    
+
     @Override
     public boolean interpret(BooleanContext context) {
         boolean value = expression.interpret(context);
@@ -803,7 +809,7 @@ public class NotExpression extends BooleanExpression {
         System.out.println("执行NOT: !" + value + " = " + result);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return "!" + expression;
@@ -814,42 +820,42 @@ public class NotExpression extends BooleanExpression {
 public class BooleanInterpreterDemo {
     public static void main(String[] args) {
         BooleanContext context = new BooleanContext();
-        
+
         // 设置变量
         context.setVariable("A", true);
         context.setVariable("B", false);
         context.setVariable("C", true);
-        
+
         // 构建表达式: (A && B) || (!C && A)
         BooleanExpression expression = new OrExpression(
-            new AndExpression(
-                new BooleanVariable("A"),
-                new BooleanVariable("B")
-            ),
-            new AndExpression(
-                new NotExpression(new BooleanVariable("C")),
-                new BooleanVariable("A")
-            )
+                new AndExpression(
+                        new BooleanVariable("A"),
+                        new BooleanVariable("B")
+                ),
+                new AndExpression(
+                        new NotExpression(new BooleanVariable("C")),
+                        new BooleanVariable("A")
+                )
         );
-        
+
         System.out.println("布尔表达式: " + expression);
         context.showVariables();
-        
+
         System.out.println("\n=== 开始解释执行 ===");
         boolean result = expression.interpret(context);
         System.out.println("\n最终结果: " + result);
-        
+
         System.out.println("\n=== 测试其他表达式 ===");
-        
+
         // 测试: A && (B || C)
         BooleanExpression expr2 = new AndExpression(
-            new BooleanVariable("A"),
-            new OrExpression(
-                new BooleanVariable("B"),
-                new BooleanVariable("C")
-            )
+                new BooleanVariable("A"),
+                new OrExpression(
+                        new BooleanVariable("B"),
+                        new BooleanVariable("C")
+                )
         );
-        
+
         System.out.println("表达式: " + expr2);
         boolean result2 = expr2.interpret(context);
         System.out.println("结果: " + result2);
@@ -913,11 +919,11 @@ public class BooleanInterpreterDemo {
 public class ExpressionFactory {
     private static Map<String, VariableExpression> variables = new HashMap<>();
     private static Map<Integer, NumberExpression> numbers = new HashMap<>();
-    
+
     public static VariableExpression getVariable(String name) {
         return variables.computeIfAbsent(name, VariableExpression::new);
     }
-    
+
     public static NumberExpression getNumber(int value) {
         return numbers.computeIfAbsent(value, NumberExpression::new);
     }
@@ -927,25 +933,27 @@ public class ExpressionFactory {
 public abstract class CachedExpression extends AbstractExpression {
     private Integer cachedResult;
     private Context cachedContext;
-    
+
     @Override
     public final int interpret(Context context) {
         if (cachedResult != null && context.equals(cachedContext)) {
             return cachedResult;
         }
-        
+
         cachedResult = doInterpret(context);
         cachedContext = context;
         return cachedResult;
     }
-    
+
     protected abstract int doInterpret(Context context);
 }
 
 // 3. 使用访问者模式处理语法树
 public interface ExpressionVisitor {
     void visit(NumberExpression expr);
+
     void visit(VariableExpression expr);
+
     void visit(AddExpression expr);
     // ... 其他表达式类型
 }

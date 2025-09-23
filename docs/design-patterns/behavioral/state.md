@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 状态模式允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。
 
 ### 意图
+
 - 允许对象在内部状态改变时改变其行为
 - 将状态相关的行为封装在独立的状态类中
 - 消除复杂的条件语句
@@ -20,20 +22,20 @@ classDiagram
         +request(): void
         +setState(State): void
     }
-    
+
     class State {
         <<abstract>>
         +handle(Context): void
     }
-    
+
     class ConcreteStateA {
         +handle(Context): void
     }
-    
+
     class ConcreteStateB {
         +handle(Context): void
     }
-    
+
     Context --> State
     State <|-- ConcreteStateA
     State <|-- ConcreteStateB
@@ -56,16 +58,16 @@ public interface State {
  */
 public class Context {
     private State state;
-    
+
     public Context(State initialState) {
         this.state = initialState;
     }
-    
+
     public void setState(State state) {
         this.state = state;
         System.out.println("状态切换到: " + state.getClass().getSimpleName());
     }
-    
+
     public void request() {
         state.handle(this);
     }
@@ -106,8 +108,11 @@ public class ConcreteStateB implements State {
  */
 public interface VendingMachineState {
     void insertCoin(VendingMachine machine);
+
     void selectProduct(VendingMachine machine);
+
     void dispenseProduct(VendingMachine machine);
+
     void refund(VendingMachine machine);
 }
 
@@ -118,23 +123,23 @@ public class VendingMachine {
     private VendingMachineState state;
     private int coinCount;
     private int productCount;
-    
+
     // 状态实例
     private VendingMachineState noCoinState;
     private VendingMachineState hasCoinState;
     private VendingMachineState soldState;
     private VendingMachineState soldOutState;
-    
+
     public VendingMachine(int productCount) {
         this.productCount = productCount;
         this.coinCount = 0;
-        
+
         // 初始化状态
         noCoinState = new NoCoinState();
         hasCoinState = new HasCoinState();
         soldState = new SoldState();
         soldOutState = new SoldOutState();
-        
+
         // 设置初始状态
         if (productCount > 0) {
             state = noCoinState;
@@ -142,57 +147,73 @@ public class VendingMachine {
             state = soldOutState;
         }
     }
-    
+
     public void insertCoin() {
         state.insertCoin(this);
     }
-    
+
     public void selectProduct() {
         state.selectProduct(this);
     }
-    
+
     public void dispenseProduct() {
         state.dispenseProduct(this);
     }
-    
+
     public void refund() {
         state.refund(this);
     }
-    
+
     // 状态转换方法
     public void setState(VendingMachineState state) {
         this.state = state;
     }
-    
+
     // Getters for states
-    public VendingMachineState getNoCoinState() { return noCoinState; }
-    public VendingMachineState getHasCoinState() { return hasCoinState; }
-    public VendingMachineState getSoldState() { return soldState; }
-    public VendingMachineState getSoldOutState() { return soldOutState; }
-    
+    public VendingMachineState getNoCoinState() {
+        return noCoinState;
+    }
+
+    public VendingMachineState getHasCoinState() {
+        return hasCoinState;
+    }
+
+    public VendingMachineState getSoldState() {
+        return soldState;
+    }
+
+    public VendingMachineState getSoldOutState() {
+        return soldOutState;
+    }
+
     // 业务方法
     public void addCoin() {
         coinCount++;
         System.out.println("投入硬币，当前硬币数: " + coinCount);
     }
-    
+
     public void returnCoin() {
         if (coinCount > 0) {
             System.out.println("退还硬币: " + coinCount + " 个");
             coinCount = 0;
         }
     }
-    
+
     public void releaseBall() {
         if (productCount > 0) {
             productCount--;
             System.out.println("出货！剩余商品: " + productCount);
         }
     }
-    
-    public int getCoinCount() { return coinCount; }
-    public int getProductCount() { return productCount; }
-    
+
+    public int getCoinCount() {
+        return coinCount;
+    }
+
+    public int getProductCount() {
+        return productCount;
+    }
+
     public String getCurrentState() {
         return state.getClass().getSimpleName();
     }
@@ -202,24 +223,24 @@ public class VendingMachine {
  * 无硬币状态
  */
 public class NoCoinState implements VendingMachineState {
-    
+
     @Override
     public void insertCoin(VendingMachine machine) {
         System.out.println("投入硬币");
         machine.addCoin();
         machine.setState(machine.getHasCoinState());
     }
-    
+
     @Override
     public void selectProduct(VendingMachine machine) {
         System.out.println("请先投入硬币");
     }
-    
+
     @Override
     public void dispenseProduct(VendingMachine machine) {
         System.out.println("请先投入硬币");
     }
-    
+
     @Override
     public void refund(VendingMachine machine) {
         System.out.println("没有硬币可退还");
@@ -230,23 +251,23 @@ public class NoCoinState implements VendingMachineState {
  * 有硬币状态
  */
 public class HasCoinState implements VendingMachineState {
-    
+
     @Override
     public void insertCoin(VendingMachine machine) {
         System.out.println("已经投入硬币，无需重复投入");
     }
-    
+
     @Override
     public void selectProduct(VendingMachine machine) {
         System.out.println("选择商品");
         machine.setState(machine.getSoldState());
     }
-    
+
     @Override
     public void dispenseProduct(VendingMachine machine) {
         System.out.println("请先选择商品");
     }
-    
+
     @Override
     public void refund(VendingMachine machine) {
         System.out.println("退还硬币");
@@ -259,17 +280,17 @@ public class HasCoinState implements VendingMachineState {
  * 售出状态
  */
 public class SoldState implements VendingMachineState {
-    
+
     @Override
     public void insertCoin(VendingMachine machine) {
         System.out.println("正在出货，请稍等");
     }
-    
+
     @Override
     public void selectProduct(VendingMachine machine) {
         System.out.println("正在出货，请稍等");
     }
-    
+
     @Override
     public void dispenseProduct(VendingMachine machine) {
         machine.releaseBall();
@@ -280,7 +301,7 @@ public class SoldState implements VendingMachineState {
             machine.setState(machine.getSoldOutState());
         }
     }
-    
+
     @Override
     public void refund(VendingMachine machine) {
         System.out.println("商品已出货，无法退款");
@@ -291,23 +312,23 @@ public class SoldState implements VendingMachineState {
  * 售完状态
  */
 public class SoldOutState implements VendingMachineState {
-    
+
     @Override
     public void insertCoin(VendingMachine machine) {
         System.out.println("商品已售完，无法投币");
         machine.returnCoin();
     }
-    
+
     @Override
     public void selectProduct(VendingMachine machine) {
         System.out.println("商品已售完");
     }
-    
+
     @Override
     public void dispenseProduct(VendingMachine machine) {
         System.out.println("商品已售完");
     }
-    
+
     @Override
     public void refund(VendingMachine machine) {
         machine.returnCoin();
@@ -318,27 +339,27 @@ public class SoldOutState implements VendingMachineState {
 public class VendingMachineDemo {
     public static void main(String[] args) {
         VendingMachine machine = new VendingMachine(2);
-        
+
         System.out.println("=== 售货机测试 ===");
         System.out.println("初始状态: " + machine.getCurrentState());
-        
+
         // 测试正常购买流程
         System.out.println("\n--- 正常购买流程 ---");
         machine.insertCoin();
         machine.selectProduct();
         machine.dispenseProduct();
-        
+
         // 测试退币功能
         System.out.println("\n--- 退币测试 ---");
         machine.insertCoin();
         machine.refund();
-        
+
         // 测试售完状态
         System.out.println("\n--- 购买剩余商品 ---");
         machine.insertCoin();
         machine.selectProduct();
         machine.dispenseProduct();
-        
+
         System.out.println("\n--- 售完状态测试 ---");
         machine.insertCoin();
         machine.selectProduct();
@@ -354,9 +375,13 @@ public class VendingMachineDemo {
  */
 public interface PlayerState {
     void play(MusicPlayer player);
+
     void pause(MusicPlayer player);
+
     void stop(MusicPlayer player);
+
     void next(MusicPlayer player);
+
     void previous(MusicPlayer player);
 }
 
@@ -368,71 +393,79 @@ public class MusicPlayer {
     private String currentSong;
     private List<String> playlist;
     private int currentIndex;
-    
+
     // 状态实例
     private PlayerState stoppedState;
     private PlayerState playingState;
     private PlayerState pausedState;
-    
+
     public MusicPlayer() {
         // 初始化播放列表
         playlist = Arrays.asList("歌曲1", "歌曲2", "歌曲3", "歌曲4");
         currentIndex = 0;
         currentSong = playlist.get(currentIndex);
-        
+
         // 初始化状态
         stoppedState = new StoppedState();
         playingState = new PlayingState();
         pausedState = new PausedState();
-        
+
         // 设置初始状态
         state = stoppedState;
     }
-    
+
     public void play() {
         state.play(this);
     }
-    
+
     public void pause() {
         state.pause(this);
     }
-    
+
     public void stop() {
         state.stop(this);
     }
-    
+
     public void next() {
         state.next(this);
     }
-    
+
     public void previous() {
         state.previous(this);
     }
-    
+
     // 状态转换
     public void setState(PlayerState state) {
         this.state = state;
         System.out.println("播放器状态: " + state.getClass().getSimpleName());
     }
-    
+
     // Getters for states
-    public PlayerState getStoppedState() { return stoppedState; }
-    public PlayerState getPlayingState() { return playingState; }
-    public PlayerState getPausedState() { return pausedState; }
-    
+    public PlayerState getStoppedState() {
+        return stoppedState;
+    }
+
+    public PlayerState getPlayingState() {
+        return playingState;
+    }
+
+    public PlayerState getPausedState() {
+        return pausedState;
+    }
+
     // 业务方法
     public void startPlaying() {
         System.out.println("开始播放: " + currentSong);
     }
-    
+
     public void pausePlaying() {
         System.out.println("暂停播放: " + currentSong);
     }
-    
+
     public void stopPlaying() {
         System.out.println("停止播放");
     }
-    
+
     public void nextSong() {
         if (currentIndex < playlist.size() - 1) {
             currentIndex++;
@@ -442,7 +475,7 @@ public class MusicPlayer {
             System.out.println("已经是最后一首歌");
         }
     }
-    
+
     public void previousSong() {
         if (currentIndex > 0) {
             currentIndex--;
@@ -452,37 +485,42 @@ public class MusicPlayer {
             System.out.println("已经是第一首歌");
         }
     }
-    
-    public String getCurrentSong() { return currentSong; }
-    public String getCurrentState() { return state.getClass().getSimpleName(); }
+
+    public String getCurrentSong() {
+        return currentSong;
+    }
+
+    public String getCurrentState() {
+        return state.getClass().getSimpleName();
+    }
 }
 
 /**
  * 停止状态
  */
 public class StoppedState implements PlayerState {
-    
+
     @Override
     public void play(MusicPlayer player) {
         player.startPlaying();
         player.setState(player.getPlayingState());
     }
-    
+
     @Override
     public void pause(MusicPlayer player) {
         System.out.println("播放器已停止，无法暂停");
     }
-    
+
     @Override
     public void stop(MusicPlayer player) {
         System.out.println("播放器已经停止");
     }
-    
+
     @Override
     public void next(MusicPlayer player) {
         player.nextSong();
     }
-    
+
     @Override
     public void previous(MusicPlayer player) {
         player.previousSong();
@@ -493,30 +531,30 @@ public class StoppedState implements PlayerState {
  * 播放状态
  */
 public class PlayingState implements PlayerState {
-    
+
     @Override
     public void play(MusicPlayer player) {
         System.out.println("已经在播放中");
     }
-    
+
     @Override
     public void pause(MusicPlayer player) {
         player.pausePlaying();
         player.setState(player.getPausedState());
     }
-    
+
     @Override
     public void stop(MusicPlayer player) {
         player.stopPlaying();
         player.setState(player.getStoppedState());
     }
-    
+
     @Override
     public void next(MusicPlayer player) {
         player.nextSong();
         player.startPlaying();
     }
-    
+
     @Override
     public void previous(MusicPlayer player) {
         player.previousSong();
@@ -528,30 +566,30 @@ public class PlayingState implements PlayerState {
  * 暂停状态
  */
 public class PausedState implements PlayerState {
-    
+
     @Override
     public void play(MusicPlayer player) {
         player.startPlaying();
         player.setState(player.getPlayingState());
     }
-    
+
     @Override
     public void pause(MusicPlayer player) {
         System.out.println("已经暂停");
     }
-    
+
     @Override
     public void stop(MusicPlayer player) {
         player.stopPlaying();
         player.setState(player.getStoppedState());
     }
-    
+
     @Override
     public void next(MusicPlayer player) {
         player.nextSong();
         player.setState(player.getStoppedState());
     }
-    
+
     @Override
     public void previous(MusicPlayer player) {
         player.previousSong();
@@ -563,32 +601,32 @@ public class PausedState implements PlayerState {
 public class MusicPlayerDemo {
     public static void main(String[] args) {
         MusicPlayer player = new MusicPlayer();
-        
+
         System.out.println("=== 音乐播放器测试 ===");
         System.out.println("初始状态: " + player.getCurrentState());
         System.out.println("当前歌曲: " + player.getCurrentSong());
-        
+
         // 测试播放
         System.out.println("\n--- 播放测试 ---");
         player.play();
-        
+
         // 测试暂停
         System.out.println("\n--- 暂停测试 ---");
         player.pause();
-        
+
         // 测试恢复播放
         System.out.println("\n--- 恢复播放 ---");
         player.play();
-        
+
         // 测试切换歌曲
         System.out.println("\n--- 切换歌曲 ---");
         player.next();
         player.previous();
-        
+
         // 测试停止
         System.out.println("\n--- 停止播放 ---");
         player.stop();
-        
+
         // 在停止状态下切换歌曲
         System.out.println("\n--- 停止状态下切换歌曲 ---");
         player.next();

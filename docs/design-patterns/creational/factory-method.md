@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 工厂方法模式定义了一个创建对象的接口，但让子类决定实例化哪一个类。工厂方法让类的实例化推迟到子类。
 
 ### 意图
+
 - 创建对象时不指定具体的类
 - 将对象的创建和使用分离
 - 提供一个创建对象的接口，由子类决定实例化哪个类
@@ -19,28 +21,28 @@ classDiagram
         +factoryMethod(): Product
         +someOperation(): void
     }
-    
+
     class ConcreteCreatorA {
         +factoryMethod(): Product
     }
-    
+
     class ConcreteCreatorB {
         +factoryMethod(): Product
     }
-    
+
     class Product {
         <<interface>>
         +operation(): void
     }
-    
+
     class ConcreteProductA {
         +operation(): void
     }
-    
+
     class ConcreteProductB {
         +operation(): void
     }
-    
+
     Creator <|-- ConcreteCreatorA
     Creator <|-- ConcreteCreatorB
     Product <|.. ConcreteProductA
@@ -57,14 +59,13 @@ sequenceDiagram
     participant Client
     participant ConcreteCreator
     participant ConcreteProduct
-    
-    Client->>ConcreteCreator: someOperation()
-    ConcreteCreator->>ConcreteCreator: factoryMethod()
-    ConcreteCreator->>ConcreteProduct: new ConcreteProduct()
-    ConcreteProduct-->>ConcreteCreator: product
-    ConcreteCreator->>ConcreteProduct: operation()
-    ConcreteProduct-->>ConcreteCreator: result
-    ConcreteCreator-->>Client: result
+    Client ->> ConcreteCreator: someOperation()
+    ConcreteCreator ->> ConcreteCreator: factoryMethod()
+    ConcreteCreator ->> ConcreteProduct: new ConcreteProduct()
+    ConcreteProduct -->> ConcreteCreator: product
+    ConcreteCreator ->> ConcreteProduct: operation()
+    ConcreteProduct -->> ConcreteCreator: result
+    ConcreteCreator -->> Client: result
 ```
 
 ## 💻 代码实现
@@ -77,6 +78,7 @@ sequenceDiagram
  */
 public interface Product {
     void operation();
+
     String getInfo();
 }
 
@@ -88,7 +90,7 @@ public class ConcreteProductA implements Product {
     public void operation() {
         System.out.println("ConcreteProductA 执行操作");
     }
-    
+
     @Override
     public String getInfo() {
         return "这是产品A";
@@ -103,7 +105,7 @@ public class ConcreteProductB implements Product {
     public void operation() {
         System.out.println("ConcreteProductB 执行操作");
     }
-    
+
     @Override
     public String getInfo() {
         return "这是产品B";
@@ -116,7 +118,7 @@ public class ConcreteProductB implements Product {
 public abstract class Creator {
     // 工厂方法，由子类实现
     public abstract Product factoryMethod();
-    
+
     // 模板方法，使用工厂方法创建产品
     public void someOperation() {
         System.out.println("Creator: 开始执行操作");
@@ -160,6 +162,7 @@ public class ConcreteCreatorB extends Creator {
  */
 public interface Logger {
     void log(String message);
+
     void setLevel(LogLevel level);
 }
 
@@ -176,17 +179,17 @@ public enum LogLevel {
 public class FileLogger implements Logger {
     private String filename;
     private LogLevel level = LogLevel.INFO;
-    
+
     public FileLogger(String filename) {
         this.filename = filename;
     }
-    
+
     @Override
     public void log(String message) {
         System.out.println("[FILE:" + filename + "] " + message);
         // 实际实现会写入文件
     }
-    
+
     @Override
     public void setLevel(LogLevel level) {
         this.level = level;
@@ -198,12 +201,12 @@ public class FileLogger implements Logger {
  */
 public class ConsoleLogger implements Logger {
     private LogLevel level = LogLevel.INFO;
-    
+
     @Override
     public void log(String message) {
         System.out.println("[CONSOLE] " + message);
     }
-    
+
     @Override
     public void setLevel(LogLevel level) {
         this.level = level;
@@ -216,17 +219,17 @@ public class ConsoleLogger implements Logger {
 public class DatabaseLogger implements Logger {
     private String connectionString;
     private LogLevel level = LogLevel.INFO;
-    
+
     public DatabaseLogger(String connectionString) {
         this.connectionString = connectionString;
     }
-    
+
     @Override
     public void log(String message) {
         System.out.println("[DATABASE:" + connectionString + "] " + message);
         // 实际实现会写入数据库
     }
-    
+
     @Override
     public void setLevel(LogLevel level) {
         this.level = level;
@@ -239,7 +242,7 @@ public class DatabaseLogger implements Logger {
 public abstract class LoggerFactory {
     // 工厂方法
     public abstract Logger createLogger();
-    
+
     // 模板方法
     public Logger getLogger() {
         Logger logger = createLogger();
@@ -253,11 +256,11 @@ public abstract class LoggerFactory {
  */
 public class FileLoggerFactory extends LoggerFactory {
     private String filename;
-    
+
     public FileLoggerFactory(String filename) {
         this.filename = filename;
     }
-    
+
     @Override
     public Logger createLogger() {
         return new FileLogger(filename);
@@ -279,11 +282,11 @@ public class ConsoleLoggerFactory extends LoggerFactory {
  */
 public class DatabaseLoggerFactory extends LoggerFactory {
     private String connectionString;
-    
+
     public DatabaseLoggerFactory(String connectionString) {
         this.connectionString = connectionString;
     }
-    
+
     @Override
     public Logger createLogger() {
         return new DatabaseLogger(connectionString);
@@ -297,12 +300,12 @@ public class LoggerFactoryDemo {
         LoggerFactory fileFactory = new FileLoggerFactory("app.log");
         LoggerFactory consoleFactory = new ConsoleLoggerFactory();
         LoggerFactory dbFactory = new DatabaseLoggerFactory("jdbc:mysql://localhost:3306/logs");
-        
+
         // 使用工厂创建日志记录器
         Logger fileLogger = fileFactory.getLogger();
         Logger consoleLogger = consoleFactory.getLogger();
         Logger dbLogger = dbFactory.getLogger();
-        
+
         // 记录日志
         fileLogger.log("这是文件日志消息");
         consoleLogger.log("这是控制台日志消息");
@@ -319,6 +322,7 @@ public class LoggerFactoryDemo {
  */
 public interface Button {
     void render();
+
     void onClick();
 }
 
@@ -330,7 +334,7 @@ public class WindowsButton implements Button {
     public void render() {
         System.out.println("渲染Windows风格按钮");
     }
-    
+
     @Override
     public void onClick() {
         System.out.println("Windows按钮被点击");
@@ -345,7 +349,7 @@ public class MacButton implements Button {
     public void render() {
         System.out.println("渲染Mac风格按钮");
     }
-    
+
     @Override
     public void onClick() {
         System.out.println("Mac按钮被点击");
@@ -360,7 +364,7 @@ public class LinuxButton implements Button {
     public void render() {
         System.out.println("渲染Linux风格按钮");
     }
-    
+
     @Override
     public void onClick() {
         System.out.println("Linux按钮被点击");
@@ -373,7 +377,7 @@ public class LinuxButton implements Button {
 public abstract class Dialog {
     // 工厂方法
     public abstract Button createButton();
-    
+
     // 模板方法
     public void render() {
         Button okButton = createButton();
@@ -415,12 +419,12 @@ public class LinuxDialog extends Dialog {
 // 使用示例
 public class DialogDemo {
     private static Dialog dialog;
-    
+
     public static void main(String[] args) {
         configure();
         runBusinessLogic();
     }
-    
+
     static void configure() {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("windows")) {
@@ -431,7 +435,7 @@ public class DialogDemo {
             dialog = new LinuxDialog();
         }
     }
-    
+
     static void runBusinessLogic() {
         dialog.render();
     }
@@ -446,7 +450,9 @@ public class DialogDemo {
  */
 public interface DatabaseConnection {
     void connect();
+
     void executeQuery(String sql);
+
     void close();
 }
 
@@ -455,21 +461,21 @@ public interface DatabaseConnection {
  */
 public class MySQLConnection implements DatabaseConnection {
     private String url;
-    
+
     public MySQLConnection(String url) {
         this.url = url;
     }
-    
+
     @Override
     public void connect() {
         System.out.println("连接到MySQL数据库: " + url);
     }
-    
+
     @Override
     public void executeQuery(String sql) {
         System.out.println("在MySQL中执行查询: " + sql);
     }
-    
+
     @Override
     public void close() {
         System.out.println("关闭MySQL连接");
@@ -481,21 +487,21 @@ public class MySQLConnection implements DatabaseConnection {
  */
 public class PostgreSQLConnection implements DatabaseConnection {
     private String url;
-    
+
     public PostgreSQLConnection(String url) {
         this.url = url;
     }
-    
+
     @Override
     public void connect() {
         System.out.println("连接到PostgreSQL数据库: " + url);
     }
-    
+
     @Override
     public void executeQuery(String sql) {
         System.out.println("在PostgreSQL中执行查询: " + sql);
     }
-    
+
     @Override
     public void close() {
         System.out.println("关闭PostgreSQL连接");
@@ -507,21 +513,21 @@ public class PostgreSQLConnection implements DatabaseConnection {
  */
 public class OracleConnection implements DatabaseConnection {
     private String url;
-    
+
     public OracleConnection(String url) {
         this.url = url;
     }
-    
+
     @Override
     public void connect() {
         System.out.println("连接到Oracle数据库: " + url);
     }
-    
+
     @Override
     public void executeQuery(String sql) {
         System.out.println("在Oracle中执行查询: " + sql);
     }
-    
+
     @Override
     public void close() {
         System.out.println("关闭Oracle连接");
@@ -534,7 +540,7 @@ public class OracleConnection implements DatabaseConnection {
 public abstract class DatabaseFactory {
     // 工厂方法
     public abstract DatabaseConnection createConnection(String url);
-    
+
     // 模板方法
     public void performDatabaseOperation(String url, String sql) {
         DatabaseConnection connection = createConnection(url);
@@ -580,14 +586,14 @@ public class DatabaseFactoryDemo {
         // 根据配置选择数据库类型
         String dbType = "mysql"; // 可以从配置文件读取
         DatabaseFactory factory = getDatabaseFactory(dbType);
-        
+
         // 执行数据库操作
         factory.performDatabaseOperation(
-            "jdbc:mysql://localhost:3306/test", 
-            "SELECT * FROM users"
+                "jdbc:mysql://localhost:3306/test",
+                "SELECT * FROM users"
         );
     }
-    
+
     private static DatabaseFactory getDatabaseFactory(String dbType) {
         switch (dbType.toLowerCase()) {
             case "mysql":

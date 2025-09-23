@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 策略模式定义了一系列算法，把它们一个个封装起来，并且使它们可相互替换。策略模式让算法的变化独立于使用算法的客户。
 
 ### 意图
+
 - 定义一系列算法，封装每个算法，并使它们可以互换
 - 算法可以独立于使用它的客户而变化
 - 消除条件语句，用多态替换条件判断
@@ -20,24 +22,24 @@ classDiagram
         +setStrategy(Strategy): void
         +executeStrategy(): void
     }
-    
+
     class Strategy {
         <<interface>>
         +execute(): void
     }
-    
+
     class ConcreteStrategyA {
         +execute(): void
     }
-    
+
     class ConcreteStrategyB {
         +execute(): void
     }
-    
+
     class ConcreteStrategyC {
         +execute(): void
     }
-    
+
     Context --> Strategy
     Strategy <|.. ConcreteStrategyA
     Strategy <|.. ConcreteStrategyB
@@ -51,12 +53,11 @@ sequenceDiagram
     participant Client
     participant Context
     participant ConcreteStrategy
-    
-    Client->>Context: setStrategy(strategy)
-    Client->>Context: executeStrategy()
-    Context->>ConcreteStrategy: execute()
-    ConcreteStrategy-->>Context: result
-    Context-->>Client: result
+    Client ->> Context: setStrategy(strategy)
+    Client ->> Context: executeStrategy()
+    Context ->> ConcreteStrategy: execute()
+    ConcreteStrategy -->> Context: result
+    Context -->> Client: result
 ```
 
 ## 💻 代码实现
@@ -106,15 +107,15 @@ public class ConcreteStrategyC implements Strategy {
  */
 public class Context {
     private Strategy strategy;
-    
+
     public Context(Strategy strategy) {
         this.strategy = strategy;
     }
-    
+
     public void setStrategy(Strategy strategy) {
         this.strategy = strategy;
     }
-    
+
     public void executeStrategy() {
         strategy.execute();
     }
@@ -131,6 +132,7 @@ public class Context {
  */
 public interface PaymentStrategy {
     boolean pay(double amount);
+
     String getPaymentMethod();
 }
 
@@ -142,20 +144,20 @@ public class CreditCardPayment implements PaymentStrategy {
     private String holderName;
     private String cvv;
     private String expiryDate;
-    
+
     public CreditCardPayment(String cardNumber, String holderName, String cvv, String expiryDate) {
         this.cardNumber = cardNumber;
         this.holderName = holderName;
         this.cvv = cvv;
         this.expiryDate = expiryDate;
     }
-    
+
     @Override
     public boolean pay(double amount) {
         System.out.println("使用信用卡支付 $" + amount);
         System.out.println("卡号: " + maskCardNumber(cardNumber));
         System.out.println("持卡人: " + holderName);
-        
+
         // 模拟支付处理
         if (validateCard()) {
             System.out.println("信用卡支付成功！");
@@ -165,16 +167,16 @@ public class CreditCardPayment implements PaymentStrategy {
             return false;
         }
     }
-    
+
     @Override
     public String getPaymentMethod() {
         return "信用卡";
     }
-    
+
     private String maskCardNumber(String cardNumber) {
         return "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
     }
-    
+
     private boolean validateCard() {
         // 模拟卡片验证
         return cardNumber.length() == 16 && !cvv.isEmpty();
@@ -187,17 +189,17 @@ public class CreditCardPayment implements PaymentStrategy {
 public class PayPalPayment implements PaymentStrategy {
     private String email;
     private String password;
-    
+
     public PayPalPayment(String email, String password) {
         this.email = email;
         this.password = password;
     }
-    
+
     @Override
     public boolean pay(double amount) {
         System.out.println("使用PayPal支付 $" + amount);
         System.out.println("PayPal账户: " + email);
-        
+
         // 模拟PayPal支付处理
         if (authenticate()) {
             System.out.println("PayPal支付成功！");
@@ -207,12 +209,12 @@ public class PayPalPayment implements PaymentStrategy {
             return false;
         }
     }
-    
+
     @Override
     public String getPaymentMethod() {
         return "PayPal";
     }
-    
+
     private boolean authenticate() {
         // 模拟身份验证
         return email.contains("@") && password.length() >= 6;
@@ -225,18 +227,18 @@ public class PayPalPayment implements PaymentStrategy {
 public class BankTransferPayment implements PaymentStrategy {
     private String bankAccount;
     private String routingNumber;
-    
+
     public BankTransferPayment(String bankAccount, String routingNumber) {
         this.bankAccount = bankAccount;
         this.routingNumber = routingNumber;
     }
-    
+
     @Override
     public boolean pay(double amount) {
         System.out.println("使用银行转账支付 $" + amount);
         System.out.println("银行账户: " + maskAccountNumber(bankAccount));
         System.out.println("路由号: " + routingNumber);
-        
+
         // 模拟银行转账处理
         if (validateBankAccount()) {
             System.out.println("银行转账支付成功！");
@@ -246,16 +248,16 @@ public class BankTransferPayment implements PaymentStrategy {
             return false;
         }
     }
-    
+
     @Override
     public String getPaymentMethod() {
         return "银行转账";
     }
-    
+
     private String maskAccountNumber(String accountNumber) {
         return "****" + accountNumber.substring(accountNumber.length() - 4);
     }
-    
+
     private boolean validateBankAccount() {
         // 模拟银行账户验证
         return bankAccount.length() >= 8 && routingNumber.length() == 9;
@@ -268,45 +270,45 @@ public class BankTransferPayment implements PaymentStrategy {
 public class ShoppingCart {
     private List<Item> items;
     private PaymentStrategy paymentStrategy;
-    
+
     public ShoppingCart() {
         this.items = new ArrayList<>();
     }
-    
+
     public void addItem(Item item) {
         items.add(item);
         System.out.println("添加商品: " + item.getName() + " - $" + item.getPrice());
     }
-    
+
     public void removeItem(Item item) {
         items.remove(item);
         System.out.println("移除商品: " + item.getName());
     }
-    
+
     public double calculateTotal() {
         return items.stream().mapToDouble(Item::getPrice).sum();
     }
-    
+
     public void setPaymentStrategy(PaymentStrategy paymentStrategy) {
         this.paymentStrategy = paymentStrategy;
         System.out.println("设置支付方式: " + paymentStrategy.getPaymentMethod());
     }
-    
+
     public boolean checkout() {
         if (paymentStrategy == null) {
             System.out.println("请选择支付方式！");
             return false;
         }
-        
+
         double total = calculateTotal();
         System.out.println("\n=== 结账 ===");
         System.out.println("商品总数: " + items.size());
         System.out.println("总金额: $" + total);
         System.out.println("支付方式: " + paymentStrategy.getPaymentMethod());
-        
+
         return paymentStrategy.pay(total);
     }
-    
+
     public void showItems() {
         System.out.println("购物车商品:");
         for (Item item : items) {
@@ -322,14 +324,19 @@ public class ShoppingCart {
 public class Item {
     private String name;
     private double price;
-    
+
     public Item(String name, double price) {
         this.name = name;
         this.price = price;
     }
-    
-    public String getName() { return name; }
-    public double getPrice() { return price; }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
 }
 
 // 使用示例
@@ -337,23 +344,23 @@ public class PaymentSystemDemo {
     public static void main(String[] args) {
         // 创建购物车
         ShoppingCart cart = new ShoppingCart();
-        
+
         // 添加商品
         cart.addItem(new Item("笔记本电脑", 999.99));
         cart.addItem(new Item("无线鼠标", 29.99));
         cart.addItem(new Item("键盘", 79.99));
-        
+
         System.out.println();
         cart.showItems();
-        
+
         System.out.println("\n=== 使用信用卡支付 ===");
         cart.setPaymentStrategy(new CreditCardPayment("1234567890123456", "John Doe", "123", "12/25"));
         cart.checkout();
-        
+
         System.out.println("\n=== 切换到PayPal支付 ===");
         cart.setPaymentStrategy(new PayPalPayment("john.doe@example.com", "password123"));
         cart.checkout();
-        
+
         System.out.println("\n=== 切换到银行转账支付 ===");
         cart.setPaymentStrategy(new BankTransferPayment("12345678", "123456789"));
         cart.checkout();
@@ -369,6 +376,7 @@ public class PaymentSystemDemo {
  */
 public interface SortStrategy {
     void sort(int[] array);
+
     String getAlgorithmName();
 }
 
@@ -391,7 +399,7 @@ public class BubbleSortStrategy implements SortStrategy {
             }
         }
     }
-    
+
     @Override
     public String getAlgorithmName() {
         return "冒泡排序";
@@ -407,7 +415,7 @@ public class QuickSortStrategy implements SortStrategy {
         System.out.println("使用快速排序");
         quickSort(array, 0, array.length - 1);
     }
-    
+
     private void quickSort(int[] array, int low, int high) {
         if (low < high) {
             int pi = partition(array, low, high);
@@ -415,11 +423,11 @@ public class QuickSortStrategy implements SortStrategy {
             quickSort(array, pi + 1, high);
         }
     }
-    
+
     private int partition(int[] array, int low, int high) {
         int pivot = array[high];
         int i = (low - 1);
-        
+
         for (int j = low; j < high; j++) {
             if (array[j] <= pivot) {
                 i++;
@@ -428,14 +436,14 @@ public class QuickSortStrategy implements SortStrategy {
                 array[j] = temp;
             }
         }
-        
+
         int temp = array[i + 1];
         array[i + 1] = array[high];
         array[high] = temp;
-        
+
         return i + 1;
     }
-    
+
     @Override
     public String getAlgorithmName() {
         return "快速排序";
@@ -451,7 +459,7 @@ public class MergeSortStrategy implements SortStrategy {
         System.out.println("使用归并排序");
         mergeSort(array, 0, array.length - 1);
     }
-    
+
     private void mergeSort(int[] array, int left, int right) {
         if (left < right) {
             int middle = (left + right) / 2;
@@ -460,19 +468,19 @@ public class MergeSortStrategy implements SortStrategy {
             merge(array, left, middle, right);
         }
     }
-    
+
     private void merge(int[] array, int left, int middle, int right) {
         int n1 = middle - left + 1;
         int n2 = right - middle;
-        
+
         int[] leftArray = new int[n1];
         int[] rightArray = new int[n2];
-        
+
         System.arraycopy(array, left, leftArray, 0, n1);
         System.arraycopy(array, middle + 1, rightArray, 0, n2);
-        
+
         int i = 0, j = 0, k = left;
-        
+
         while (i < n1 && j < n2) {
             if (leftArray[i] <= rightArray[j]) {
                 array[k] = leftArray[i];
@@ -483,20 +491,20 @@ public class MergeSortStrategy implements SortStrategy {
             }
             k++;
         }
-        
+
         while (i < n1) {
             array[k] = leftArray[i];
             i++;
             k++;
         }
-        
+
         while (j < n2) {
             array[k] = rightArray[j];
             j++;
             k++;
         }
     }
-    
+
     @Override
     public String getAlgorithmName() {
         return "归并排序";
@@ -508,23 +516,23 @@ public class MergeSortStrategy implements SortStrategy {
  */
 public class SortContext {
     private SortStrategy sortStrategy;
-    
+
     public void setSortStrategy(SortStrategy sortStrategy) {
         this.sortStrategy = sortStrategy;
     }
-    
+
     public void performSort(int[] array) {
         if (sortStrategy == null) {
             System.out.println("请设置排序策略！");
             return;
         }
-        
+
         System.out.println("原始数组: " + Arrays.toString(array));
-        
+
         long startTime = System.nanoTime();
         sortStrategy.sort(array);
         long endTime = System.nanoTime();
-        
+
         System.out.println("排序后数组: " + Arrays.toString(array));
         System.out.println("算法: " + sortStrategy.getAlgorithmName());
         System.out.println("耗时: " + (endTime - startTime) / 1000000.0 + " ms");
@@ -535,20 +543,20 @@ public class SortContext {
 public class SortStrategyDemo {
     public static void main(String[] args) {
         SortContext context = new SortContext();
-        
+
         // 测试数据
         int[] data1 = {64, 34, 25, 12, 22, 11, 90};
         int[] data2 = data1.clone();
         int[] data3 = data1.clone();
-        
+
         System.out.println("=== 冒泡排序 ===");
         context.setSortStrategy(new BubbleSortStrategy());
         context.performSort(data1);
-        
+
         System.out.println("\n=== 快速排序 ===");
         context.setSortStrategy(new QuickSortStrategy());
         context.performSort(data2);
-        
+
         System.out.println("\n=== 归并排序 ===");
         context.setSortStrategy(new MergeSortStrategy());
         context.performSort(data3);

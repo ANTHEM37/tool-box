@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 单例模式确保一个类只有一个实例，并提供一个全局访问点来获取该实例。
 
 ### 意图
+
 - 确保一个类只有一个实例
 - 提供对该实例的全局访问点
 - 控制实例化过程
@@ -20,13 +22,12 @@ classDiagram
         +static getInstance(): Singleton
         +businessMethod(): void
     }
-    
+
     class Client {
         +main(): void
     }
-    
-    Client --> Singleton : getInstance()
-    
+
+    Client --> Singleton: getInstance()
     note for Singleton "私有构造函数\n静态实例变量\n静态获取方法"
 ```
 
@@ -37,16 +38,13 @@ sequenceDiagram
     participant Client1
     participant Client2
     participant Singleton
-    
-    Client1->>Singleton: getInstance()
+    Client1 ->> Singleton: getInstance()
     alt 实例不存在
-        Singleton->>Singleton: 创建新实例
+        Singleton ->> Singleton: 创建新实例
     end
-    Singleton-->>Client1: 返回实例
-    
-    Client2->>Singleton: getInstance()
-    Singleton-->>Client2: 返回同一实例
-    
+    Singleton -->> Client1: 返回实例
+    Client2 ->> Singleton: getInstance()
+    Singleton -->> Client2: 返回同一实例
     note over Client1, Client2: 两个客户端获得相同实例
 ```
 
@@ -63,17 +61,17 @@ sequenceDiagram
 public class EagerSingleton {
     // 在类加载时就创建实例
     private static final EagerSingleton INSTANCE = new EagerSingleton();
-    
+
     // 私有构造函数，防止外部实例化
     private EagerSingleton() {
         System.out.println("EagerSingleton 实例被创建");
     }
-    
+
     // 提供全局访问点
     public static EagerSingleton getInstance() {
         return INSTANCE;
     }
-    
+
     public void doSomething() {
         System.out.println("EagerSingleton 执行业务逻辑");
     }
@@ -90,18 +88,18 @@ public class EagerSingleton {
  */
 public class LazySingleton {
     private static LazySingleton instance;
-    
+
     private LazySingleton() {
         System.out.println("LazySingleton 实例被创建");
     }
-    
+
     public static LazySingleton getInstance() {
         if (instance == null) {
             instance = new LazySingleton();
         }
         return instance;
     }
-    
+
     public void doSomething() {
         System.out.println("LazySingleton 执行业务逻辑");
     }
@@ -118,18 +116,18 @@ public class LazySingleton {
  */
 public class ThreadSafeLazySingleton {
     private static ThreadSafeLazySingleton instance;
-    
+
     private ThreadSafeLazySingleton() {
         System.out.println("ThreadSafeLazySingleton 实例被创建");
     }
-    
+
     public static synchronized ThreadSafeLazySingleton getInstance() {
         if (instance == null) {
             instance = new ThreadSafeLazySingleton();
         }
         return instance;
     }
-    
+
     public void doSomething() {
         System.out.println("ThreadSafeLazySingleton 执行业务逻辑");
     }
@@ -147,11 +145,11 @@ public class ThreadSafeLazySingleton {
 public class DoubleCheckedLockingSingleton {
     // volatile 确保多线程环境下的可见性
     private static volatile DoubleCheckedLockingSingleton instance;
-    
+
     private DoubleCheckedLockingSingleton() {
         System.out.println("DoubleCheckedLockingSingleton 实例被创建");
     }
-    
+
     public static DoubleCheckedLockingSingleton getInstance() {
         if (instance == null) {
             synchronized (DoubleCheckedLockingSingleton.class) {
@@ -162,7 +160,7 @@ public class DoubleCheckedLockingSingleton {
         }
         return instance;
     }
-    
+
     public void doSomething() {
         System.out.println("DoubleCheckedLockingSingleton 执行业务逻辑");
     }
@@ -178,20 +176,20 @@ public class DoubleCheckedLockingSingleton {
  * 缺点：无
  */
 public class StaticInnerClassSingleton {
-    
+
     private StaticInnerClassSingleton() {
         System.out.println("StaticInnerClassSingleton 实例被创建");
     }
-    
+
     // 静态内部类，只有在被调用时才会加载
     private static class SingletonHolder {
         private static final StaticInnerClassSingleton INSTANCE = new StaticInnerClassSingleton();
     }
-    
+
     public static StaticInnerClassSingleton getInstance() {
         return SingletonHolder.INSTANCE;
     }
-    
+
     public void doSomething() {
         System.out.println("StaticInnerClassSingleton 执行业务逻辑");
     }
@@ -208,12 +206,12 @@ public class StaticInnerClassSingleton {
  */
 public enum EnumSingleton {
     INSTANCE;
-    
+
     // 构造函数
     EnumSingleton() {
         System.out.println("EnumSingleton 实例被创建");
     }
-    
+
     public void doSomething() {
         System.out.println("EnumSingleton 执行业务逻辑");
     }
@@ -231,12 +229,12 @@ public enum EnumSingleton {
 public class ConfigManager {
     private static volatile ConfigManager instance;
     private Properties properties;
-    
+
     private ConfigManager() {
         properties = new Properties();
         loadConfig();
     }
-    
+
     public static ConfigManager getInstance() {
         if (instance == null) {
             synchronized (ConfigManager.class) {
@@ -247,7 +245,7 @@ public class ConfigManager {
         }
         return instance;
     }
-    
+
     private void loadConfig() {
         // 模拟加载配置文件
         properties.setProperty("database.url", "jdbc:mysql://localhost:3306/test");
@@ -255,11 +253,11 @@ public class ConfigManager {
         properties.setProperty("database.password", "password");
         System.out.println("配置文件加载完成");
     }
-    
+
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
-    
+
     public void setProperty(String key, String value) {
         properties.setProperty(key, value);
     }
@@ -271,14 +269,14 @@ public class ConfigManagerDemo {
         // 获取配置管理器实例
         ConfigManager config1 = ConfigManager.getInstance();
         ConfigManager config2 = ConfigManager.getInstance();
-        
+
         // 验证是同一个实例
         System.out.println("config1 == config2: " + (config1 == config2));
-        
+
         // 使用配置
         String dbUrl = config1.getProperty("database.url");
         System.out.println("数据库URL: " + dbUrl);
-        
+
         // 修改配置
         config2.setProperty("app.name", "MyApplication");
         System.out.println("应用名称: " + config1.getProperty("app.name"));
@@ -295,7 +293,7 @@ public class ConfigManagerDemo {
 public class Logger {
     private static volatile Logger instance;
     private PrintWriter writer;
-    
+
     private Logger() {
         try {
             writer = new PrintWriter(new FileWriter("application.log", true));
@@ -303,7 +301,7 @@ public class Logger {
             e.printStackTrace();
         }
     }
-    
+
     public static Logger getInstance() {
         if (instance == null) {
             synchronized (Logger.class) {
@@ -314,30 +312,30 @@ public class Logger {
         }
         return instance;
     }
-    
+
     public void log(String level, String message) {
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         String logEntry = String.format("[%s] %s: %s", timestamp, level, message);
-        
+
         System.out.println(logEntry);
         if (writer != null) {
             writer.println(logEntry);
             writer.flush();
         }
     }
-    
+
     public void info(String message) {
         log("INFO", message);
     }
-    
+
     public void error(String message) {
         log("ERROR", message);
     }
-    
+
     public void debug(String message) {
         log("DEBUG", message);
     }
-    
+
     public void close() {
         if (writer != null) {
             writer.close();
@@ -349,18 +347,18 @@ public class Logger {
 public class LoggerDemo {
     public static void main(String[] args) {
         Logger logger = Logger.getInstance();
-        
+
         logger.info("应用程序启动");
         logger.debug("调试信息");
         logger.error("发生错误");
-        
+
         // 在不同的类中使用
         processOrder();
-        
+
         logger.info("应用程序结束");
         logger.close();
     }
-    
+
     private static void processOrder() {
         Logger logger = Logger.getInstance(); // 获取同一个实例
         logger.info("开始处理订单");

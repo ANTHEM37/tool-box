@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 观察者模式定义了对象之间的一对多依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都会得到通知并自动更新。
 
 ### 意图
+
 - 定义对象间的一对多依赖关系
 - 当一个对象状态改变时，自动通知所有依赖对象
 - 实现松耦合的通知机制
@@ -21,7 +23,7 @@ classDiagram
         +detach(Observer): void
         +notify(): void
     }
-    
+
     class ConcreteSubject {
         -observers: List~Observer~
         -state: String
@@ -31,17 +33,17 @@ classDiagram
         +getState(): String
         +setState(String): void
     }
-    
+
     class Observer {
         <<interface>>
         +update(Subject): void
     }
-    
+
     class ConcreteObserver {
         -subject: Subject
         +update(Subject): void
     }
-    
+
     Subject <|.. ConcreteSubject
     Observer <|.. ConcreteObserver
     ConcreteSubject --> Observer
@@ -56,15 +58,14 @@ sequenceDiagram
     participant ConcreteSubject
     participant Observer1
     participant Observer2
-    
-    Client->>ConcreteSubject: setState(newState)
-    ConcreteSubject->>ConcreteSubject: notify()
-    ConcreteSubject->>Observer1: update(this)
-    Observer1->>ConcreteSubject: getState()
-    ConcreteSubject-->>Observer1: state
-    ConcreteSubject->>Observer2: update(this)
-    Observer2->>ConcreteSubject: getState()
-    ConcreteSubject-->>Observer2: state
+    Client ->> ConcreteSubject: setState(newState)
+    ConcreteSubject ->> ConcreteSubject: notify()
+    ConcreteSubject ->> Observer1: update(this)
+    Observer1 ->> ConcreteSubject: getState()
+    ConcreteSubject -->> Observer1: state
+    ConcreteSubject ->> Observer2: update(this)
+    Observer2 ->> ConcreteSubject: getState()
+    ConcreteSubject -->> Observer2: state
 ```
 
 ## 💻 代码实现
@@ -77,7 +78,9 @@ sequenceDiagram
  */
 public interface Subject {
     void attach(Observer observer);
+
     void detach(Observer observer);
+
     void notifyObservers();
 }
 
@@ -94,19 +97,19 @@ public interface Observer {
 public class ConcreteSubject implements Subject {
     private List<Observer> observers = new ArrayList<>();
     private String state;
-    
+
     @Override
     public void attach(Observer observer) {
         observers.add(observer);
         System.out.println("ConcreteSubject: 观察者已添加");
     }
-    
+
     @Override
     public void detach(Observer observer) {
         observers.remove(observer);
         System.out.println("ConcreteSubject: 观察者已移除");
     }
-    
+
     @Override
     public void notifyObservers() {
         System.out.println("ConcreteSubject: 通知所有观察者");
@@ -114,11 +117,11 @@ public class ConcreteSubject implements Subject {
             observer.update(this);
         }
     }
-    
+
     public String getState() {
         return state;
     }
-    
+
     public void setState(String state) {
         this.state = state;
         System.out.println("ConcreteSubject: 状态已改变为 " + state);
@@ -131,11 +134,11 @@ public class ConcreteSubject implements Subject {
  */
 public class ConcreteObserver implements Observer {
     private String name;
-    
+
     public ConcreteObserver(String name) {
         this.name = name;
     }
-    
+
     @Override
     public void update(Subject subject) {
         if (subject instanceof ConcreteSubject) {

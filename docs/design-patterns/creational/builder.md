@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 建造者模式将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。
 
 ### 意图
+
 - 分步骤创建复杂对象
 - 相同的构建过程可以创建不同的产品
 - 将复杂对象的创建过程封装起来
@@ -20,7 +22,7 @@ classDiagram
         +Director(Builder)
         +construct(): void
     }
-    
+
     class Builder {
         <<interface>>
         +buildPartA(): void
@@ -28,7 +30,7 @@ classDiagram
         +buildPartC(): void
         +getResult(): Product
     }
-    
+
     class ConcreteBuilder {
         -product: Product
         +buildPartA(): void
@@ -36,7 +38,7 @@ classDiagram
         +buildPartC(): void
         +getResult(): Product
     }
-    
+
     class Product {
         -partA: String
         -partB: String
@@ -46,7 +48,7 @@ classDiagram
         +setPartC(String): void
         +show(): void
     }
-    
+
     Director --> Builder
     Builder <|.. ConcreteBuilder
     ConcreteBuilder --> Product
@@ -60,22 +62,17 @@ sequenceDiagram
     participant Director
     participant ConcreteBuilder
     participant Product
-    
-    Client->>ConcreteBuilder: new ConcreteBuilder()
-    Client->>Director: new Director(builder)
-    Client->>Director: construct()
-    
-    Director->>ConcreteBuilder: buildPartA()
-    ConcreteBuilder->>Product: setPartA()
-    
-    Director->>ConcreteBuilder: buildPartB()
-    ConcreteBuilder->>Product: setPartB()
-    
-    Director->>ConcreteBuilder: buildPartC()
-    ConcreteBuilder->>Product: setPartC()
-    
-    Client->>ConcreteBuilder: getResult()
-    ConcreteBuilder-->>Client: product
+    Client ->> ConcreteBuilder: new ConcreteBuilder()
+    Client ->> Director: new Director(builder)
+    Client ->> Director: construct()
+    Director ->> ConcreteBuilder: buildPartA()
+    ConcreteBuilder ->> Product: setPartA()
+    Director ->> ConcreteBuilder: buildPartB()
+    ConcreteBuilder ->> Product: setPartB()
+    Director ->> ConcreteBuilder: buildPartC()
+    ConcreteBuilder ->> Product: setPartC()
+    Client ->> ConcreteBuilder: getResult()
+    ConcreteBuilder -->> Client: product
 ```
 
 ## 💻 代码实现
@@ -90,19 +87,19 @@ public class Product {
     private String partA;
     private String partB;
     private String partC;
-    
+
     public void setPartA(String partA) {
         this.partA = partA;
     }
-    
+
     public void setPartB(String partB) {
         this.partB = partB;
     }
-    
+
     public void setPartC(String partC) {
         this.partC = partC;
     }
-    
+
     public void show() {
         System.out.println("产品组成:");
         System.out.println("部件A: " + partA);
@@ -116,11 +113,13 @@ public class Product {
  */
 public abstract class Builder {
     protected Product product = new Product();
-    
+
     public abstract void buildPartA();
+
     public abstract void buildPartB();
+
     public abstract void buildPartC();
-    
+
     public Product getResult() {
         return product;
     }
@@ -134,12 +133,12 @@ public class ConcreteBuilder1 extends Builder {
     public void buildPartA() {
         product.setPartA("建造者1的部件A");
     }
-    
+
     @Override
     public void buildPartB() {
         product.setPartB("建造者1的部件B");
     }
-    
+
     @Override
     public void buildPartC() {
         product.setPartC("建造者1的部件C");
@@ -154,12 +153,12 @@ public class ConcreteBuilder2 extends Builder {
     public void buildPartA() {
         product.setPartA("建造者2的部件A");
     }
-    
+
     @Override
     public void buildPartB() {
         product.setPartB("建造者2的部件B");
     }
-    
+
     @Override
     public void buildPartC() {
         product.setPartC("建造者2的部件C");
@@ -171,11 +170,11 @@ public class ConcreteBuilder2 extends Builder {
  */
 public class Director {
     private Builder builder;
-    
+
     public Director(Builder builder) {
         this.builder = builder;
     }
-    
+
     public void construct() {
         builder.buildPartA();
         builder.buildPartB();

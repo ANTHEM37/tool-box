@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 代理模式为另一个对象提供一个替身或占位符以控制对这个对象的访问。
 
 ### 意图
+
 - 控制对对象的访问
 - 在访问对象时提供额外的功能
 - 延迟对象的创建和初始化
@@ -19,22 +21,22 @@ classDiagram
         <<interface>>
         +request(): void
     }
-    
+
     class RealSubject {
         +request(): void
     }
-    
+
     class Proxy {
         -realSubject: RealSubject
         +request(): void
         -checkAccess(): boolean
         -logAccess(): void
     }
-    
+
     class Client {
         +main(): void
     }
-    
+
     Subject <|.. RealSubject
     Subject <|.. Proxy
     Proxy --> RealSubject
@@ -48,16 +50,15 @@ sequenceDiagram
     participant Client
     participant Proxy
     participant RealSubject
-    
-    Client->>Proxy: request()
-    Proxy->>Proxy: checkAccess()
+    Client ->> Proxy: request()
+    Proxy ->> Proxy: checkAccess()
     alt 访问被允许
-        Proxy->>RealSubject: request()
-        RealSubject-->>Proxy: result
-        Proxy->>Proxy: logAccess()
-        Proxy-->>Client: result
+        Proxy ->> RealSubject: request()
+        RealSubject -->> Proxy: result
+        Proxy ->> Proxy: logAccess()
+        Proxy -->> Client: result
     else 访问被拒绝
-        Proxy-->>Client: 访问拒绝
+        Proxy -->> Client: 访问拒绝
     end
 ```
 
@@ -88,7 +89,7 @@ public class RealSubject implements Subject {
  */
 public class Proxy implements Subject {
     private RealSubject realSubject;
-    
+
     @Override
     public void request() {
         if (checkAccess()) {
@@ -101,12 +102,12 @@ public class Proxy implements Subject {
             System.out.println("Proxy: 访问被拒绝");
         }
     }
-    
+
     private boolean checkAccess() {
         System.out.println("Proxy: 检查访问权限");
         return true; // 简化实现
     }
-    
+
     private void logAccess() {
         System.out.println("Proxy: 记录访问日志");
     }
@@ -123,6 +124,7 @@ public class Proxy implements Subject {
  */
 public interface Image {
     void display();
+
     String getInfo();
 }
 
@@ -132,12 +134,12 @@ public interface Image {
 public class RealImage implements Image {
     private String filename;
     private byte[] imageData;
-    
+
     public RealImage(String filename) {
         this.filename = filename;
         loadFromDisk();
     }
-    
+
     private void loadFromDisk() {
         System.out.println("RealImage: 从磁盘加载图片 " + filename);
         // 模拟耗时的加载过程
@@ -149,12 +151,12 @@ public class RealImage implements Image {
         imageData = new byte[1024]; // 模拟图片数据
         System.out.println("RealImage: 图片 " + filename + " 加载完成");
     }
-    
+
     @Override
     public void display() {
         System.out.println("RealImage: 显示图片 " + filename);
     }
-    
+
     @Override
     public String getInfo() {
         return "真实图片: " + filename + " (大小: " + imageData.length + " bytes)";
@@ -167,11 +169,11 @@ public class RealImage implements Image {
 public class ImageProxy implements Image {
     private String filename;
     private RealImage realImage;
-    
+
     public ImageProxy(String filename) {
         this.filename = filename;
     }
-    
+
     @Override
     public void display() {
         if (realImage == null) {
@@ -180,7 +182,7 @@ public class ImageProxy implements Image {
         }
         realImage.display();
     }
-    
+
     @Override
     public String getInfo() {
         if (realImage == null) {
@@ -196,16 +198,16 @@ public class ImageProxyDemo {
         System.out.println("=== 创建图片代理 ===");
         Image image1 = new ImageProxy("photo1.jpg");
         Image image2 = new ImageProxy("photo2.jpg");
-        
+
         System.out.println("图片信息: " + image1.getInfo());
         System.out.println("图片信息: " + image2.getInfo());
-        
+
         System.out.println("\n=== 首次显示图片 ===");
         image1.display();
-        
+
         System.out.println("\n=== 再次显示图片 ===");
         image1.display();
-        
+
         System.out.println("\n=== 显示第二张图片 ===");
         image2.display();
     }
@@ -220,7 +222,9 @@ public class ImageProxyDemo {
  */
 public interface Document {
     void read();
+
     void write(String content);
+
     void delete();
 }
 
@@ -230,23 +234,23 @@ public interface Document {
 public class RealDocument implements Document {
     private String filename;
     private String content;
-    
+
     public RealDocument(String filename) {
         this.filename = filename;
         this.content = "文档内容";
     }
-    
+
     @Override
     public void read() {
         System.out.println("RealDocument: 读取文档 " + filename + " - " + content);
     }
-    
+
     @Override
     public void write(String content) {
         this.content = content;
         System.out.println("RealDocument: 写入文档 " + filename + " - " + content);
     }
-    
+
     @Override
     public void delete() {
         System.out.println("RealDocument: 删除文档 " + filename);
@@ -267,12 +271,12 @@ public class DocumentProtectionProxy implements Document {
     private RealDocument realDocument;
     private String filename;
     private UserRole userRole;
-    
+
     public DocumentProtectionProxy(String filename, UserRole userRole) {
         this.filename = filename;
         this.userRole = userRole;
     }
-    
+
     @Override
     public void read() {
         if (checkReadAccess()) {
@@ -285,7 +289,7 @@ public class DocumentProtectionProxy implements Document {
             System.out.println("DocumentProxy: 读取权限被拒绝");
         }
     }
-    
+
     @Override
     public void write(String content) {
         if (checkWriteAccess()) {
@@ -298,7 +302,7 @@ public class DocumentProtectionProxy implements Document {
             System.out.println("DocumentProxy: 写入权限被拒绝");
         }
     }
-    
+
     @Override
     public void delete() {
         if (checkDeleteAccess()) {
@@ -311,25 +315,25 @@ public class DocumentProtectionProxy implements Document {
             System.out.println("DocumentProxy: 删除权限被拒绝");
         }
     }
-    
+
     private boolean checkReadAccess() {
         // 所有用户都可以读取
         return true;
     }
-    
+
     private boolean checkWriteAccess() {
         // 只有管理员和普通用户可以写入
         return userRole == UserRole.ADMIN || userRole == UserRole.USER;
     }
-    
+
     private boolean checkDeleteAccess() {
         // 只有管理员可以删除
         return userRole == UserRole.ADMIN;
     }
-    
+
     private void logAccess(String operation) {
-        System.out.println("DocumentProxy: 记录访问日志 - 用户角色: " + userRole + 
-                         ", 操作: " + operation + ", 文档: " + filename);
+        System.out.println("DocumentProxy: 记录访问日志 - 用户角色: " + userRole +
+                ", 操作: " + operation + ", 文档: " + filename);
     }
 }
 
@@ -341,13 +345,13 @@ public class DocumentProxyDemo {
         adminDoc.read();
         adminDoc.write("管理员修改的内容");
         adminDoc.delete();
-        
+
         System.out.println("\n=== 普通用户 ===");
         Document userDoc = new DocumentProtectionProxy("user_doc.txt", UserRole.USER);
         userDoc.read();
         userDoc.write("用户修改的内容");
         userDoc.delete(); // 应该被拒绝
-        
+
         System.out.println("\n=== 访客用户 ===");
         Document guestDoc = new DocumentProtectionProxy("guest_doc.txt", UserRole.GUEST);
         guestDoc.read();
@@ -365,6 +369,7 @@ public class DocumentProxyDemo {
  */
 public interface DataService {
     String getData(String key);
+
     void setData(String key, String value);
 }
 
@@ -383,7 +388,7 @@ public class RealDataService implements DataService {
         }
         return "数据值_" + key;
     }
-    
+
     @Override
     public void setData(String key, String value) {
         System.out.println("RealDataService: 保存数据到数据库 " + key + " = " + value);
@@ -403,12 +408,12 @@ public class CacheProxy implements DataService {
     private Map<String, String> cache;
     private Map<String, Long> cacheTimestamps;
     private static final long CACHE_EXPIRY_TIME = 5000; // 5秒缓存过期时间
-    
+
     public CacheProxy() {
         this.cache = new HashMap<>();
         this.cacheTimestamps = new HashMap<>();
     }
-    
+
     @Override
     public String getData(String key) {
         // 检查缓存是否存在且未过期
@@ -416,36 +421,36 @@ public class CacheProxy implements DataService {
             System.out.println("CacheProxy: 从缓存获取数据 " + key);
             return cache.get(key);
         }
-        
+
         // 缓存未命中或已过期，从真实服务获取数据
         if (realDataService == null) {
             realDataService = new RealDataService();
         }
-        
+
         String data = realDataService.getData(key);
-        
+
         // 更新缓存
         cache.put(key, data);
         cacheTimestamps.put(key, System.currentTimeMillis());
         System.out.println("CacheProxy: 数据已缓存 " + key);
-        
+
         return data;
     }
-    
+
     @Override
     public void setData(String key, String value) {
         if (realDataService == null) {
             realDataService = new RealDataService();
         }
-        
+
         realDataService.setData(key, value);
-        
+
         // 更新缓存
         cache.put(key, value);
         cacheTimestamps.put(key, System.currentTimeMillis());
         System.out.println("CacheProxy: 缓存已更新 " + key);
     }
-    
+
     private boolean isCacheExpired(String key) {
         Long timestamp = cacheTimestamps.get(key);
         if (timestamp == null) {
@@ -453,19 +458,19 @@ public class CacheProxy implements DataService {
         }
         return System.currentTimeMillis() - timestamp > CACHE_EXPIRY_TIME;
     }
-    
+
     public void clearCache() {
         cache.clear();
         cacheTimestamps.clear();
         System.out.println("CacheProxy: 缓存已清空");
     }
-    
+
     public void showCacheStatus() {
         System.out.println("CacheProxy: 缓存状态 - 条目数: " + cache.size());
         for (String key : cache.keySet()) {
             boolean expired = isCacheExpired(key);
-            System.out.println("  " + key + ": " + cache.get(key) + 
-                             (expired ? " (已过期)" : " (有效)"));
+            System.out.println("  " + key + ": " + cache.get(key) +
+                    (expired ? " (已过期)" : " (有效)"));
         }
     }
 }
@@ -475,36 +480,36 @@ public class CacheProxyDemo {
     public static void main(String[] args) throws InterruptedException {
         DataService dataService = new CacheProxy();
         CacheProxy cacheProxy = (CacheProxy) dataService;
-        
+
         System.out.println("=== 首次获取数据 ===");
         String data1 = dataService.getData("user1");
         System.out.println("获取到数据: " + data1);
-        
+
         System.out.println("\n=== 再次获取相同数据（应该从缓存获取）===");
         String data2 = dataService.getData("user1");
         System.out.println("获取到数据: " + data2);
-        
+
         System.out.println("\n=== 获取不同数据 ===");
         String data3 = dataService.getData("user2");
         System.out.println("获取到数据: " + data3);
-        
+
         System.out.println("\n=== 显示缓存状态 ===");
         cacheProxy.showCacheStatus();
-        
+
         System.out.println("\n=== 等待缓存过期 ===");
         Thread.sleep(6000); // 等待6秒，超过缓存过期时间
-        
+
         System.out.println("=== 缓存过期后再次获取数据 ===");
         String data4 = dataService.getData("user1");
         System.out.println("获取到数据: " + data4);
-        
+
         System.out.println("\n=== 设置数据 ===");
         dataService.setData("user3", "新数据值");
-        
+
         System.out.println("\n=== 获取刚设置的数据 ===");
         String data5 = dataService.getData("user3");
         System.out.println("获取到数据: " + data5);
-        
+
         System.out.println("\n=== 最终缓存状态 ===");
         cacheProxy.showCacheStatus();
     }
@@ -514,22 +519,27 @@ public class CacheProxyDemo {
 ## 🎯 代理模式的类型
 
 ### 1. 虚拟代理 (Virtual Proxy)
+
 - 延迟创建开销大的对象
 - 只有在真正需要时才创建对象
 
 ### 2. 保护代理 (Protection Proxy)
+
 - 控制对原始对象的访问
 - 根据访问权限决定是否允许访问
 
 ### 3. 远程代理 (Remote Proxy)
+
 - 为远程对象提供本地代表
 - 隐藏网络通信的复杂性
 
 ### 4. 缓存代理 (Cache Proxy)
+
 - 为开销大的运算结果提供暂时存储
 - 允许多个客户端共享结果
 
 ### 5. 智能引用代理 (Smart Reference Proxy)
+
 - 在访问对象时执行额外的操作
 - 如引用计数、加载持久化对象等
 

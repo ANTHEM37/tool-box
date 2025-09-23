@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 适配器模式将一个类的接口转换成客户希望的另一个接口，使得原本由于接口不兼容而不能一起工作的类可以一起工作。
 
 ### 意图
+
 - 使接口不兼容的类能够相互合作
 - 复用现有的类，即使其接口不符合需求
 - 创建一个统一的接口来访问不同的类
@@ -21,21 +23,21 @@ classDiagram
         <<interface>>
         +request(): void
     }
-    
+
     class Adapter {
         -adaptee: Adaptee
         +Adapter(Adaptee)
         +request(): void
     }
-    
+
     class Adaptee {
         +specificRequest(): void
     }
-    
+
     class Client {
         +main(): void
     }
-    
+
     Target <|.. Adapter
     Adapter --> Adaptee
     Client --> Target
@@ -49,19 +51,19 @@ classDiagram
         <<interface>>
         +request(): void
     }
-    
+
     class Adapter {
         +request(): void
     }
-    
+
     class Adaptee {
         +specificRequest(): void
     }
-    
+
     class Client {
         +main(): void
     }
-    
+
     Target <|.. Adapter
     Adaptee <|-- Adapter
     Client --> Target
@@ -74,12 +76,10 @@ sequenceDiagram
     participant Client
     participant Adapter
     participant Adaptee
-    
-    Client->>Adapter: request()
-    Adapter->>Adaptee: specificRequest()
-    Adaptee-->>Adapter: result
-    Adapter-->>Client: adapted result
-    
+    Client ->> Adapter: request()
+    Adapter ->> Adaptee: specificRequest()
+    Adaptee -->> Adapter: result
+    Adapter -->> Client: adapted result
     note over Client, Adaptee: 客户端通过适配器调用不兼容的接口
 ```
 
@@ -109,11 +109,11 @@ public class Adaptee {
  */
 public class ObjectAdapter implements Target {
     private Adaptee adaptee;
-    
+
     public ObjectAdapter(Adaptee adaptee) {
         this.adaptee = adaptee;
     }
-    
+
     @Override
     public void request() {
         System.out.println("ObjectAdapter: 转换请求");
@@ -154,6 +154,7 @@ public interface MediaPlayer {
  */
 public interface AdvancedMediaPlayer {
     void playVlc(String fileName);
+
     void playMp4(String fileName);
 }
 
@@ -165,7 +166,7 @@ public class VlcPlayer implements AdvancedMediaPlayer {
     public void playVlc(String fileName) {
         System.out.println("播放VLC文件: " + fileName);
     }
-    
+
     @Override
     public void playMp4(String fileName) {
         // VLC播放器不支持MP4
@@ -180,7 +181,7 @@ public class Mp4Player implements AdvancedMediaPlayer {
     public void playVlc(String fileName) {
         // MP4播放器不支持VLC
     }
-    
+
     @Override
     public void playMp4(String fileName) {
         System.out.println("播放MP4文件: " + fileName);
@@ -192,7 +193,7 @@ public class Mp4Player implements AdvancedMediaPlayer {
  */
 public class MediaAdapter implements MediaPlayer {
     private AdvancedMediaPlayer advancedPlayer;
-    
+
     public MediaAdapter(String audioType) {
         if ("vlc".equalsIgnoreCase(audioType)) {
             advancedPlayer = new VlcPlayer();
@@ -200,7 +201,7 @@ public class MediaAdapter implements MediaPlayer {
             advancedPlayer = new Mp4Player();
         }
     }
-    
+
     @Override
     public void play(String audioType, String fileName) {
         if ("vlc".equalsIgnoreCase(audioType)) {
@@ -216,7 +217,7 @@ public class MediaAdapter implements MediaPlayer {
  */
 public class AudioPlayer implements MediaPlayer {
     private MediaAdapter mediaAdapter;
-    
+
     @Override
     public void play(String audioType, String fileName) {
         // 内置支持MP3格式
@@ -237,7 +238,7 @@ public class AudioPlayer implements MediaPlayer {
 public class MediaPlayerDemo {
     public static void main(String[] args) {
         AudioPlayer audioPlayer = new AudioPlayer();
-        
+
         audioPlayer.play("mp3", "beyond_the_horizon.mp3");
         audioPlayer.play("mp4", "alone.mp4");
         audioPlayer.play("vlc", "far_far_away.vlc");
@@ -254,7 +255,9 @@ public class MediaPlayerDemo {
  */
 public interface DatabaseConnection {
     void connect();
+
     void executeQuery(String sql);
+
     void close();
 }
 
@@ -265,11 +268,11 @@ public class MySQLDatabase {
     public void mysqlConnect() {
         System.out.println("连接到MySQL数据库");
     }
-    
+
     public void mysqlQuery(String sql) {
         System.out.println("MySQL执行查询: " + sql);
     }
-    
+
     public void mysqlClose() {
         System.out.println("关闭MySQL连接");
     }
@@ -282,11 +285,11 @@ public class OracleDatabase {
     public void oracleConnect() {
         System.out.println("连接到Oracle数据库");
     }
-    
+
     public void oracleExecute(String sql) {
         System.out.println("Oracle执行SQL: " + sql);
     }
-    
+
     public void oracleDisconnect() {
         System.out.println("断开Oracle连接");
     }
@@ -299,11 +302,11 @@ public class PostgreSQLDatabase {
     public void pgConnect() {
         System.out.println("连接到PostgreSQL数据库");
     }
-    
+
     public void pgQuery(String sql) {
         System.out.println("PostgreSQL执行查询: " + sql);
     }
-    
+
     public void pgClose() {
         System.out.println("关闭PostgreSQL连接");
     }
@@ -314,21 +317,21 @@ public class PostgreSQLDatabase {
  */
 public class MySQLAdapter implements DatabaseConnection {
     private MySQLDatabase mysqlDb;
-    
+
     public MySQLAdapter(MySQLDatabase mysqlDb) {
         this.mysqlDb = mysqlDb;
     }
-    
+
     @Override
     public void connect() {
         mysqlDb.mysqlConnect();
     }
-    
+
     @Override
     public void executeQuery(String sql) {
         mysqlDb.mysqlQuery(sql);
     }
-    
+
     @Override
     public void close() {
         mysqlDb.mysqlClose();
@@ -340,21 +343,21 @@ public class MySQLAdapter implements DatabaseConnection {
  */
 public class OracleAdapter implements DatabaseConnection {
     private OracleDatabase oracleDb;
-    
+
     public OracleAdapter(OracleDatabase oracleDb) {
         this.oracleDb = oracleDb;
     }
-    
+
     @Override
     public void connect() {
         oracleDb.oracleConnect();
     }
-    
+
     @Override
     public void executeQuery(String sql) {
         oracleDb.oracleExecute(sql);
     }
-    
+
     @Override
     public void close() {
         oracleDb.oracleDisconnect();
@@ -366,21 +369,21 @@ public class OracleAdapter implements DatabaseConnection {
  */
 public class PostgreSQLAdapter implements DatabaseConnection {
     private PostgreSQLDatabase pgDb;
-    
+
     public PostgreSQLAdapter(PostgreSQLDatabase pgDb) {
         this.pgDb = pgDb;
     }
-    
+
     @Override
     public void connect() {
         pgDb.pgConnect();
     }
-    
+
     @Override
     public void executeQuery(String sql) {
         pgDb.pgQuery(sql);
     }
-    
+
     @Override
     public void close() {
         pgDb.pgClose();
@@ -392,11 +395,11 @@ public class PostgreSQLAdapter implements DatabaseConnection {
  */
 public class DatabaseManager {
     private List<DatabaseConnection> connections = new ArrayList<>();
-    
+
     public void addDatabase(DatabaseConnection connection) {
         connections.add(connection);
     }
-    
+
     public void executeQueryOnAllDatabases(String sql) {
         for (DatabaseConnection connection : connections) {
             connection.connect();
@@ -411,12 +414,12 @@ public class DatabaseManager {
 public class DatabaseAdapterDemo {
     public static void main(String[] args) {
         DatabaseManager manager = new DatabaseManager();
-        
+
         // 添加不同类型的数据库
         manager.addDatabase(new MySQLAdapter(new MySQLDatabase()));
         manager.addDatabase(new OracleAdapter(new OracleDatabase()));
         manager.addDatabase(new PostgreSQLAdapter(new PostgreSQLDatabase()));
-        
+
         // 在所有数据库上执行相同的查询
         manager.executeQueryOnAllDatabases("SELECT * FROM users");
     }
@@ -431,6 +434,7 @@ public class DatabaseAdapterDemo {
  */
 public interface PaymentProcessor {
     boolean processPayment(double amount, String currency);
+
     String getPaymentStatus(String transactionId);
 }
 
@@ -442,7 +446,7 @@ public class AlipayService {
         System.out.println("使用支付宝支付: " + money + " " + currencyType);
         return true;
     }
-    
+
     public String checkAlipayStatus(String orderId) {
         return "支付宝订单 " + orderId + " 状态: 成功";
     }
@@ -456,7 +460,7 @@ public class WeChatPayService {
         System.out.println("使用微信支付: " + amount + " " + currency);
         return true;
     }
-    
+
     public String getWeChatPaymentInfo(String transactionId) {
         return "微信支付交易 " + transactionId + " 状态: 完成";
     }
@@ -470,7 +474,7 @@ public class PayPalService {
         System.out.println("使用PayPal支付: " + sum + " " + currencyCode);
         return true;
     }
-    
+
     public String retrievePaymentStatus(String paymentId) {
         return "PayPal支付 " + paymentId + " 状态: 已完成";
     }
@@ -481,16 +485,16 @@ public class PayPalService {
  */
 public class AlipayAdapter implements PaymentProcessor {
     private AlipayService alipayService;
-    
+
     public AlipayAdapter(AlipayService alipayService) {
         this.alipayService = alipayService;
     }
-    
+
     @Override
     public boolean processPayment(double amount, String currency) {
         return alipayService.alipayPay(amount, currency);
     }
-    
+
     @Override
     public String getPaymentStatus(String transactionId) {
         return alipayService.checkAlipayStatus(transactionId);
@@ -502,16 +506,16 @@ public class AlipayAdapter implements PaymentProcessor {
  */
 public class WeChatPayAdapter implements PaymentProcessor {
     private WeChatPayService weChatPayService;
-    
+
     public WeChatPayAdapter(WeChatPayService weChatPayService) {
         this.weChatPayService = weChatPayService;
     }
-    
+
     @Override
     public boolean processPayment(double amount, String currency) {
         return weChatPayService.wechatPay(amount, currency);
     }
-    
+
     @Override
     public String getPaymentStatus(String transactionId) {
         return weChatPayService.getWeChatPaymentInfo(transactionId);
@@ -523,16 +527,16 @@ public class WeChatPayAdapter implements PaymentProcessor {
  */
 public class PayPalAdapter implements PaymentProcessor {
     private PayPalService payPalService;
-    
+
     public PayPalAdapter(PayPalService payPalService) {
         this.payPalService = payPalService;
     }
-    
+
     @Override
     public boolean processPayment(double amount, String currency) {
         return payPalService.makePayment(amount, currency);
     }
-    
+
     @Override
     public String getPaymentStatus(String transactionId) {
         return payPalService.retrievePaymentStatus(transactionId);
@@ -544,11 +548,11 @@ public class PayPalAdapter implements PaymentProcessor {
  */
 public class PaymentManager {
     private Map<String, PaymentProcessor> processors = new HashMap<>();
-    
+
     public void registerPaymentProcessor(String name, PaymentProcessor processor) {
         processors.put(name, processor);
     }
-    
+
     public boolean processPayment(String paymentMethod, double amount, String currency) {
         PaymentProcessor processor = processors.get(paymentMethod);
         if (processor != null) {
@@ -558,7 +562,7 @@ public class PaymentManager {
             return false;
         }
     }
-    
+
     public String getPaymentStatus(String paymentMethod, String transactionId) {
         PaymentProcessor processor = processors.get(paymentMethod);
         if (processor != null) {
@@ -567,7 +571,7 @@ public class PaymentManager {
             return "不支持的支付方式: " + paymentMethod;
         }
     }
-    
+
     public Set<String> getSupportedPaymentMethods() {
         return processors.keySet();
     }
@@ -577,32 +581,32 @@ public class PaymentManager {
 public class PaymentAdapterDemo {
     public static void main(String[] args) {
         PaymentManager paymentManager = new PaymentManager();
-        
+
         // 注册不同的支付处理器
-        paymentManager.registerPaymentProcessor("alipay", 
-            new AlipayAdapter(new AlipayService()));
-        paymentManager.registerPaymentProcessor("wechat", 
-            new WeChatPayAdapter(new WeChatPayService()));
-        paymentManager.registerPaymentProcessor("paypal", 
-            new PayPalAdapter(new PayPalService()));
-        
+        paymentManager.registerPaymentProcessor("alipay",
+                new AlipayAdapter(new AlipayService()));
+        paymentManager.registerPaymentProcessor("wechat",
+                new WeChatPayAdapter(new WeChatPayService()));
+        paymentManager.registerPaymentProcessor("paypal",
+                new PayPalAdapter(new PayPalService()));
+
         // 显示支持的支付方式
         System.out.println("支持的支付方式: " + paymentManager.getSupportedPaymentMethods());
         System.out.println();
-        
+
         // 使用不同的支付方式
         paymentManager.processPayment("alipay", 100.0, "CNY");
         System.out.println(paymentManager.getPaymentStatus("alipay", "ALI123456"));
         System.out.println();
-        
+
         paymentManager.processPayment("wechat", 200.0, "CNY");
         System.out.println(paymentManager.getPaymentStatus("wechat", "WX789012"));
         System.out.println();
-        
+
         paymentManager.processPayment("paypal", 50.0, "USD");
         System.out.println(paymentManager.getPaymentStatus("paypal", "PP345678"));
         System.out.println();
-        
+
         // 尝试不支持的支付方式
         paymentManager.processPayment("bitcoin", 10.0, "BTC");
     }

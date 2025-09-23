@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 抽象工厂模式提供一个创建一系列相关或相互依赖对象的接口，而无需指定它们具体的类。
 
 ### 意图
+
 - 提供一个创建产品族的接口
 - 确保创建的产品之间相互兼容
 - 隐藏具体产品的实现细节
@@ -20,64 +22,62 @@ classDiagram
         +createProductA(): AbstractProductA
         +createProductB(): AbstractProductB
     }
-    
+
     class ConcreteFactory1 {
         +createProductA(): AbstractProductA
         +createProductB(): AbstractProductB
     }
-    
+
     class ConcreteFactory2 {
         +createProductA(): AbstractProductA
         +createProductB(): AbstractProductB
     }
-    
+
     class AbstractProductA {
         <<interface>>
         +operationA(): void
     }
-    
+
     class AbstractProductB {
         <<interface>>
         +operationB(): void
         +collaborateWithA(AbstractProductA): void
     }
-    
+
     class ProductA1 {
         +operationA(): void
     }
-    
+
     class ProductA2 {
         +operationA(): void
     }
-    
+
     class ProductB1 {
         +operationB(): void
         +collaborateWithA(AbstractProductA): void
     }
-    
+
     class ProductB2 {
         +operationB(): void
         +collaborateWithA(AbstractProductA): void
     }
-    
+
     class Client {
         -factory: AbstractFactory
         +Client(AbstractFactory)
         +someOperation(): void
     }
-    
+
     AbstractFactory <|.. ConcreteFactory1
     AbstractFactory <|.. ConcreteFactory2
     AbstractProductA <|.. ProductA1
     AbstractProductA <|.. ProductA2
     AbstractProductB <|.. ProductB1
     AbstractProductB <|.. ProductB2
-    
     ConcreteFactory1 ..> ProductA1
     ConcreteFactory1 ..> ProductB1
     ConcreteFactory2 ..> ProductA2
     ConcreteFactory2 ..> ProductB2
-    
     Client --> AbstractFactory
     Client --> AbstractProductA
     Client --> AbstractProductB
@@ -92,21 +92,18 @@ sequenceDiagram
     participant ConcreteFactory
     participant ProductA
     participant ProductB
-    
-    Client->>ConcreteFactory: createProductA()
-    ConcreteFactory->>ProductA: new ProductA()
-    ProductA-->>ConcreteFactory: productA
-    ConcreteFactory-->>Client: productA
-    
-    Client->>ConcreteFactory: createProductB()
-    ConcreteFactory->>ProductB: new ProductB()
-    ProductB-->>ConcreteFactory: productB
-    ConcreteFactory-->>Client: productB
-    
-    Client->>ProductB: collaborateWithA(productA)
-    ProductB->>ProductA: operationA()
-    ProductA-->>ProductB: result
-    ProductB-->>Client: result
+    Client ->> ConcreteFactory: createProductA()
+    ConcreteFactory ->> ProductA: new ProductA()
+    ProductA -->> ConcreteFactory: productA
+    ConcreteFactory -->> Client: productA
+    Client ->> ConcreteFactory: createProductB()
+    ConcreteFactory ->> ProductB: new ProductB()
+    ProductB -->> ConcreteFactory: productB
+    ConcreteFactory -->> Client: productB
+    Client ->> ProductB: collaborateWithA(productA)
+    ProductB ->> ProductA: operationA()
+    ProductA -->> ProductB: result
+    ProductB -->> Client: result
 ```
 
 ## 💻 代码实现
@@ -119,6 +116,7 @@ sequenceDiagram
  */
 public interface AbstractProductA {
     void operationA();
+
     String getInfo();
 }
 
@@ -127,7 +125,9 @@ public interface AbstractProductA {
  */
 public interface AbstractProductB {
     void operationB();
+
     void collaborateWithA(AbstractProductA productA);
+
     String getInfo();
 }
 
@@ -139,7 +139,7 @@ public class ProductA1 implements AbstractProductA {
     public void operationA() {
         System.out.println("ProductA1 执行操作A");
     }
-    
+
     @Override
     public String getInfo() {
         return "产品A1";
@@ -154,7 +154,7 @@ public class ProductA2 implements AbstractProductA {
     public void operationA() {
         System.out.println("ProductA2 执行操作A");
     }
-    
+
     @Override
     public String getInfo() {
         return "产品A2";
@@ -169,13 +169,13 @@ public class ProductB1 implements AbstractProductB {
     public void operationB() {
         System.out.println("ProductB1 执行操作B");
     }
-    
+
     @Override
     public void collaborateWithA(AbstractProductA productA) {
         System.out.println("ProductB1 与 " + productA.getInfo() + " 协作");
         productA.operationA();
     }
-    
+
     @Override
     public String getInfo() {
         return "产品B1";
@@ -190,13 +190,13 @@ public class ProductB2 implements AbstractProductB {
     public void operationB() {
         System.out.println("ProductB2 执行操作B");
     }
-    
+
     @Override
     public void collaborateWithA(AbstractProductA productA) {
         System.out.println("ProductB2 与 " + productA.getInfo() + " 协作");
         productA.operationA();
     }
-    
+
     @Override
     public String getInfo() {
         return "产品B2";
@@ -208,6 +208,7 @@ public class ProductB2 implements AbstractProductB {
  */
 public interface AbstractFactory {
     AbstractProductA createProductA();
+
     AbstractProductB createProductB();
 }
 
@@ -219,7 +220,7 @@ public class ConcreteFactory1 implements AbstractFactory {
     public AbstractProductA createProductA() {
         return new ProductA1();
     }
-    
+
     @Override
     public AbstractProductB createProductB() {
         return new ProductB1();
@@ -234,7 +235,7 @@ public class ConcreteFactory2 implements AbstractFactory {
     public AbstractProductA createProductA() {
         return new ProductA2();
     }
-    
+
     @Override
     public AbstractProductB createProductB() {
         return new ProductB2();
@@ -247,12 +248,12 @@ public class ConcreteFactory2 implements AbstractFactory {
 public class Client {
     private AbstractProductA productA;
     private AbstractProductB productB;
-    
+
     public Client(AbstractFactory factory) {
         productA = factory.createProductA();
         productB = factory.createProductB();
     }
-    
+
     public void run() {
         productA.operationA();
         productB.operationB();
@@ -271,6 +272,7 @@ public class Client {
  */
 public interface Button {
     void render();
+
     void onClick();
 }
 
@@ -279,6 +281,7 @@ public interface Button {
  */
 public interface Checkbox {
     void render();
+
     void toggle();
 }
 
@@ -290,7 +293,7 @@ public class WindowsButton implements Button {
     public void render() {
         System.out.println("渲染Windows风格按钮");
     }
-    
+
     @Override
     public void onClick() {
         System.out.println("Windows按钮点击事件");
@@ -302,12 +305,12 @@ public class WindowsButton implements Button {
  */
 public class WindowsCheckbox implements Checkbox {
     private boolean checked = false;
-    
+
     @Override
     public void render() {
         System.out.println("渲染Windows风格复选框");
     }
-    
+
     @Override
     public void toggle() {
         checked = !checked;
@@ -323,7 +326,7 @@ public class MacButton implements Button {
     public void render() {
         System.out.println("渲染Mac风格按钮");
     }
-    
+
     @Override
     public void onClick() {
         System.out.println("Mac按钮点击事件");
@@ -335,12 +338,12 @@ public class MacButton implements Button {
  */
 public class MacCheckbox implements Checkbox {
     private boolean checked = false;
-    
+
     @Override
     public void render() {
         System.out.println("渲染Mac风格复选框");
     }
-    
+
     @Override
     public void toggle() {
         checked = !checked;
@@ -353,6 +356,7 @@ public class MacCheckbox implements Checkbox {
  */
 public interface GUIFactory {
     Button createButton();
+
     Checkbox createCheckbox();
 }
 
@@ -364,7 +368,7 @@ public class WindowsFactory implements GUIFactory {
     public Button createButton() {
         return new WindowsButton();
     }
-    
+
     @Override
     public Checkbox createCheckbox() {
         return new WindowsCheckbox();
@@ -379,7 +383,7 @@ public class MacFactory implements GUIFactory {
     public Button createButton() {
         return new MacButton();
     }
-    
+
     @Override
     public Checkbox createCheckbox() {
         return new MacCheckbox();
@@ -392,17 +396,17 @@ public class MacFactory implements GUIFactory {
 public class Application {
     private Button button;
     private Checkbox checkbox;
-    
+
     public Application(GUIFactory factory) {
         button = factory.createButton();
         checkbox = factory.createCheckbox();
     }
-    
+
     public void render() {
         button.render();
         checkbox.render();
     }
-    
+
     public void interact() {
         button.onClick();
         checkbox.toggle();
@@ -414,7 +418,7 @@ public class GUIFactoryDemo {
     public static void main(String[] args) {
         GUIFactory factory;
         String osName = System.getProperty("os.name").toLowerCase();
-        
+
         if (osName.contains("windows")) {
             factory = new WindowsFactory();
         } else if (osName.contains("mac")) {
@@ -422,7 +426,7 @@ public class GUIFactoryDemo {
         } else {
             factory = new WindowsFactory(); // 默认
         }
-        
+
         Application app = new Application(factory);
         app.render();
         app.interact();
@@ -438,7 +442,9 @@ public class GUIFactoryDemo {
  */
 public interface DatabaseConnection {
     void connect();
+
     void disconnect();
+
     String getConnectionInfo();
 }
 
@@ -447,7 +453,9 @@ public interface DatabaseConnection {
  */
 public interface DatabaseCommand {
     void execute(String sql);
+
     void executeQuery(String sql);
+
     void executeUpdate(String sql);
 }
 
@@ -456,21 +464,21 @@ public interface DatabaseCommand {
  */
 public class MySQLConnection implements DatabaseConnection {
     private String url;
-    
+
     public MySQLConnection(String url) {
         this.url = url;
     }
-    
+
     @Override
     public void connect() {
         System.out.println("连接到MySQL数据库: " + url);
     }
-    
+
     @Override
     public void disconnect() {
         System.out.println("断开MySQL连接");
     }
-    
+
     @Override
     public String getConnectionInfo() {
         return "MySQL连接: " + url;
@@ -482,21 +490,21 @@ public class MySQLConnection implements DatabaseConnection {
  */
 public class MySQLCommand implements DatabaseCommand {
     private DatabaseConnection connection;
-    
+
     public MySQLCommand(DatabaseConnection connection) {
         this.connection = connection;
     }
-    
+
     @Override
     public void execute(String sql) {
         System.out.println("MySQL执行: " + sql);
     }
-    
+
     @Override
     public void executeQuery(String sql) {
         System.out.println("MySQL查询: " + sql);
     }
-    
+
     @Override
     public void executeUpdate(String sql) {
         System.out.println("MySQL更新: " + sql);
@@ -508,21 +516,21 @@ public class MySQLCommand implements DatabaseCommand {
  */
 public class PostgreSQLConnection implements DatabaseConnection {
     private String url;
-    
+
     public PostgreSQLConnection(String url) {
         this.url = url;
     }
-    
+
     @Override
     public void connect() {
         System.out.println("连接到PostgreSQL数据库: " + url);
     }
-    
+
     @Override
     public void disconnect() {
         System.out.println("断开PostgreSQL连接");
     }
-    
+
     @Override
     public String getConnectionInfo() {
         return "PostgreSQL连接: " + url;
@@ -534,21 +542,21 @@ public class PostgreSQLConnection implements DatabaseConnection {
  */
 public class PostgreSQLCommand implements DatabaseCommand {
     private DatabaseConnection connection;
-    
+
     public PostgreSQLCommand(DatabaseConnection connection) {
         this.connection = connection;
     }
-    
+
     @Override
     public void execute(String sql) {
         System.out.println("PostgreSQL执行: " + sql);
     }
-    
+
     @Override
     public void executeQuery(String sql) {
         System.out.println("PostgreSQL查询: " + sql);
     }
-    
+
     @Override
     public void executeUpdate(String sql) {
         System.out.println("PostgreSQL更新: " + sql);
@@ -560,6 +568,7 @@ public class PostgreSQLCommand implements DatabaseCommand {
  */
 public interface DatabaseFactory {
     DatabaseConnection createConnection(String url);
+
     DatabaseCommand createCommand(DatabaseConnection connection);
 }
 
@@ -571,7 +580,7 @@ public class MySQLFactory implements DatabaseFactory {
     public DatabaseConnection createConnection(String url) {
         return new MySQLConnection(url);
     }
-    
+
     @Override
     public DatabaseCommand createCommand(DatabaseConnection connection) {
         return new MySQLCommand(connection);
@@ -586,7 +595,7 @@ public class PostgreSQLFactory implements DatabaseFactory {
     public DatabaseConnection createConnection(String url) {
         return new PostgreSQLConnection(url);
     }
-    
+
     @Override
     public DatabaseCommand createCommand(DatabaseConnection connection) {
         return new PostgreSQLCommand(connection);
@@ -599,19 +608,19 @@ public class PostgreSQLFactory implements DatabaseFactory {
 public class DatabaseClient {
     private DatabaseConnection connection;
     private DatabaseCommand command;
-    
+
     public DatabaseClient(DatabaseFactory factory, String url) {
         connection = factory.createConnection(url);
         command = factory.createCommand(connection);
     }
-    
+
     public void performDatabaseOperations() {
         connection.connect();
-        
+
         command.executeQuery("SELECT * FROM users");
         command.executeUpdate("UPDATE users SET status = 'active'");
         command.execute("CREATE INDEX idx_user_email ON users(email)");
-        
+
         connection.disconnect();
     }
 }
@@ -622,17 +631,17 @@ public class DatabaseFactoryDemo {
         // 根据配置选择数据库类型
         String dbType = "mysql"; // 可以从配置文件读取
         DatabaseFactory factory = getDatabaseFactory(dbType);
-        
+
         DatabaseClient client = new DatabaseClient(factory, "localhost:3306/testdb");
         client.performDatabaseOperations();
-        
+
         // 切换到PostgreSQL
         dbType = "postgresql";
         factory = getDatabaseFactory(dbType);
         client = new DatabaseClient(factory, "localhost:5432/testdb");
         client.performDatabaseOperations();
     }
-    
+
     private static DatabaseFactory getDatabaseFactory(String dbType) {
         switch (dbType.toLowerCase()) {
             case "mysql":
@@ -654,7 +663,9 @@ public class DatabaseFactoryDemo {
  */
 public interface Weapon {
     void attack();
+
     int getDamage();
+
     String getName();
 }
 
@@ -663,7 +674,9 @@ public interface Weapon {
  */
 public interface Armor {
     void defend();
+
     int getDefense();
+
     String getName();
 }
 
@@ -675,12 +688,12 @@ public class WarriorSword implements Weapon {
     public void attack() {
         System.out.println("挥舞战士之剑进行攻击！");
     }
-    
+
     @Override
     public int getDamage() {
         return 50;
     }
-    
+
     @Override
     public String getName() {
         return "战士之剑";
@@ -695,12 +708,12 @@ public class WarriorArmor implements Armor {
     public void defend() {
         System.out.println("战士重甲提供防护！");
     }
-    
+
     @Override
     public int getDefense() {
         return 30;
     }
-    
+
     @Override
     public String getName() {
         return "战士重甲";
@@ -715,12 +728,12 @@ public class MageStaff implements Weapon {
     public void attack() {
         System.out.println("挥舞法师法杖释放魔法！");
     }
-    
+
     @Override
     public int getDamage() {
         return 40;
     }
-    
+
     @Override
     public String getName() {
         return "法师法杖";
@@ -735,12 +748,12 @@ public class MageRobe implements Armor {
     public void defend() {
         System.out.println("法师长袍提供魔法防护！");
     }
-    
+
     @Override
     public int getDefense() {
         return 15;
     }
-    
+
     @Override
     public String getName() {
         return "法师长袍";
@@ -755,12 +768,12 @@ public class ArcherBow implements Weapon {
     public void attack() {
         System.out.println("拉弓射箭进行远程攻击！");
     }
-    
+
     @Override
     public int getDamage() {
         return 35;
     }
-    
+
     @Override
     public String getName() {
         return "精灵之弓";
@@ -775,12 +788,12 @@ public class ArcherLeather implements Armor {
     public void defend() {
         System.out.println("皮甲提供灵活防护！");
     }
-    
+
     @Override
     public int getDefense() {
         return 20;
     }
-    
+
     @Override
     public String getName() {
         return "精制皮甲";
@@ -792,6 +805,7 @@ public class ArcherLeather implements Armor {
  */
 public interface CharacterEquipmentFactory {
     Weapon createWeapon();
+
     Armor createArmor();
 }
 
@@ -803,7 +817,7 @@ public class WarriorEquipmentFactory implements CharacterEquipmentFactory {
     public Weapon createWeapon() {
         return new WarriorSword();
     }
-    
+
     @Override
     public Armor createArmor() {
         return new WarriorArmor();
@@ -818,7 +832,7 @@ public class MageEquipmentFactory implements CharacterEquipmentFactory {
     public Weapon createWeapon() {
         return new MageStaff();
     }
-    
+
     @Override
     public Armor createArmor() {
         return new MageRobe();
@@ -833,7 +847,7 @@ public class ArcherEquipmentFactory implements CharacterEquipmentFactory {
     public Weapon createWeapon() {
         return new ArcherBow();
     }
-    
+
     @Override
     public Armor createArmor() {
         return new ArcherLeather();
@@ -849,14 +863,14 @@ public class GameCharacter {
     private Weapon weapon;
     private Armor armor;
     private int health = 100;
-    
+
     public GameCharacter(String name, String characterClass, CharacterEquipmentFactory factory) {
         this.name = name;
         this.characterClass = characterClass;
         this.weapon = factory.createWeapon();
         this.armor = factory.createArmor();
     }
-    
+
     public void displayInfo() {
         System.out.println("=== 角色信息 ===");
         System.out.println("姓名: " + name);
@@ -865,12 +879,12 @@ public class GameCharacter {
         System.out.println("武器: " + weapon.getName() + " (攻击力: " + weapon.getDamage() + ")");
         System.out.println("护甲: " + armor.getName() + " (防御力: " + armor.getDefense() + ")");
     }
-    
+
     public void attack() {
         System.out.println(name + " 发起攻击:");
         weapon.attack();
     }
-    
+
     public void defend() {
         System.out.println(name + " 进行防御:");
         armor.defend();
@@ -884,7 +898,7 @@ public class GameCharacterDemo {
         GameCharacter warrior = createCharacter("亚瑟", "战士");
         GameCharacter mage = createCharacter("梅林", "法师");
         GameCharacter archer = createCharacter("罗宾", "弓箭手");
-        
+
         // 显示角色信息
         warrior.displayInfo();
         System.out.println();
@@ -892,23 +906,23 @@ public class GameCharacterDemo {
         System.out.println();
         archer.displayInfo();
         System.out.println();
-        
+
         // 角色行动
         warrior.attack();
         warrior.defend();
         System.out.println();
-        
+
         mage.attack();
         mage.defend();
         System.out.println();
-        
+
         archer.attack();
         archer.defend();
     }
-    
+
     private static GameCharacter createCharacter(String name, String characterClass) {
         CharacterEquipmentFactory factory;
-        
+
         switch (characterClass) {
             case "战士":
                 factory = new WarriorEquipmentFactory();
@@ -922,7 +936,7 @@ public class GameCharacterDemo {
             default:
                 throw new IllegalArgumentException("未知的角色职业: " + characterClass);
         }
-        
+
         return new GameCharacter(name, characterClass, factory);
     }
 }

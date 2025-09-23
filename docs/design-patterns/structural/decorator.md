@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 装饰器模式动态地给一个对象添加一些额外的职责，就增加功能来说，装饰器模式相比生成子类更为灵活。
 
 ### 意图
+
 - 动态地给对象添加新功能
 - 提供比继承更灵活的扩展方式
 - 避免使用大量子类来扩展功能
@@ -19,28 +21,28 @@ classDiagram
         <<interface>>
         +operation(): void
     }
-    
+
     class ConcreteComponent {
         +operation(): void
     }
-    
+
     class Decorator {
         <<abstract>>
         #component: Component
         +Decorator(Component)
         +operation(): void
     }
-    
+
     class ConcreteDecoratorA {
         +operation(): void
         +addedBehavior(): void
     }
-    
+
     class ConcreteDecoratorB {
         +operation(): void
         +addedBehavior(): void
     }
-    
+
     Component <|.. ConcreteComponent
     Component <|.. Decorator
     Decorator <|-- ConcreteDecoratorA
@@ -56,15 +58,14 @@ sequenceDiagram
     participant ConcreteDecoratorA
     participant ConcreteDecoratorB
     participant ConcreteComponent
-    
-    Client->>ConcreteDecoratorA: operation()
-    ConcreteDecoratorA->>ConcreteDecoratorA: addedBehavior()
-    ConcreteDecoratorA->>ConcreteDecoratorB: operation()
-    ConcreteDecoratorB->>ConcreteDecoratorB: addedBehavior()
-    ConcreteDecoratorB->>ConcreteComponent: operation()
-    ConcreteComponent-->>ConcreteDecoratorB: result
-    ConcreteDecoratorB-->>ConcreteDecoratorA: enhanced result
-    ConcreteDecoratorA-->>Client: final result
+    Client ->> ConcreteDecoratorA: operation()
+    ConcreteDecoratorA ->> ConcreteDecoratorA: addedBehavior()
+    ConcreteDecoratorA ->> ConcreteDecoratorB: operation()
+    ConcreteDecoratorB ->> ConcreteDecoratorB: addedBehavior()
+    ConcreteDecoratorB ->> ConcreteComponent: operation()
+    ConcreteComponent -->> ConcreteDecoratorB: result
+    ConcreteDecoratorB -->> ConcreteDecoratorA: enhanced result
+    ConcreteDecoratorA -->> Client: final result
 ```
 
 ## 💻 代码实现
@@ -94,11 +95,11 @@ public class ConcreteComponent implements Component {
  */
 public abstract class Decorator implements Component {
     protected Component component;
-    
+
     public Decorator(Component component) {
         this.component = component;
     }
-    
+
     @Override
     public void operation() {
         component.operation();
@@ -112,13 +113,13 @@ public class ConcreteDecoratorA extends Decorator {
     public ConcreteDecoratorA(Component component) {
         super(component);
     }
-    
+
     @Override
     public void operation() {
         super.operation();
         addedBehaviorA();
     }
-    
+
     private void addedBehaviorA() {
         System.out.println("ConcreteDecoratorA: 添加功能A");
     }
@@ -131,13 +132,13 @@ public class ConcreteDecoratorB extends Decorator {
     public ConcreteDecoratorB(Component component) {
         super(component);
     }
-    
+
     @Override
     public void operation() {
         super.operation();
         addedBehaviorB();
     }
-    
+
     private void addedBehaviorB() {
         System.out.println("ConcreteDecoratorB: 添加功能B");
     }
@@ -154,6 +155,7 @@ public class ConcreteDecoratorB extends Decorator {
  */
 public interface Beverage {
     String getDescription();
+
     double getCost();
 }
 
@@ -165,7 +167,7 @@ public class Espresso implements Beverage {
     public String getDescription() {
         return "浓缩咖啡";
     }
-    
+
     @Override
     public double getCost() {
         return 1.99;
@@ -180,7 +182,7 @@ public class HouseBlend implements Beverage {
     public String getDescription() {
         return "美式咖啡";
     }
-    
+
     @Override
     public double getCost() {
         return 0.89;
@@ -192,11 +194,11 @@ public class HouseBlend implements Beverage {
  */
 public abstract class CondimentDecorator implements Beverage {
     protected Beverage beverage;
-    
+
     public CondimentDecorator(Beverage beverage) {
         this.beverage = beverage;
     }
-    
+
     @Override
     public abstract String getDescription();
 }
@@ -208,12 +210,12 @@ public class Milk extends CondimentDecorator {
     public Milk(Beverage beverage) {
         super(beverage);
     }
-    
+
     @Override
     public String getDescription() {
         return beverage.getDescription() + ", 牛奶";
     }
-    
+
     @Override
     public double getCost() {
         return beverage.getCost() + 0.10;
@@ -227,12 +229,12 @@ public class Mocha extends CondimentDecorator {
     public Mocha(Beverage beverage) {
         super(beverage);
     }
-    
+
     @Override
     public String getDescription() {
         return beverage.getDescription() + ", 摩卡";
     }
-    
+
     @Override
     public double getCost() {
         return beverage.getCost() + 0.20;
@@ -246,12 +248,12 @@ public class Whip extends CondimentDecorator {
     public Whip(Beverage beverage) {
         super(beverage);
     }
-    
+
     @Override
     public String getDescription() {
         return beverage.getDescription() + ", 奶泡";
     }
-    
+
     @Override
     public double getCost() {
         return beverage.getCost() + 0.15;
@@ -264,14 +266,14 @@ public class CoffeeShopDemo {
         // 订购一杯浓缩咖啡
         Beverage beverage = new Espresso();
         System.out.println(beverage.getDescription() + " $" + beverage.getCost());
-        
+
         // 订购一杯加双倍摩卡和奶泡的美式咖啡
         Beverage beverage2 = new HouseBlend();
         beverage2 = new Mocha(beverage2);
         beverage2 = new Mocha(beverage2);
         beverage2 = new Whip(beverage2);
         System.out.println(beverage2.getDescription() + " $" + beverage2.getCost());
-        
+
         // 订购一杯加牛奶、摩卡和奶泡的浓缩咖啡
         Beverage beverage3 = new Espresso();
         beverage3 = new Milk(beverage3);
@@ -307,11 +309,11 @@ public class PlainTextProcessor implements TextProcessor {
  */
 public abstract class TextDecorator implements TextProcessor {
     protected TextProcessor processor;
-    
+
     public TextDecorator(TextProcessor processor) {
         this.processor = processor;
     }
-    
+
     @Override
     public String process(String text) {
         return processor.process(text);
@@ -325,7 +327,7 @@ public class BoldDecorator extends TextDecorator {
     public BoldDecorator(TextProcessor processor) {
         super(processor);
     }
-    
+
     @Override
     public String process(String text) {
         return "<b>" + super.process(text) + "</b>";
@@ -339,7 +341,7 @@ public class ItalicDecorator extends TextDecorator {
     public ItalicDecorator(TextProcessor processor) {
         super(processor);
     }
-    
+
     @Override
     public String process(String text) {
         return "<i>" + super.process(text) + "</i>";
@@ -353,7 +355,7 @@ public class UnderlineDecorator extends TextDecorator {
     public UnderlineDecorator(TextProcessor processor) {
         super(processor);
     }
-    
+
     @Override
     public String process(String text) {
         return "<u>" + super.process(text) + "</u>";
@@ -365,12 +367,12 @@ public class UnderlineDecorator extends TextDecorator {
  */
 public class ColorDecorator extends TextDecorator {
     private String color;
-    
+
     public ColorDecorator(TextProcessor processor, String color) {
         super(processor);
         this.color = color;
     }
-    
+
     @Override
     public String process(String text) {
         return "<span style='color:" + color + "'>" + super.process(text) + "</span>";
@@ -381,26 +383,26 @@ public class ColorDecorator extends TextDecorator {
 public class TextProcessorDemo {
     public static void main(String[] args) {
         String originalText = "Hello, World!";
-        
+
         // 基础文本
         TextProcessor processor = new PlainTextProcessor();
         System.out.println("原始文本: " + processor.process(originalText));
-        
+
         // 加粗文本
         processor = new BoldDecorator(new PlainTextProcessor());
         System.out.println("加粗文本: " + processor.process(originalText));
-        
+
         // 加粗 + 斜体文本
         processor = new ItalicDecorator(new BoldDecorator(new PlainTextProcessor()));
         System.out.println("加粗斜体: " + processor.process(originalText));
-        
+
         // 加粗 + 斜体 + 下划线 + 红色文本
         processor = new ColorDecorator(
-            new UnderlineDecorator(
-                new ItalicDecorator(
-                    new BoldDecorator(new PlainTextProcessor())
-                )
-            ), "red"
+                new UnderlineDecorator(
+                        new ItalicDecorator(
+                                new BoldDecorator(new PlainTextProcessor())
+                        )
+                ), "red"
         );
         System.out.println("全部装饰: " + processor.process(originalText));
     }
@@ -415,6 +417,7 @@ public class TextProcessorDemo {
  */
 public interface DataStream {
     void writeData(String data);
+
     String readData();
 }
 
@@ -424,17 +427,17 @@ public interface DataStream {
 public class FileDataStream implements DataStream {
     private String filename;
     private String data = "";
-    
+
     public FileDataStream(String filename) {
         this.filename = filename;
     }
-    
+
     @Override
     public void writeData(String data) {
         this.data = data;
         System.out.println("写入文件 " + filename + ": " + data);
     }
-    
+
     @Override
     public String readData() {
         System.out.println("从文件 " + filename + " 读取数据");
@@ -447,16 +450,16 @@ public class FileDataStream implements DataStream {
  */
 public abstract class DataStreamDecorator implements DataStream {
     protected DataStream stream;
-    
+
     public DataStreamDecorator(DataStream stream) {
         this.stream = stream;
     }
-    
+
     @Override
     public void writeData(String data) {
         stream.writeData(data);
     }
-    
+
     @Override
     public String readData() {
         return stream.readData();
@@ -470,14 +473,14 @@ public class EncryptionDecorator extends DataStreamDecorator {
     public EncryptionDecorator(DataStream stream) {
         super(stream);
     }
-    
+
     @Override
     public void writeData(String data) {
         String encryptedData = encrypt(data);
         System.out.println("加密数据: " + data + " -> " + encryptedData);
         super.writeData(encryptedData);
     }
-    
+
     @Override
     public String readData() {
         String data = super.readData();
@@ -485,12 +488,12 @@ public class EncryptionDecorator extends DataStreamDecorator {
         System.out.println("解密数据: " + data + " -> " + decryptedData);
         return decryptedData;
     }
-    
+
     private String encrypt(String data) {
         // 简单的加密模拟
         return "ENCRYPTED(" + data + ")";
     }
-    
+
     private String decrypt(String data) {
         // 简单的解密模拟
         if (data.startsWith("ENCRYPTED(") && data.endsWith(")")) {
@@ -507,14 +510,14 @@ public class CompressionDecorator extends DataStreamDecorator {
     public CompressionDecorator(DataStream stream) {
         super(stream);
     }
-    
+
     @Override
     public void writeData(String data) {
         String compressedData = compress(data);
         System.out.println("压缩数据: " + data + " -> " + compressedData);
         super.writeData(compressedData);
     }
-    
+
     @Override
     public String readData() {
         String data = super.readData();
@@ -522,12 +525,12 @@ public class CompressionDecorator extends DataStreamDecorator {
         System.out.println("解压数据: " + data + " -> " + decompressedData);
         return decompressedData;
     }
-    
+
     private String compress(String data) {
         // 简单的压缩模拟
         return "COMPRESSED(" + data + ")";
     }
-    
+
     private String decompress(String data) {
         // 简单的解压模拟
         if (data.startsWith("COMPRESSED(") && data.endsWith(")")) {
@@ -541,25 +544,25 @@ public class CompressionDecorator extends DataStreamDecorator {
 public class DataStreamDemo {
     public static void main(String[] args) {
         String testData = "Hello, Decorator Pattern!";
-        
+
         // 基础文件流
         System.out.println("=== 基础文件流 ===");
         DataStream fileStream = new FileDataStream("test.txt");
         fileStream.writeData(testData);
         System.out.println("读取: " + fileStream.readData());
         System.out.println();
-        
+
         // 加密文件流
         System.out.println("=== 加密文件流 ===");
         DataStream encryptedStream = new EncryptionDecorator(new FileDataStream("encrypted.txt"));
         encryptedStream.writeData(testData);
         System.out.println("读取: " + encryptedStream.readData());
         System.out.println();
-        
+
         // 压缩 + 加密文件流
         System.out.println("=== 压缩加密文件流 ===");
         DataStream compressedEncryptedStream = new EncryptionDecorator(
-            new CompressionDecorator(new FileDataStream("compressed_encrypted.txt"))
+                new CompressionDecorator(new FileDataStream("compressed_encrypted.txt"))
         );
         compressedEncryptedStream.writeData(testData);
         System.out.println("读取: " + compressedEncryptedStream.readData());

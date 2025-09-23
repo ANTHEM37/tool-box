@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 原型模式通过复制现有的实例来创建新的实例，而不是通过实例化类来创建。
 
 ### 意图
+
 - 通过克隆现有对象来创建新对象
 - 避免创建对象时的初始化开销
 - 动态地添加或删除产品
@@ -19,7 +21,7 @@ classDiagram
         <<interface>>
         +clone(): Prototype
     }
-    
+
     class ConcretePrototype1 {
         -field1: String
         -field2: int
@@ -27,7 +29,7 @@ classDiagram
         +setField1(String): void
         +setField2(int): void
     }
-    
+
     class ConcretePrototype2 {
         -fieldA: String
         -fieldB: boolean
@@ -35,13 +37,13 @@ classDiagram
         +setFieldA(String): void
         +setFieldB(boolean): void
     }
-    
+
     class Client {
         -prototype: Prototype
         +Client(Prototype)
         +operation(): void
     }
-    
+
     Prototype <|.. ConcretePrototype1
     Prototype <|.. ConcretePrototype2
     Client --> Prototype
@@ -54,15 +56,12 @@ sequenceDiagram
     participant Client
     participant Prototype
     participant ClonedObject
-    
-    Client->>Prototype: clone()
-    Prototype->>ClonedObject: new ClonedObject()
-    ClonedObject->>ClonedObject: 复制属性
-    ClonedObject-->>Prototype: clonedObject
-    Prototype-->>Client: clonedObject
-    
-    Client->>ClonedObject: 修改属性
-    
+    Client ->> Prototype: clone()
+    Prototype ->> ClonedObject: new ClonedObject()
+    ClonedObject ->> ClonedObject: 复制属性
+    ClonedObject -->> Prototype: clonedObject
+    Prototype -->> Client: clonedObject
+    Client ->> ClonedObject: 修改属性
     note over Client, ClonedObject: 原对象和克隆对象独立存在
 ```
 
@@ -85,13 +84,13 @@ public class ConcretePrototype implements Prototype {
     private String name;
     private int age;
     private List<String> hobbies;
-    
+
     public ConcretePrototype(String name, int age) {
         this.name = name;
         this.age = age;
         this.hobbies = new ArrayList<>();
     }
-    
+
     // 深拷贝实现
     @Override
     public ConcretePrototype clone() {
@@ -104,19 +103,36 @@ public class ConcretePrototype implements Prototype {
             throw new RuntimeException("克隆失败", e);
         }
     }
-    
+
     // Getters and Setters
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public int getAge() { return age; }
-    public void setAge(int age) { this.age = age; }
-    public List<String> getHobbies() { return hobbies; }
-    public void addHobby(String hobby) { this.hobbies.add(hobby); }
-    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public List<String> getHobbies() {
+        return hobbies;
+    }
+
+    public void addHobby(String hobby) {
+        this.hobbies.add(hobby);
+    }
+
     @Override
     public String toString() {
-        return "ConcretePrototype{name='" + name + "', age=" + age + 
-               ", hobbies=" + hobbies + "}";
+        return "ConcretePrototype{name='" + name + "', age=" + age +
+                ", hobbies=" + hobbies + "}";
     }
 }
 ```
@@ -136,7 +152,7 @@ public abstract class GameCharacter implements Cloneable {
     protected int mana;
     protected List<String> skills;
     protected Equipment equipment;
-    
+
     public GameCharacter(String name) {
         this.name = name;
         this.level = 1;
@@ -145,7 +161,7 @@ public abstract class GameCharacter implements Cloneable {
         this.skills = new ArrayList<>();
         this.equipment = new Equipment();
     }
-    
+
     @Override
     public GameCharacter clone() {
         try {
@@ -158,16 +174,33 @@ public abstract class GameCharacter implements Cloneable {
             throw new RuntimeException("克隆失败", e);
         }
     }
-    
+
     public abstract void displayInfo();
-    
+
     // Getters and Setters
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public int getLevel() { return level; }
-    public void setLevel(int level) { this.level = level; }
-    public void addSkill(String skill) { this.skills.add(skill); }
-    public Equipment getEquipment() { return equipment; }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void addSkill(String skill) {
+        this.skills.add(skill);
+    }
+
+    public Equipment getEquipment() {
+        return equipment;
+    }
 }
 
 /**
@@ -177,13 +210,13 @@ public class Equipment implements Cloneable {
     private String weapon;
     private String armor;
     private String accessory;
-    
+
     public Equipment() {
         this.weapon = "基础武器";
         this.armor = "基础护甲";
         this.accessory = "基础饰品";
     }
-    
+
     @Override
     public Equipment clone() {
         try {
@@ -192,19 +225,36 @@ public class Equipment implements Cloneable {
             throw new RuntimeException("装备克隆失败", e);
         }
     }
-    
+
     // Getters and Setters
-    public String getWeapon() { return weapon; }
-    public void setWeapon(String weapon) { this.weapon = weapon; }
-    public String getArmor() { return armor; }
-    public void setArmor(String armor) { this.armor = armor; }
-    public String getAccessory() { return accessory; }
-    public void setAccessory(String accessory) { this.accessory = accessory; }
-    
+    public String getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(String weapon) {
+        this.weapon = weapon;
+    }
+
+    public String getArmor() {
+        return armor;
+    }
+
+    public void setArmor(String armor) {
+        this.armor = armor;
+    }
+
+    public String getAccessory() {
+        return accessory;
+    }
+
+    public void setAccessory(String accessory) {
+        this.accessory = accessory;
+    }
+
     @Override
     public String toString() {
-        return "Equipment{weapon='" + weapon + "', armor='" + armor + 
-               "', accessory='" + accessory + "'}";
+        return "Equipment{weapon='" + weapon + "', armor='" + armor +
+                "', accessory='" + accessory + "'}";
     }
 }
 
@@ -221,7 +271,7 @@ public class Warrior extends GameCharacter {
         this.equipment.setWeapon("长剑");
         this.equipment.setArmor("重甲");
     }
-    
+
     @Override
     public void displayInfo() {
         System.out.println("=== 战士信息 ===");
@@ -247,7 +297,7 @@ public class Mage extends GameCharacter {
         this.equipment.setWeapon("法杖");
         this.equipment.setArmor("法袍");
     }
-    
+
     @Override
     public void displayInfo() {
         System.out.println("=== 法师信息 ===");
@@ -265,17 +315,17 @@ public class Mage extends GameCharacter {
  */
 public class CharacterPrototypeManager {
     private Map<String, GameCharacter> prototypes = new HashMap<>();
-    
+
     public CharacterPrototypeManager() {
         // 初始化原型
         prototypes.put("warrior", new Warrior("战士模板"));
         prototypes.put("mage", new Mage("法师模板"));
     }
-    
+
     public void addPrototype(String key, GameCharacter prototype) {
         prototypes.put(key, prototype);
     }
-    
+
     public GameCharacter createCharacter(String type, String name) {
         GameCharacter prototype = prototypes.get(type);
         if (prototype != null) {
@@ -285,7 +335,7 @@ public class CharacterPrototypeManager {
         }
         throw new IllegalArgumentException("未知的角色类型: " + type);
     }
-    
+
     public Set<String> getAvailableTypes() {
         return prototypes.keySet();
     }
@@ -295,24 +345,24 @@ public class CharacterPrototypeManager {
 public class GameCharacterDemo {
     public static void main(String[] args) {
         CharacterPrototypeManager manager = new CharacterPrototypeManager();
-        
+
         // 创建角色
         GameCharacter warrior1 = manager.createCharacter("warrior", "亚瑟");
         GameCharacter warrior2 = manager.createCharacter("warrior", "兰斯洛特");
         GameCharacter mage1 = manager.createCharacter("mage", "梅林");
-        
+
         // 自定义角色属性
         warrior1.setLevel(10);
         warrior1.addSkill("狂暴");
         warrior1.getEquipment().setWeapon("神圣之剑");
-        
+
         warrior2.setLevel(8);
         warrior2.addSkill("盾击");
-        
+
         mage1.setLevel(12);
         mage1.addSkill("闪电术");
         mage1.getEquipment().setWeapon("贤者之杖");
-        
+
         // 显示角色信息
         warrior1.displayInfo();
         System.out.println();
@@ -331,8 +381,11 @@ public class GameCharacterDemo {
  */
 public interface Document extends Cloneable {
     Document clone();
+
     void setContent(String content);
+
     void addSection(String section);
+
     void display();
 }
 
@@ -345,7 +398,7 @@ public abstract class AbstractDocument implements Document {
     protected Date createDate;
     protected List<String> sections;
     protected Map<String, String> metadata;
-    
+
     public AbstractDocument(String title, String author) {
         this.title = title;
         this.author = author;
@@ -353,7 +406,7 @@ public abstract class AbstractDocument implements Document {
         this.sections = new ArrayList<>();
         this.metadata = new HashMap<>();
     }
-    
+
     @Override
     public AbstractDocument clone() {
         try {
@@ -367,21 +420,32 @@ public abstract class AbstractDocument implements Document {
             throw new RuntimeException("文档克隆失败", e);
         }
     }
-    
+
     @Override
     public void addSection(String section) {
         sections.add(section);
     }
-    
+
     public void addMetadata(String key, String value) {
         metadata.put(key, value);
     }
-    
+
     // Getters and Setters
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 }
 
 /**
@@ -390,27 +454,27 @@ public abstract class AbstractDocument implements Document {
 public class ReportDocument extends AbstractDocument {
     private String reportType;
     private String department;
-    
+
     public ReportDocument(String title, String author, String reportType, String department) {
         super(title, author);
         this.reportType = reportType;
         this.department = department;
-        
+
         // 初始化报告模板
         sections.add("1. 执行摘要");
         sections.add("2. 背景介绍");
         sections.add("3. 分析结果");
         sections.add("4. 结论建议");
-        
+
         metadata.put("文档类型", "报告");
         metadata.put("部门", department);
     }
-    
+
     @Override
     public void setContent(String content) {
         addMetadata("主要内容", content);
     }
-    
+
     @Override
     public void display() {
         System.out.println("=== 报告文档 ===");
@@ -425,12 +489,23 @@ public class ReportDocument extends AbstractDocument {
         }
         System.out.println("元数据: " + metadata);
     }
-    
+
     // Getters and Setters
-    public String getReportType() { return reportType; }
-    public void setReportType(String reportType) { this.reportType = reportType; }
-    public String getDepartment() { return department; }
-    public void setDepartment(String department) { this.department = department; }
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 }
 
 /**
@@ -440,11 +515,11 @@ public class ContractDocument extends AbstractDocument {
     private String contractType;
     private String partyA;
     private String partyB;
-    
+
     public ContractDocument(String title, String author, String contractType) {
         super(title, author);
         this.contractType = contractType;
-        
+
         // 初始化合同模板
         sections.add("第一条 合同双方");
         sections.add("第二条 合同标的");
@@ -452,16 +527,16 @@ public class ContractDocument extends AbstractDocument {
         sections.add("第四条 违约责任");
         sections.add("第五条 争议解决");
         sections.add("第六条 其他条款");
-        
+
         metadata.put("文档类型", "合同");
         metadata.put("合同类型", contractType);
     }
-    
+
     @Override
     public void setContent(String content) {
         addMetadata("合同内容", content);
     }
-    
+
     @Override
     public void display() {
         System.out.println("=== 合同文档 ===");
@@ -477,14 +552,31 @@ public class ContractDocument extends AbstractDocument {
         }
         System.out.println("元数据: " + metadata);
     }
-    
+
     // Getters and Setters
-    public String getContractType() { return contractType; }
-    public void setContractType(String contractType) { this.contractType = contractType; }
-    public String getPartyA() { return partyA; }
-    public void setPartyA(String partyA) { this.partyA = partyA; }
-    public String getPartyB() { return partyB; }
-    public void setPartyB(String partyB) { this.partyB = partyB; }
+    public String getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(String contractType) {
+        this.contractType = contractType;
+    }
+
+    public String getPartyA() {
+        return partyA;
+    }
+
+    public void setPartyA(String partyA) {
+        this.partyA = partyA;
+    }
+
+    public String getPartyB() {
+        return partyB;
+    }
+
+    public void setPartyB(String partyB) {
+        this.partyB = partyB;
+    }
 }
 
 /**
@@ -492,19 +584,19 @@ public class ContractDocument extends AbstractDocument {
  */
 public class DocumentPrototypeManager {
     private Map<String, Document> prototypes = new HashMap<>();
-    
+
     public DocumentPrototypeManager() {
         // 初始化文档模板
-        prototypes.put("monthly_report", 
-            new ReportDocument("月度报告模板", "系统", "月度报告", "默认部门"));
-        prototypes.put("sales_contract", 
-            new ContractDocument("销售合同模板", "系统", "销售合同"));
+        prototypes.put("monthly_report",
+                new ReportDocument("月度报告模板", "系统", "月度报告", "默认部门"));
+        prototypes.put("sales_contract",
+                new ContractDocument("销售合同模板", "系统", "销售合同"));
     }
-    
+
     public void registerPrototype(String key, Document prototype) {
         prototypes.put(key, prototype);
     }
-    
+
     public Document createDocument(String type) {
         Document prototype = prototypes.get(type);
         if (prototype != null) {
@@ -512,7 +604,7 @@ public class DocumentPrototypeManager {
         }
         throw new IllegalArgumentException("未知的文档类型: " + type);
     }
-    
+
     public Set<String> getAvailableTypes() {
         return prototypes.keySet();
     }
@@ -522,7 +614,7 @@ public class DocumentPrototypeManager {
 public class DocumentPrototypeDemo {
     public static void main(String[] args) {
         DocumentPrototypeManager manager = new DocumentPrototypeManager();
-        
+
         // 创建月度报告
         ReportDocument report1 = (ReportDocument) manager.createDocument("monthly_report");
         report1.setTitle("2024年1月销售报告");
@@ -530,13 +622,13 @@ public class DocumentPrototypeDemo {
         report1.setDepartment("销售部");
         report1.addSection("5. 附录");
         report1.setContent("本月销售业绩良好");
-        
+
         ReportDocument report2 = (ReportDocument) manager.createDocument("monthly_report");
         report2.setTitle("2024年1月技术报告");
         report2.setAuthor("李四");
         report2.setDepartment("技术部");
         report2.setContent("本月技术指标达标");
-        
+
         // 创建销售合同
         ContractDocument contract = (ContractDocument) manager.createDocument("sales_contract");
         contract.setTitle("产品销售合同");
@@ -544,7 +636,7 @@ public class DocumentPrototypeDemo {
         contract.setPartyA("ABC公司");
         contract.setPartyB("XYZ公司");
         contract.setContent("销售产品A，数量100件");
-        
+
         // 显示文档
         report1.display();
         System.out.println();

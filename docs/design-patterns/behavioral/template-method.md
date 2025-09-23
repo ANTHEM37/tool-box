@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 模板方法模式在一个方法中定义一个算法的骨架，而将一些步骤延迟到子类中。模板方法使得子类可以在不改变算法结构的情况下，重新定义算法的某些特定步骤。
 
 ### 意图
+
 - 定义算法的骨架，将具体步骤延迟到子类
 - 让子类在不改变算法结构的前提下重定义算法的某些步骤
 - 提取公共行为到父类，避免代码重复
@@ -22,13 +24,13 @@ classDiagram
         #primitiveOperation2(): void
         #hook(): void
     }
-    
+
     class ConcreteClass {
         #primitiveOperation1(): void
         #primitiveOperation2(): void
         #hook(): void
     }
-    
+
     AbstractClass <|-- ConcreteClass
 ```
 
@@ -41,7 +43,7 @@ classDiagram
  * 抽象类定义模板方法
  */
 public abstract class AbstractClass {
-    
+
     /**
      * 模板方法 - 定义算法骨架
      */
@@ -52,20 +54,21 @@ public abstract class AbstractClass {
             concreteOperation();
         }
     }
-    
+
     /**
      * 抽象方法 - 子类必须实现
      */
     protected abstract void primitiveOperation1();
+
     protected abstract void primitiveOperation2();
-    
+
     /**
      * 钩子方法 - 子类可以选择重写
      */
     protected boolean hook() {
         return true;
     }
-    
+
     /**
      * 具体方法 - 已实现的通用操作
      */
@@ -78,17 +81,17 @@ public abstract class AbstractClass {
  * 具体类A
  */
 public class ConcreteClassA extends AbstractClass {
-    
+
     @Override
     protected void primitiveOperation1() {
         System.out.println("ConcreteClassA: 实现操作1");
     }
-    
+
     @Override
     protected void primitiveOperation2() {
         System.out.println("ConcreteClassA: 实现操作2");
     }
-    
+
     @Override
     protected boolean hook() {
         return false; // 不执行具体操作
@@ -105,7 +108,7 @@ public class ConcreteClassA extends AbstractClass {
  * 饮料制作抽象类
  */
 public abstract class Beverage {
-    
+
     /**
      * 模板方法 - 制作饮料的流程
      */
@@ -117,24 +120,25 @@ public abstract class Beverage {
             addCondiments();
         }
     }
-    
+
     /**
      * 抽象方法 - 子类必须实现
      */
     protected abstract void brew();
+
     protected abstract void addCondiments();
-    
+
     /**
      * 具体方法 - 通用步骤
      */
     private void boilWater() {
         System.out.println("烧开水");
     }
-    
+
     private void pourInCup() {
         System.out.println("倒入杯中");
     }
-    
+
     /**
      * 钩子方法 - 子类可以重写
      */
@@ -147,23 +151,23 @@ public abstract class Beverage {
  * 茶
  */
 public class Tea extends Beverage {
-    
+
     @Override
     protected void brew() {
         System.out.println("用沸水冲泡茶叶");
     }
-    
+
     @Override
     protected void addCondiments() {
         System.out.println("加柠檬");
     }
-    
+
     @Override
     protected boolean customerWantsCondiments() {
         String answer = getUserInput();
         return answer.toLowerCase().startsWith("y");
     }
-    
+
     private String getUserInput() {
         // 模拟用户输入
         return "yes";
@@ -174,12 +178,12 @@ public class Tea extends Beverage {
  * 咖啡
  */
 public class Coffee extends Beverage {
-    
+
     @Override
     protected void brew() {
         System.out.println("用沸水冲泡咖啡");
     }
-    
+
     @Override
     protected void addCondiments() {
         System.out.println("加糖和牛奶");

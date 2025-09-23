@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 享元模式运用共享技术有效地支持大量细粒度的对象。通过共享已经存在的对象来大幅度减少需要创建的对象数量、避免大量相似类的开销，从而提高系统资源的利用率。
 
 ### 意图
+
 - 运用共享技术有效地支持大量细粒度对象
 - 减少创建对象的数量，降低内存占用
 - 将对象的状态分为内部状态和外部状态
@@ -19,23 +21,23 @@ classDiagram
         <<interface>>
         +operation(extrinsicState): void
     }
-    
+
     class ConcreteFlyweight {
         -intrinsicState: String
         +operation(extrinsicState): void
     }
-    
+
     class FlyweightFactory {
         -flyweights: Map~String, Flyweight~
         +getFlyweight(key): Flyweight
     }
-    
+
     class Context {
         -flyweight: Flyweight
         -extrinsicState: String
         +operation(): void
     }
-    
+
     Flyweight <|.. ConcreteFlyweight
     FlyweightFactory --> Flyweight
     Context --> Flyweight
@@ -58,15 +60,15 @@ public interface Flyweight {
  */
 public class ConcreteFlyweight implements Flyweight {
     private String intrinsicState; // 内部状态，可共享
-    
+
     public ConcreteFlyweight(String intrinsicState) {
         this.intrinsicState = intrinsicState;
     }
-    
+
     @Override
     public void operation(String extrinsicState) {
-        System.out.println("ConcreteFlyweight: 内部状态=" + intrinsicState + 
-                         ", 外部状态=" + extrinsicState);
+        System.out.println("ConcreteFlyweight: 内部状态=" + intrinsicState +
+                ", 外部状态=" + extrinsicState);
     }
 }
 
@@ -75,7 +77,7 @@ public class ConcreteFlyweight implements Flyweight {
  */
 public class FlyweightFactory {
     private Map<String, Flyweight> flyweights = new HashMap<>();
-    
+
     public Flyweight getFlyweight(String key) {
         if (!flyweights.containsKey(key)) {
             flyweights.put(key, new ConcreteFlyweight(key));
@@ -85,7 +87,7 @@ public class FlyweightFactory {
         }
         return flyweights.get(key);
     }
-    
+
     public int getFlyweightCount() {
         return flyweights.size();
     }
@@ -97,12 +99,12 @@ public class FlyweightFactory {
 public class Context {
     private Flyweight flyweight;
     private String extrinsicState; // 外部状态，不可共享
-    
+
     public Context(String intrinsicState, String extrinsicState) {
         this.flyweight = FlyweightFactory.getInstance().getFlyweight(intrinsicState);
         this.extrinsicState = extrinsicState;
     }
-    
+
     public void operation() {
         flyweight.operation(extrinsicState);
     }
@@ -126,18 +128,18 @@ public interface CharacterFlyweight {
  */
 public class ConcreteCharacter implements CharacterFlyweight {
     private char character; // 内部状态：字符本身
-    
+
     public ConcreteCharacter(char character) {
         this.character = character;
     }
-    
+
     @Override
     public void render(int x, int y, String color, String font) {
         // 模拟字符渲染
-        System.out.printf("渲染字符 '%c' 在位置(%d,%d)，颜色:%s，字体:%s%n", 
-                         character, x, y, color, font);
+        System.out.printf("渲染字符 '%c' 在位置(%d,%d)，颜色:%s，字体:%s%n",
+                character, x, y, color, font);
     }
-    
+
     public char getCharacter() {
         return character;
     }
@@ -149,13 +151,14 @@ public class ConcreteCharacter implements CharacterFlyweight {
 public class CharacterFactory {
     private static CharacterFactory instance = new CharacterFactory();
     private Map<Character, CharacterFlyweight> characters = new HashMap<>();
-    
-    private CharacterFactory() {}
-    
+
+    private CharacterFactory() {
+    }
+
     public static CharacterFactory getInstance() {
         return instance;
     }
-    
+
     public CharacterFlyweight getCharacter(char c) {
         CharacterFlyweight character = characters.get(c);
         if (character == null) {
@@ -165,11 +168,11 @@ public class CharacterFactory {
         }
         return character;
     }
-    
+
     public int getCreatedCharactersCount() {
         return characters.size();
     }
-    
+
     public void printStatistics() {
         System.out.println("字符享元统计:");
         System.out.println("创建的字符类型数量: " + characters.size());
@@ -185,7 +188,7 @@ public class DocumentCharacter {
     private int x, y; // 外部状态：位置
     private String color; // 外部状态：颜色
     private String font; // 外部状态：字体
-    
+
     public DocumentCharacter(char character, int x, int y, String color, String font) {
         this.flyweight = CharacterFactory.getInstance().getCharacter(character);
         this.x = x;
@@ -193,21 +196,21 @@ public class DocumentCharacter {
         this.color = color;
         this.font = font;
     }
-    
+
     public void render() {
         flyweight.render(x, y, color, font);
     }
-    
+
     // Getters and setters for extrinsic state
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }
-    
+
     public void setColor(String color) {
         this.color = color;
     }
-    
+
     public void setFont(String font) {
         this.font = font;
     }
@@ -218,19 +221,19 @@ public class DocumentCharacter {
  */
 public class Document {
     private List<DocumentCharacter> characters = new ArrayList<>();
-    
+
     public void addCharacter(char c, int x, int y, String color, String font) {
         DocumentCharacter docChar = new DocumentCharacter(c, x, y, color, font);
         characters.add(docChar);
     }
-    
+
     public void render() {
         System.out.println("渲染文档:");
         for (DocumentCharacter character : characters) {
             character.render();
         }
     }
-    
+
     public int getCharacterCount() {
         return characters.size();
     }
@@ -240,33 +243,33 @@ public class Document {
 public class TextEditorDemo {
     public static void main(String[] args) {
         Document document = new Document();
-        
+
         // 添加文本 "Hello World!"
         String text = "Hello World!";
         int x = 10, y = 20;
-        
+
         System.out.println("=== 创建文档字符 ===");
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             String color = (i % 2 == 0) ? "黑色" : "红色";
             String font = (i < 5) ? "Arial" : "Times";
-            
+
             document.addCharacter(c, x + i * 10, y, color, font);
         }
-        
+
         System.out.println("\n=== 渲染文档 ===");
         document.render();
-        
+
         System.out.println("\n=== 统计信息 ===");
         System.out.println("文档中字符总数: " + document.getCharacterCount());
         CharacterFactory.getInstance().printStatistics();
-        
+
         // 添加更多相同字符
         System.out.println("\n=== 添加更多字符 ===");
         for (int i = 0; i < 5; i++) {
             document.addCharacter('H', x + i * 15, y + 30, "蓝色", "Arial");
         }
-        
+
         System.out.println("添加5个'H'字符后:");
         System.out.println("文档中字符总数: " + document.getCharacterCount());
         CharacterFactory.getInstance().printStatistics();
@@ -285,20 +288,28 @@ public enum ParticleType {
     WATER("💧", "蓝色", 1),
     EARTH("🌍", "棕色", 3),
     AIR("💨", "白色", 1);
-    
+
     private final String sprite;
     private final String color;
     private final int damage;
-    
+
     ParticleType(String sprite, String color, int damage) {
         this.sprite = sprite;
         this.color = color;
         this.damage = damage;
     }
-    
-    public String getSprite() { return sprite; }
-    public String getColor() { return color; }
-    public int getDamage() { return damage; }
+
+    public String getSprite() {
+        return sprite;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
 }
 
 /**
@@ -306,6 +317,7 @@ public enum ParticleType {
  */
 public interface ParticleFlyweight {
     void render(int x, int y, int velocity, int direction);
+
     void move(int deltaX, int deltaY);
 }
 
@@ -314,22 +326,22 @@ public interface ParticleFlyweight {
  */
 public class ConcreteParticle implements ParticleFlyweight {
     private ParticleType type; // 内部状态：粒子类型
-    
+
     public ConcreteParticle(ParticleType type) {
         this.type = type;
     }
-    
+
     @Override
     public void render(int x, int y, int velocity, int direction) {
         System.out.printf("%s 粒子在位置(%d,%d)，速度:%d，方向:%d°，颜色:%s%n",
-                         type.getSprite(), x, y, velocity, direction, type.getColor());
+                type.getSprite(), x, y, velocity, direction, type.getColor());
     }
-    
+
     @Override
     public void move(int deltaX, int deltaY) {
         System.out.printf("%s 粒子移动 (%d,%d)%n", type.getSprite(), deltaX, deltaY);
     }
-    
+
     public ParticleType getType() {
         return type;
     }
@@ -341,13 +353,14 @@ public class ConcreteParticle implements ParticleFlyweight {
 public class ParticleFactory {
     private static ParticleFactory instance = new ParticleFactory();
     private Map<ParticleType, ParticleFlyweight> particles = new HashMap<>();
-    
-    private ParticleFactory() {}
-    
+
+    private ParticleFactory() {
+    }
+
     public static ParticleFactory getInstance() {
         return instance;
     }
-    
+
     public ParticleFlyweight getParticle(ParticleType type) {
         ParticleFlyweight particle = particles.get(type);
         if (particle == null) {
@@ -357,11 +370,11 @@ public class ParticleFactory {
         }
         return particle;
     }
-    
+
     public int getParticleTypesCount() {
         return particles.size();
     }
-    
+
     public void printStatistics() {
         System.out.println("粒子享元统计:");
         System.out.println("创建的粒子类型数量: " + particles.size());
@@ -378,7 +391,7 @@ public class GameParticle {
     private int velocity; // 外部状态：速度
     private int direction; // 外部状态：方向
     private int lifeTime; // 外部状态：生命周期
-    
+
     public GameParticle(ParticleType type, int x, int y, int velocity, int direction) {
         this.flyweight = ParticleFactory.getInstance().getParticle(type);
         this.x = x;
@@ -387,31 +400,39 @@ public class GameParticle {
         this.direction = direction;
         this.lifeTime = 100; // 默认生命周期
     }
-    
+
     public void render() {
         flyweight.render(x, y, velocity, direction);
     }
-    
+
     public void update() {
         // 根据速度和方向更新位置
         int deltaX = (int) (velocity * Math.cos(Math.toRadians(direction)));
         int deltaY = (int) (velocity * Math.sin(Math.toRadians(direction)));
-        
+
         x += deltaX;
         y += deltaY;
         lifeTime--;
-        
+
         flyweight.move(deltaX, deltaY);
     }
-    
+
     public boolean isAlive() {
         return lifeTime > 0;
     }
-    
+
     // Getters
-    public int getX() { return x; }
-    public int getY() { return y; }
-    public int getLifeTime() { return lifeTime; }
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getLifeTime() {
+        return lifeTime;
+    }
 }
 
 /**
@@ -420,46 +441,46 @@ public class GameParticle {
 public class ParticleSystem {
     private List<GameParticle> particles = new ArrayList<>();
     private Random random = new Random();
-    
+
     public void createExplosion(int centerX, int centerY, int particleCount) {
         System.out.println("在位置(" + centerX + "," + centerY + ")创建爆炸效果");
-        
+
         for (int i = 0; i < particleCount; i++) {
             ParticleType type = ParticleType.values()[random.nextInt(ParticleType.values().length)];
             int x = centerX + random.nextInt(20) - 10;
             int y = centerY + random.nextInt(20) - 10;
             int velocity = random.nextInt(10) + 1;
             int direction = random.nextInt(360);
-            
+
             GameParticle particle = new GameParticle(type, x, y, velocity, direction);
             particles.add(particle);
         }
     }
-    
+
     public void update() {
         System.out.println("更新粒子系统...");
         Iterator<GameParticle> iterator = particles.iterator();
         while (iterator.hasNext()) {
             GameParticle particle = iterator.next();
             particle.update();
-            
+
             if (!particle.isAlive()) {
                 iterator.remove();
             }
         }
     }
-    
+
     public void render() {
         System.out.println("渲染粒子系统:");
         for (GameParticle particle : particles) {
             particle.render();
         }
     }
-    
+
     public int getActiveParticleCount() {
         return particles.size();
     }
-    
+
     public void printStatistics() {
         System.out.println("粒子系统统计:");
         System.out.println("活跃粒子数量: " + particles.size());
@@ -471,28 +492,28 @@ public class ParticleSystem {
 public class ParticleSystemDemo {
     public static void main(String[] args) {
         ParticleSystem particleSystem = new ParticleSystem();
-        
+
         System.out.println("=== 创建爆炸效果 ===");
         particleSystem.createExplosion(100, 100, 8);
-        
+
         System.out.println("\n=== 初始渲染 ===");
         particleSystem.render();
-        
+
         System.out.println("\n=== 统计信息 ===");
         particleSystem.printStatistics();
-        
+
         // 模拟几帧更新
         for (int frame = 1; frame <= 3; frame++) {
             System.out.println("\n=== 第" + frame + "帧更新 ===");
             particleSystem.update();
             System.out.println("活跃粒子数: " + particleSystem.getActiveParticleCount());
         }
-        
+
         // 创建更多爆炸
         System.out.println("\n=== 创建更多爆炸 ===");
         particleSystem.createExplosion(200, 150, 6);
         particleSystem.createExplosion(50, 200, 10);
-        
+
         System.out.println("\n=== 最终统计 ===");
         particleSystem.printStatistics();
     }

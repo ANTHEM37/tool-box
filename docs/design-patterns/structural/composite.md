@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 组合模式将对象组合成树形结构以表示"部分-整体"的层次结构，使得用户对单个对象和组合对象的使用具有一致性。
 
 ### 意图
+
 - 表示对象的部分-整体层次结构
 - 让客户端统一处理单个对象和组合对象
 - 简化客户端代码，无需区分叶子和容器对象
@@ -22,11 +24,11 @@ classDiagram
         +remove(Component): void
         +getChild(int): Component
     }
-    
+
     class Leaf {
         +operation(): void
     }
-    
+
     class Composite {
         -children: List~Component~
         +operation(): void
@@ -34,10 +36,10 @@ classDiagram
         +remove(Component): void
         +getChild(int): Component
     }
-    
+
     Component <|-- Leaf
     Component <|-- Composite
-    Composite o--> Component
+Composite o--> Component
 ```
 
 ## 💻 代码实现
@@ -50,25 +52,25 @@ classDiagram
  */
 public abstract class Component {
     protected String name;
-    
+
     public Component(String name) {
         this.name = name;
     }
-    
+
     public abstract void operation();
-    
+
     public void add(Component component) {
         throw new UnsupportedOperationException("不支持添加操作");
     }
-    
+
     public void remove(Component component) {
         throw new UnsupportedOperationException("不支持删除操作");
     }
-    
+
     public Component getChild(int index) {
         throw new UnsupportedOperationException("不支持获取子组件操作");
     }
-    
+
     public String getName() {
         return name;
     }
@@ -81,7 +83,7 @@ public class Leaf extends Component {
     public Leaf(String name) {
         super(name);
     }
-    
+
     @Override
     public void operation() {
         System.out.println("叶子组件 " + name + " 执行操作");
@@ -93,11 +95,11 @@ public class Leaf extends Component {
  */
 public class Composite extends Component {
     private List<Component> children = new ArrayList<>();
-    
+
     public Composite(String name) {
         super(name);
     }
-    
+
     @Override
     public void operation() {
         System.out.println("组合组件 " + name + " 执行操作");
@@ -105,17 +107,17 @@ public class Composite extends Component {
             child.operation();
         }
     }
-    
+
     @Override
     public void add(Component component) {
         children.add(component);
     }
-    
+
     @Override
     public void remove(Component component) {
         children.remove(component);
     }
-    
+
     @Override
     public Component getChild(int index) {
         return children.get(index);
@@ -133,18 +135,19 @@ public class Composite extends Component {
  */
 public abstract class FileSystemComponent {
     protected String name;
-    
+
     public FileSystemComponent(String name) {
         this.name = name;
     }
-    
+
     public abstract void display(int depth);
+
     public abstract long getSize();
-    
+
     public void add(FileSystemComponent component) {
         throw new UnsupportedOperationException();
     }
-    
+
     public void remove(FileSystemComponent component) {
         throw new UnsupportedOperationException();
     }
@@ -155,17 +158,17 @@ public abstract class FileSystemComponent {
  */
 public class File extends FileSystemComponent {
     private long size;
-    
+
     public File(String name, long size) {
         super(name);
         this.size = size;
     }
-    
+
     @Override
     public void display(int depth) {
         System.out.println("  ".repeat(depth) + "📄 " + name + " (" + size + " bytes)");
     }
-    
+
     @Override
     public long getSize() {
         return size;
@@ -177,11 +180,11 @@ public class File extends FileSystemComponent {
  */
 public class Directory extends FileSystemComponent {
     private List<FileSystemComponent> children = new ArrayList<>();
-    
+
     public Directory(String name) {
         super(name);
     }
-    
+
     @Override
     public void display(int depth) {
         System.out.println("  ".repeat(depth) + "📁 " + name + "/");
@@ -189,17 +192,17 @@ public class Directory extends FileSystemComponent {
             child.display(depth + 1);
         }
     }
-    
+
     @Override
     public long getSize() {
         return children.stream().mapToLong(FileSystemComponent::getSize).sum();
     }
-    
+
     @Override
     public void add(FileSystemComponent component) {
         children.add(component);
     }
-    
+
     @Override
     public void remove(FileSystemComponent component) {
         children.remove(component);
@@ -211,25 +214,25 @@ public class FileSystemDemo {
     public static void main(String[] args) {
         // 创建根目录
         Directory root = new Directory("root");
-        
+
         // 创建子目录和文件
         Directory documents = new Directory("documents");
         Directory pictures = new Directory("pictures");
-        
+
         File readme = new File("readme.txt", 1024);
         File photo1 = new File("photo1.jpg", 2048000);
         File photo2 = new File("photo2.png", 1536000);
         File report = new File("report.pdf", 512000);
-        
+
         // 构建文件系统树
         root.add(documents);
         root.add(pictures);
         root.add(readme);
-        
+
         documents.add(report);
         pictures.add(photo1);
         pictures.add(photo2);
-        
+
         // 显示文件系统结构
         root.display(0);
         System.out.println("\n总大小: " + root.getSize() + " bytes");

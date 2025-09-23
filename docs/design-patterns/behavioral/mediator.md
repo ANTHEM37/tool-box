@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 中介者模式定义了一个中介对象来封装一系列对象之间的交互。中介者使各对象不需要显式地相互引用，从而使其耦合松散，而且可以独立地改变它们之间的交互。
 
 ### 意图
+
 - 减少对象间的直接通信，降低耦合度
 - 将多对多的关系转化为一对多的关系
 - 集中控制对象间的交互逻辑
@@ -19,7 +21,7 @@ classDiagram
         <<interface>>
         +notify(Component, String): void
     }
-    
+
     class ConcreteMediator {
         -component1: Component1
         -component2: Component2
@@ -27,29 +29,29 @@ classDiagram
         +notify(Component, String): void
         +createComponents(): void
     }
-    
+
     class Component {
         <<abstract>>
         #mediator: Mediator
         +Component(Mediator)
         +setMediator(Mediator): void
     }
-    
+
     class Component1 {
         +doA(): void
         +doB(): void
     }
-    
+
     class Component2 {
         +doC(): void
         +doD(): void
     }
-    
+
     class Component3 {
         +doE(): void
         +doF(): void
     }
-    
+
     Mediator <|.. ConcreteMediator
     Component <|-- Component1
     Component <|-- Component2
@@ -69,15 +71,14 @@ sequenceDiagram
     participant Mediator
     participant Component2
     participant Component3
-    
-    Client->>Component1: doA()
-    Component1->>Mediator: notify(this, "A")
-    Mediator->>Component2: doC()
-    Mediator->>Component3: doE()
-    Component2-->>Mediator: result
-    Component3-->>Mediator: result
-    Mediator-->>Component1: handled
-    Component1-->>Client: completed
+    Client ->> Component1: doA()
+    Component1 ->> Mediator: notify(this, "A")
+    Mediator ->> Component2: doC()
+    Mediator ->> Component3: doE()
+    Component2 -->> Mediator: result
+    Component3 -->> Mediator: result
+    Mediator -->> Component1: handled
+    Component1 -->> Client: completed
 ```
 
 ## 💻 代码实现
@@ -97,11 +98,11 @@ public interface Mediator {
  */
 public abstract class Component {
     protected Mediator mediator;
-    
+
     public Component(Mediator mediator) {
         this.mediator = mediator;
     }
-    
+
     public void setMediator(Mediator mediator) {
         this.mediator = mediator;
     }
@@ -111,16 +112,16 @@ public abstract class Component {
  * 具体组件A
  */
 public class ComponentA extends Component {
-    
+
     public ComponentA(Mediator mediator) {
         super(mediator);
     }
-    
+
     public void doA() {
         System.out.println("ComponentA: 执行操作A");
         mediator.notify(this, "A");
     }
-    
+
     public void doB() {
         System.out.println("ComponentA: 执行操作B");
         mediator.notify(this, "B");
@@ -131,16 +132,16 @@ public class ComponentA extends Component {
  * 具体组件B
  */
 public class ComponentB extends Component {
-    
+
     public ComponentB(Mediator mediator) {
         super(mediator);
     }
-    
+
     public void doC() {
         System.out.println("ComponentB: 执行操作C");
         mediator.notify(this, "C");
     }
-    
+
     public void doD() {
         System.out.println("ComponentB: 执行操作D");
         mediator.notify(this, "D");
@@ -153,23 +154,23 @@ public class ComponentB extends Component {
 public class ConcreteMediator implements Mediator {
     private ComponentA componentA;
     private ComponentB componentB;
-    
+
     public ConcreteMediator() {
         this.componentA = new ComponentA(this);
         this.componentB = new ComponentB(this);
     }
-    
+
     @Override
     public void notify(Component sender, String event) {
         System.out.println("Mediator: 处理事件 " + event + " 来自 " + sender.getClass().getSimpleName());
-        
+
         if (sender == componentA) {
             handleComponentAEvent(event);
         } else if (sender == componentB) {
             handleComponentBEvent(event);
         }
     }
-    
+
     private void handleComponentAEvent(String event) {
         switch (event) {
             case "A":
@@ -182,7 +183,7 @@ public class ConcreteMediator implements Mediator {
                 break;
         }
     }
-    
+
     private void handleComponentBEvent(String event) {
         switch (event) {
             case "C":
@@ -194,19 +195,24 @@ public class ConcreteMediator implements Mediator {
                 break;
         }
     }
-    
-    public ComponentA getComponentA() { return componentA; }
-    public ComponentB getComponentB() { return componentB; }
+
+    public ComponentA getComponentA() {
+        return componentA;
+    }
+
+    public ComponentB getComponentB() {
+        return componentB;
+    }
 }
 
 // 使用示例
 public class MediatorDemo {
     public static void main(String[] args) {
         ConcreteMediator mediator = new ConcreteMediator();
-        
+
         System.out.println("=== 测试ComponentA的操作 ===");
         mediator.getComponentA().doA();
-        
+
         System.out.println("\n=== 测试ComponentB的操作 ===");
         mediator.getComponentB().doC();
     }
@@ -223,7 +229,9 @@ public class MediatorDemo {
  */
 public interface ChatMediator {
     void sendMessage(String message, User user);
+
     void addUser(User user);
+
     void removeUser(User user);
 }
 
@@ -233,15 +241,16 @@ public interface ChatMediator {
 public abstract class User {
     protected ChatMediator mediator;
     protected String name;
-    
+
     public User(ChatMediator mediator, String name) {
         this.mediator = mediator;
         this.name = name;
     }
-    
+
     public abstract void send(String message);
+
     public abstract void receive(String message);
-    
+
     public String getName() {
         return name;
     }
@@ -251,17 +260,17 @@ public abstract class User {
  * 具体用户类
  */
 public class ConcreteUser extends User {
-    
+
     public ConcreteUser(ChatMediator mediator, String name) {
         super(mediator, name);
     }
-    
+
     @Override
     public void send(String message) {
         System.out.println(name + " 发送消息: " + message);
         mediator.sendMessage(message, this);
     }
-    
+
     @Override
     public void receive(String message) {
         System.out.println(name + " 收到消息: " + message);
@@ -273,16 +282,16 @@ public class ConcreteUser extends User {
  */
 public class ChatRoom implements ChatMediator {
     private List<User> users;
-    
+
     public ChatRoom() {
         this.users = new ArrayList<>();
     }
-    
+
     @Override
     public void addUser(User user) {
         users.add(user);
         System.out.println(user.getName() + " 加入了聊天室");
-        
+
         // 通知其他用户
         String joinMessage = user.getName() + " 加入了聊天室";
         for (User u : users) {
@@ -291,19 +300,19 @@ public class ChatRoom implements ChatMediator {
             }
         }
     }
-    
+
     @Override
     public void removeUser(User user) {
         users.remove(user);
         System.out.println(user.getName() + " 离开了聊天室");
-        
+
         // 通知其他用户
         String leaveMessage = user.getName() + " 离开了聊天室";
         for (User u : users) {
             u.receive("系统消息: " + leaveMessage);
         }
     }
-    
+
     @Override
     public void sendMessage(String message, User sender) {
         for (User user : users) {
@@ -312,13 +321,13 @@ public class ChatRoom implements ChatMediator {
             }
         }
     }
-    
+
     public void sendPrivateMessage(String message, User sender, String receiverName) {
         User receiver = users.stream()
-                           .filter(u -> u.getName().equals(receiverName))
-                           .findFirst()
-                           .orElse(null);
-        
+                .filter(u -> u.getName().equals(receiverName))
+                .findFirst()
+                .orElse(null);
+
         if (receiver != null) {
             receiver.receive("私聊来自 " + sender.getName() + ": " + message);
             System.out.println(sender.getName() + " 向 " + receiverName + " 发送私聊: " + message);
@@ -326,18 +335,18 @@ public class ChatRoom implements ChatMediator {
             sender.receive("系统消息: 用户 " + receiverName + " 不存在");
         }
     }
-    
+
     public void broadcastSystemMessage(String message) {
         System.out.println("系统广播: " + message);
         for (User user : users) {
             user.receive("系统广播: " + message);
         }
     }
-    
+
     public List<String> getOnlineUsers() {
         return users.stream()
-                   .map(User::getName)
-                   .collect(Collectors.toList());
+                .map(User::getName)
+                .collect(Collectors.toList());
     }
 }
 
@@ -345,32 +354,32 @@ public class ChatRoom implements ChatMediator {
 public class ChatRoomDemo {
     public static void main(String[] args) {
         ChatRoom chatRoom = new ChatRoom();
-        
+
         // 创建用户
         User alice = new ConcreteUser(chatRoom, "Alice");
         User bob = new ConcreteUser(chatRoom, "Bob");
         User charlie = new ConcreteUser(chatRoom, "Charlie");
-        
+
         // 用户加入聊天室
         chatRoom.addUser(alice);
         chatRoom.addUser(bob);
         chatRoom.addUser(charlie);
-        
+
         System.out.println("\n=== 群聊消息 ===");
         alice.send("大家好！");
         bob.send("你好，Alice！");
         charlie.send("欢迎大家！");
-        
+
         System.out.println("\n=== 私聊消息 ===");
         chatRoom.sendPrivateMessage("你好吗？", alice, "Bob");
         chatRoom.sendPrivateMessage("我很好，谢谢！", bob, "Alice");
-        
+
         System.out.println("\n=== 系统广播 ===");
         chatRoom.broadcastSystemMessage("聊天室将在5分钟后维护");
-        
+
         System.out.println("\n=== 用户离开 ===");
         chatRoom.removeUser(charlie);
-        
+
         System.out.println("\n=== 在线用户列表 ===");
         System.out.println("当前在线用户: " + chatRoom.getOnlineUsers());
     }
@@ -385,7 +394,9 @@ public class ChatRoomDemo {
  */
 public interface SmartHomeMediator {
     void notify(SmartDevice device, String event, Object data);
+
     void registerDevice(SmartDevice device);
+
     void unregisterDevice(SmartDevice device);
 }
 
@@ -397,17 +408,17 @@ public abstract class SmartDevice {
     protected String deviceId;
     protected String deviceName;
     protected boolean isOn;
-    
+
     public SmartDevice(String deviceId, String deviceName) {
         this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.isOn = false;
     }
-    
+
     public void setMediator(SmartHomeMediator mediator) {
         this.mediator = mediator;
     }
-    
+
     public void turnOn() {
         isOn = true;
         System.out.println(deviceName + " 已开启");
@@ -415,7 +426,7 @@ public abstract class SmartDevice {
             mediator.notify(this, "TURNED_ON", null);
         }
     }
-    
+
     public void turnOff() {
         isOn = false;
         System.out.println(deviceName + " 已关闭");
@@ -423,13 +434,21 @@ public abstract class SmartDevice {
             mediator.notify(this, "TURNED_OFF", null);
         }
     }
-    
+
     public abstract void handleEvent(String event, Object data);
-    
+
     // Getters
-    public String getDeviceId() { return deviceId; }
-    public String getDeviceName() { return deviceName; }
-    public boolean isOn() { return isOn; }
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public boolean isOn() {
+        return isOn;
+    }
 }
 
 /**
@@ -437,11 +456,11 @@ public abstract class SmartDevice {
  */
 public class SmartLight extends SmartDevice {
     private int brightness = 100; // 亮度 0-100
-    
+
     public SmartLight(String deviceId, String deviceName) {
         super(deviceId, deviceName);
     }
-    
+
     public void setBrightness(int brightness) {
         this.brightness = Math.max(0, Math.min(100, brightness));
         System.out.println(deviceName + " 亮度设置为: " + this.brightness + "%");
@@ -449,7 +468,7 @@ public class SmartLight extends SmartDevice {
             mediator.notify(this, "BRIGHTNESS_CHANGED", this.brightness);
         }
     }
-    
+
     @Override
     public void handleEvent(String event, Object data) {
         switch (event) {
@@ -471,8 +490,10 @@ public class SmartLight extends SmartDevice {
                 break;
         }
     }
-    
-    public int getBrightness() { return brightness; }
+
+    public int getBrightness() {
+        return brightness;
+    }
 }
 
 /**
@@ -480,11 +501,11 @@ public class SmartLight extends SmartDevice {
  */
 public class SmartAirConditioner extends SmartDevice {
     private int temperature = 25; // 温度
-    
+
     public SmartAirConditioner(String deviceId, String deviceName) {
         super(deviceId, deviceName);
     }
-    
+
     public void setTemperature(int temperature) {
         this.temperature = temperature;
         System.out.println(deviceName + " 温度设置为: " + temperature + "°C");
@@ -492,7 +513,7 @@ public class SmartAirConditioner extends SmartDevice {
             mediator.notify(this, "TEMPERATURE_CHANGED", temperature);
         }
     }
-    
+
     @Override
     public void handleEvent(String event, Object data) {
         switch (event) {
@@ -515,8 +536,10 @@ public class SmartAirConditioner extends SmartDevice {
                 break;
         }
     }
-    
-    public int getTemperature() { return temperature; }
+
+    public int getTemperature() {
+        return temperature;
+    }
 }
 
 /**
@@ -524,11 +547,11 @@ public class SmartAirConditioner extends SmartDevice {
  */
 public class SmartDoorLock extends SmartDevice {
     private boolean isLocked = true;
-    
+
     public SmartDoorLock(String deviceId, String deviceName) {
         super(deviceId, deviceName);
     }
-    
+
     public void lock() {
         isLocked = true;
         System.out.println(deviceName + " 已上锁");
@@ -536,7 +559,7 @@ public class SmartDoorLock extends SmartDevice {
             mediator.notify(this, "DOOR_LOCKED", null);
         }
     }
-    
+
     public void unlock() {
         isLocked = false;
         System.out.println(deviceName + " 已解锁");
@@ -544,7 +567,7 @@ public class SmartDoorLock extends SmartDevice {
             mediator.notify(this, "DOOR_UNLOCKED", null);
         }
     }
-    
+
     @Override
     public void handleEvent(String event, Object data) {
         switch (event) {
@@ -559,33 +582,35 @@ public class SmartDoorLock extends SmartDevice {
                 break;
         }
     }
-    
-    public boolean isLocked() { return isLocked; }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
 }
 
 /**
  * 运动传感器
  */
 public class MotionSensor extends SmartDevice {
-    
+
     public MotionSensor(String deviceId, String deviceName) {
         super(deviceId, deviceName);
     }
-    
+
     public void detectMotion() {
         System.out.println(deviceName + " 检测到运动");
         if (mediator != null) {
             mediator.notify(this, "MOTION_DETECTED", null);
         }
     }
-    
+
     public void noMotionDetected() {
         System.out.println(deviceName + " 未检测到运动");
         if (mediator != null) {
             mediator.notify(this, "NO_MOTION", null);
         }
     }
-    
+
     @Override
     public void handleEvent(String event, Object data) {
         // 传感器通常不需要处理其他设备的事件
@@ -599,28 +624,28 @@ public class SmartHomeController implements SmartHomeMediator {
     private Map<String, SmartDevice> devices;
     private boolean isNightMode = false;
     private boolean isAwayMode = false;
-    
+
     public SmartHomeController() {
         this.devices = new HashMap<>();
     }
-    
+
     @Override
     public void registerDevice(SmartDevice device) {
         devices.put(device.getDeviceId(), device);
         device.setMediator(this);
         System.out.println("设备已注册: " + device.getDeviceName());
     }
-    
+
     @Override
     public void unregisterDevice(SmartDevice device) {
         devices.remove(device.getDeviceId());
         System.out.println("设备已注销: " + device.getDeviceName());
     }
-    
+
     @Override
     public void notify(SmartDevice sender, String event, Object data) {
         System.out.println("控制中心收到事件: " + event + " 来自 " + sender.getDeviceName());
-        
+
         switch (event) {
             case "MOTION_DETECTED":
                 handleMotionDetected();
@@ -639,82 +664,82 @@ public class SmartHomeController implements SmartHomeMediator {
                 break;
         }
     }
-    
+
     private void handleMotionDetected() {
         // 通知所有灯光设备
         devices.values().stream()
-               .filter(device -> device instanceof SmartLight)
-               .forEach(device -> device.handleEvent("MOTION_DETECTED", null));
+                .filter(device -> device instanceof SmartLight)
+                .forEach(device -> device.handleEvent("MOTION_DETECTED", null));
     }
-    
+
     private void handleNoMotion() {
         if (isAwayMode) {
             // 离家模式下，无运动时关闭灯光
             devices.values().stream()
-                   .filter(device -> device instanceof SmartLight)
-                   .forEach(device -> device.handleEvent("NO_MOTION", null));
+                    .filter(device -> device instanceof SmartLight)
+                    .forEach(device -> device.handleEvent("NO_MOTION", null));
         }
     }
-    
+
     private void handleDoorUnlocked() {
         isAwayMode = false;
         System.out.println("欢迎回家模式激活");
-        
+
         // 通知所有设备主人回家了
         devices.values().forEach(device -> device.handleEvent("SOMEONE_HOME", null));
     }
-    
+
     private void handleDoorLocked() {
         isAwayMode = true;
         System.out.println("离家模式激活");
-        
+
         // 通知所有设备主人离开了
         devices.values().forEach(device -> device.handleEvent("NOBODY_HOME", null));
     }
-    
+
     private void handleTemperatureChanged(int temperature) {
         // 根据温度调整其他设备
         if (temperature < 20) {
             devices.values().stream()
-                   .filter(device -> device instanceof SmartLight)
-                   .forEach(device -> device.handleEvent("LOW_TEMPERATURE", null));
+                    .filter(device -> device instanceof SmartLight)
+                    .forEach(device -> device.handleEvent("LOW_TEMPERATURE", null));
         } else if (temperature > 28) {
             devices.values().stream()
-                   .filter(device -> device instanceof SmartLight)
-                   .forEach(device -> device.handleEvent("HIGH_TEMPERATURE", null));
+                    .filter(device -> device instanceof SmartLight)
+                    .forEach(device -> device.handleEvent("HIGH_TEMPERATURE", null));
         }
     }
-    
+
     public void setNightMode(boolean nightMode) {
         this.isNightMode = nightMode;
         String mode = nightMode ? "NIGHT_MODE" : "DAY_MODE";
         System.out.println("设置为" + (nightMode ? "夜间" : "白天") + "模式");
-        
+
         devices.values().forEach(device -> device.handleEvent(mode, null));
     }
-    
+
     public void emergencyMode() {
         System.out.println("紧急模式激活！");
-        
+
         // 所有灯光全亮
         devices.values().stream()
-               .filter(device -> device instanceof SmartLight)
-               .forEach(device -> {
-                   device.turnOn();
-                   ((SmartLight) device).setBrightness(100);
-               });
-        
+                .filter(device -> device instanceof SmartLight)
+                .forEach(device -> {
+                    device.turnOn();
+                    ((SmartLight) device).setBrightness(100);
+                });
+
         // 门锁上锁
         devices.values().stream()
-               .filter(device -> device instanceof SmartDoorLock)
-               .forEach(device -> device.handleEvent("SECURITY_ALERT", null));
+                .filter(device -> device instanceof SmartDoorLock)
+                .forEach(device -> device.handleEvent("SECURITY_ALERT", null));
     }
-    
+
     public void showDeviceStatus() {
         System.out.println("\n=== 设备状态 ===");
         devices.values().forEach(device -> {
-            System.out.println(device.getDeviceName() + ": " + 
-                             (device.isOn() ? "开启" : "关闭"));
+            System.out.println(device.getDeviceName() + ": " +
+                    (device.isOn() ? "开启" : "关闭"));
         });
     }
 }
@@ -724,36 +749,36 @@ public class SmartHomeDemo {
     public static void main(String[] args) {
         // 创建智能家居控制中心
         SmartHomeController controller = new SmartHomeController();
-        
+
         // 创建智能设备
         SmartLight livingRoomLight = new SmartLight("light_001", "客厅灯");
         SmartLight bedroomLight = new SmartLight("light_002", "卧室灯");
         SmartAirConditioner airConditioner = new SmartAirConditioner("ac_001", "客厅空调");
         SmartDoorLock doorLock = new SmartDoorLock("lock_001", "前门锁");
         MotionSensor motionSensor = new MotionSensor("sensor_001", "客厅运动传感器");
-        
+
         // 注册设备
         controller.registerDevice(livingRoomLight);
         controller.registerDevice(bedroomLight);
         controller.registerDevice(airConditioner);
         controller.registerDevice(doorLock);
         controller.registerDevice(motionSensor);
-        
+
         System.out.println("\n=== 模拟场景：主人回家 ===");
         doorLock.unlock();
-        
+
         System.out.println("\n=== 模拟场景：检测到运动 ===");
         motionSensor.detectMotion();
-        
+
         System.out.println("\n=== 模拟场景：设置夜间模式 ===");
         controller.setNightMode(true);
-        
+
         System.out.println("\n=== 模拟场景：主人离开 ===");
         doorLock.lock();
-        
+
         System.out.println("\n=== 模拟场景：紧急情况 ===");
         controller.emergencyMode();
-        
+
         controller.showDeviceStatus();
     }
 }
@@ -812,11 +837,11 @@ public class SmartHomeDemo {
 // 1. 使用事件总线实现中介者
 public class EventBus implements SmartHomeMediator {
     private Map<String, List<Consumer<Object>>> listeners = new HashMap<>();
-    
+
     public void subscribe(String event, Consumer<Object> listener) {
         listeners.computeIfAbsent(event, k -> new ArrayList<>()).add(listener);
     }
-    
+
     public void publish(String event, Object data) {
         List<Consumer<Object>> eventListeners = listeners.get(event);
         if (eventListeners != null) {
@@ -828,11 +853,11 @@ public class EventBus implements SmartHomeMediator {
 // 2. 使用策略模式处理不同类型的事件
 public class EventHandlerStrategy {
     private Map<String, EventHandler> handlers = new HashMap<>();
-    
+
     public void registerHandler(String eventType, EventHandler handler) {
         handlers.put(eventType, handler);
     }
-    
+
     public void handleEvent(String eventType, Object data) {
         EventHandler handler = handlers.get(eventType);
         if (handler != null) {

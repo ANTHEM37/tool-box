@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 访问者模式表示一个作用于某对象结构中的各元素的操作。它使你可以在不改变各元素的类的前提下定义作用于这些元素的新操作。
 
 ### 意图
+
 - 在不修改现有类结构的情况下，定义新的操作
 - 将数据结构与数据操作分离
 - 支持对象结构中不同类型元素的不同操作
@@ -20,39 +22,39 @@ classDiagram
         +visitConcreteElementA(ConcreteElementA): void
         +visitConcreteElementB(ConcreteElementB): void
     }
-    
+
     class ConcreteVisitor1 {
         +visitConcreteElementA(ConcreteElementA): void
         +visitConcreteElementB(ConcreteElementB): void
     }
-    
+
     class ConcreteVisitor2 {
         +visitConcreteElementA(ConcreteElementA): void
         +visitConcreteElementB(ConcreteElementB): void
     }
-    
+
     class Element {
         <<interface>>
         +accept(Visitor): void
     }
-    
+
     class ConcreteElementA {
         +accept(Visitor): void
         +operationA(): void
     }
-    
+
     class ConcreteElementB {
         +accept(Visitor): void
         +operationB(): void
     }
-    
+
     class ObjectStructure {
         -elements: List~Element~
         +attach(Element): void
         +detach(Element): void
         +accept(Visitor): void
     }
-    
+
     Visitor <|.. ConcreteVisitor1
     Visitor <|.. ConcreteVisitor2
     Element <|.. ConcreteElementA
@@ -71,19 +73,16 @@ sequenceDiagram
     participant ElementA
     participant ElementB
     participant Visitor
-    
-    Client->>ObjectStructure: accept(visitor)
-    ObjectStructure->>ElementA: accept(visitor)
-    ElementA->>Visitor: visitConcreteElementA(this)
-    Visitor-->>ElementA: operation result
-    ElementA-->>ObjectStructure: completed
-    
-    ObjectStructure->>ElementB: accept(visitor)
-    ElementB->>Visitor: visitConcreteElementB(this)
-    Visitor-->>ElementB: operation result
-    ElementB-->>ObjectStructure: completed
-    
-    ObjectStructure-->>Client: all elements processed
+    Client ->> ObjectStructure: accept(visitor)
+    ObjectStructure ->> ElementA: accept(visitor)
+    ElementA ->> Visitor: visitConcreteElementA(this)
+    Visitor -->> ElementA: operation result
+    ElementA -->> ObjectStructure: completed
+    ObjectStructure ->> ElementB: accept(visitor)
+    ElementB ->> Visitor: visitConcreteElementB(this)
+    Visitor -->> ElementB: operation result
+    ElementB -->> ObjectStructure: completed
+    ObjectStructure -->> Client: all elements processed
 ```
 
 ## 💻 代码实现
@@ -96,7 +95,9 @@ sequenceDiagram
  */
 public interface Visitor {
     void visitBook(Book book);
+
     void visitMusic(Music music);
+
     void visitVideo(Video video);
 }
 
@@ -115,29 +116,40 @@ public class Book implements Element {
     private String author;
     private double price;
     private int pages;
-    
+
     public Book(String title, String author, double price, int pages) {
         this.title = title;
         this.author = author;
         this.price = price;
         this.pages = pages;
     }
-    
+
     @Override
     public void accept(Visitor visitor) {
         visitor.visitBook(this);
     }
-    
+
     // Getters
-    public String getTitle() { return title; }
-    public String getAuthor() { return author; }
-    public double getPrice() { return price; }
-    public int getPages() { return pages; }
-    
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getPages() {
+        return pages;
+    }
+
     @Override
     public String toString() {
-        return String.format("Book{title='%s', author='%s', price=%.2f, pages=%d}", 
-                           title, author, price, pages);
+        return String.format("Book{title='%s', author='%s', price=%.2f, pages=%d}",
+                title, author, price, pages);
     }
 }
 
@@ -149,29 +161,40 @@ public class Music implements Element {
     private String artist;
     private double price;
     private int duration; // 秒
-    
+
     public Music(String title, String artist, double price, int duration) {
         this.title = title;
         this.artist = artist;
         this.price = price;
         this.duration = duration;
     }
-    
+
     @Override
     public void accept(Visitor visitor) {
         visitor.visitMusic(this);
     }
-    
+
     // Getters
-    public String getTitle() { return title; }
-    public String getArtist() { return artist; }
-    public double getPrice() { return price; }
-    public int getDuration() { return duration; }
-    
+    public String getTitle() {
+        return title;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
     @Override
     public String toString() {
-        return String.format("Music{title='%s', artist='%s', price=%.2f, duration=%ds}", 
-                           title, artist, price, duration);
+        return String.format("Music{title='%s', artist='%s', price=%.2f, duration=%ds}",
+                title, artist, price, duration);
     }
 }
 
@@ -183,29 +206,40 @@ public class Video implements Element {
     private String director;
     private double price;
     private int duration; // 分钟
-    
+
     public Video(String title, String director, double price, int duration) {
         this.title = title;
         this.director = director;
         this.price = price;
         this.duration = duration;
     }
-    
+
     @Override
     public void accept(Visitor visitor) {
         visitor.visitVideo(this);
     }
-    
+
     // Getters
-    public String getTitle() { return title; }
-    public String getDirector() { return director; }
-    public double getPrice() { return price; }
-    public int getDuration() { return duration; }
-    
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
     @Override
     public String toString() {
-        return String.format("Video{title='%s', director='%s', price=%.2f, duration=%dmin}", 
-                           title, director, price, duration);
+        return String.format("Video{title='%s', director='%s', price=%.2f, duration=%dmin}",
+                title, director, price, duration);
     }
 }
 
@@ -214,44 +248,44 @@ public class Video implements Element {
  */
 public class PriceCalculatorVisitor implements Visitor {
     private double totalPrice = 0;
-    
+
     @Override
     public void visitBook(Book book) {
         double discount = book.getPages() > 300 ? 0.1 : 0; // 超过300页打9折
         double finalPrice = book.getPrice() * (1 - discount);
         totalPrice += finalPrice;
-        System.out.println("书籍价格计算: " + book.getTitle() + 
-                         " 原价=" + book.getPrice() + 
-                         " 折扣=" + (discount * 100) + "%" +
-                         " 实付=" + finalPrice);
+        System.out.println("书籍价格计算: " + book.getTitle() +
+                " 原价=" + book.getPrice() +
+                " 折扣=" + (discount * 100) + "%" +
+                " 实付=" + finalPrice);
     }
-    
+
     @Override
     public void visitMusic(Music music) {
         double discount = music.getDuration() > 300 ? 0.05 : 0; // 超过5分钟打95折
         double finalPrice = music.getPrice() * (1 - discount);
         totalPrice += finalPrice;
-        System.out.println("音乐价格计算: " + music.getTitle() + 
-                         " 原价=" + music.getPrice() + 
-                         " 折扣=" + (discount * 100) + "%" +
-                         " 实付=" + finalPrice);
+        System.out.println("音乐价格计算: " + music.getTitle() +
+                " 原价=" + music.getPrice() +
+                " 折扣=" + (discount * 100) + "%" +
+                " 实付=" + finalPrice);
     }
-    
+
     @Override
     public void visitVideo(Video video) {
         double discount = video.getDuration() > 120 ? 0.15 : 0; // 超过2小时打85折
         double finalPrice = video.getPrice() * (1 - discount);
         totalPrice += finalPrice;
-        System.out.println("视频价格计算: " + video.getTitle() + 
-                         " 原价=" + video.getPrice() + 
-                         " 折扣=" + (discount * 100) + "%" +
-                         " 实付=" + finalPrice);
+        System.out.println("视频价格计算: " + video.getTitle() +
+                " 原价=" + video.getPrice() +
+                " 折扣=" + (discount * 100) + "%" +
+                " 实付=" + finalPrice);
     }
-    
+
     public double getTotalPrice() {
         return totalPrice;
     }
-    
+
     public void reset() {
         totalPrice = 0;
     }
@@ -262,23 +296,23 @@ public class PriceCalculatorVisitor implements Visitor {
  */
 public class ShoppingCart {
     private List<Element> items = new ArrayList<>();
-    
+
     public void addItem(Element item) {
         items.add(item);
         System.out.println("添加商品: " + item);
     }
-    
+
     public void removeItem(Element item) {
         items.remove(item);
         System.out.println("移除商品: " + item);
     }
-    
+
     public void accept(Visitor visitor) {
         for (Element item : items) {
             item.accept(visitor);
         }
     }
-    
+
     public int getItemCount() {
         return items.size();
     }
@@ -288,11 +322,11 @@ public class ShoppingCart {
 public class VisitorDemo {
     public static void main(String[] args) {
         ShoppingCart cart = new ShoppingCart();
-        
+
         cart.addItem(new Book("设计模式", "GoF", 59.99, 395));
         cart.addItem(new Music("Bohemian Rhapsody", "Queen", 1.99, 355));
         cart.addItem(new Video("The Matrix", "Wachowski Sisters", 12.99, 136));
-        
+
         PriceCalculatorVisitor priceVisitor = new PriceCalculatorVisitor();
         cart.accept(priceVisitor);
         System.out.println("总价: $" + priceVisitor.getTotalPrice());

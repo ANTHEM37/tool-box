@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 责任链模式使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这些对象连成一条链，并沿着这条链传递该请求，直到有一个对象处理它为止。
 
 ### 意图
+
 - 避免请求发送者与接收者耦合在一起
 - 让多个对象都有可能接收请求
 - 将这些对象连接成一条链，并且沿着这条链传递请求
@@ -23,38 +25,38 @@ classDiagram
         #canHandle(Request): boolean
         #doHandle(Request): void
     }
-    
+
     class ConcreteHandlerA {
         +handleRequest(Request): void
         #canHandle(Request): boolean
         #doHandle(Request): void
     }
-    
+
     class ConcreteHandlerB {
         +handleRequest(Request): void
         #canHandle(Request): boolean
         #doHandle(Request): void
     }
-    
+
     class ConcreteHandlerC {
         +handleRequest(Request): void
         #canHandle(Request): boolean
         #doHandle(Request): void
     }
-    
+
     class Client {
         +main(): void
     }
-    
+
     class Request {
         +getType(): String
         +getContent(): String
     }
-    
+
     Handler <|-- ConcreteHandlerA
     Handler <|-- ConcreteHandlerB
     Handler <|-- ConcreteHandlerC
-    Handler --> Handler : successor
+    Handler --> Handler: successor
     Client --> Handler
     Handler --> Request
 ```
@@ -67,26 +69,25 @@ sequenceDiagram
     participant HandlerA
     participant HandlerB
     participant HandlerC
-    
-    Client->>HandlerA: handleRequest(request)
-    HandlerA->>HandlerA: canHandle(request)
+    Client ->> HandlerA: handleRequest(request)
+    HandlerA ->> HandlerA: canHandle(request)
     alt can handle
-        HandlerA->>HandlerA: doHandle(request)
-        HandlerA-->>Client: handled
+        HandlerA ->> HandlerA: doHandle(request)
+        HandlerA -->> Client: handled
     else cannot handle
-        HandlerA->>HandlerB: handleRequest(request)
-        HandlerB->>HandlerB: canHandle(request)
+        HandlerA ->> HandlerB: handleRequest(request)
+        HandlerB ->> HandlerB: canHandle(request)
         alt can handle
-            HandlerB->>HandlerB: doHandle(request)
-            HandlerB-->>HandlerA: handled
-            HandlerA-->>Client: handled
+            HandlerB ->> HandlerB: doHandle(request)
+            HandlerB -->> HandlerA: handled
+            HandlerA -->> Client: handled
         else cannot handle
-            HandlerB->>HandlerC: handleRequest(request)
-            HandlerC->>HandlerC: canHandle(request)
-            HandlerC->>HandlerC: doHandle(request)
-            HandlerC-->>HandlerB: handled
-            HandlerB-->>HandlerA: handled
-            HandlerA-->>Client: handled
+            HandlerB ->> HandlerC: handleRequest(request)
+            HandlerC ->> HandlerC: canHandle(request)
+            HandlerC ->> HandlerC: doHandle(request)
+            HandlerC -->> HandlerB: handled
+            HandlerB -->> HandlerA: handled
+            HandlerA -->> Client: handled
         end
     end
 ```
@@ -103,21 +104,29 @@ public class Request {
     private String type;
     private String content;
     private int level;
-    
+
     public Request(String type, String content, int level) {
         this.type = type;
         this.content = content;
         this.level = level;
     }
-    
-    public String getType() { return type; }
-    public String getContent() { return content; }
-    public int getLevel() { return level; }
-    
+
+    public String getType() {
+        return type;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     @Override
     public String toString() {
-        return String.format("Request{type='%s', content='%s', level=%d}", 
-                           type, content, level);
+        return String.format("Request{type='%s', content='%s', level=%d}",
+                type, content, level);
     }
 }
 
@@ -126,11 +135,11 @@ public class Request {
  */
 public abstract class Handler {
     protected Handler successor;
-    
+
     public void setSuccessor(Handler successor) {
         this.successor = successor;
     }
-    
+
     /**
      * 处理请求的模板方法
      */
@@ -144,12 +153,12 @@ public abstract class Handler {
             System.out.println("没有处理者能够处理该请求: " + request);
         }
     }
-    
+
     /**
      * 判断是否能处理请求
      */
     protected abstract boolean canHandle(Request request);
-    
+
     /**
      * 具体处理请求
      */
@@ -160,12 +169,12 @@ public abstract class Handler {
  * 具体处理者A - 处理级别1的请求
  */
 public class ConcreteHandlerA extends Handler {
-    
+
     @Override
     protected boolean canHandle(Request request) {
         return request.getLevel() == 1;
     }
-    
+
     @Override
     protected void doHandle(Request request) {
         System.out.println("ConcreteHandlerA 处理请求: " + request);
@@ -176,12 +185,12 @@ public class ConcreteHandlerA extends Handler {
  * 具体处理者B - 处理级别2的请求
  */
 public class ConcreteHandlerB extends Handler {
-    
+
     @Override
     protected boolean canHandle(Request request) {
         return request.getLevel() == 2;
     }
-    
+
     @Override
     protected void doHandle(Request request) {
         System.out.println("ConcreteHandlerB 处理请求: " + request);
@@ -192,12 +201,12 @@ public class ConcreteHandlerB extends Handler {
  * 具体处理者C - 处理级别3的请求
  */
 public class ConcreteHandlerC extends Handler {
-    
+
     @Override
     protected boolean canHandle(Request request) {
         return request.getLevel() == 3;
     }
-    
+
     @Override
     protected void doHandle(Request request) {
         System.out.println("ConcreteHandlerC 处理请求: " + request);
@@ -211,19 +220,19 @@ public class ChainOfResponsibilityDemo {
         Handler handlerA = new ConcreteHandlerA();
         Handler handlerB = new ConcreteHandlerB();
         Handler handlerC = new ConcreteHandlerC();
-        
+
         // 构建责任链
         handlerA.setSuccessor(handlerB);
         handlerB.setSuccessor(handlerC);
-        
+
         // 创建请求
         Request[] requests = {
-            new Request("TYPE_A", "处理A类型请求", 1),
-            new Request("TYPE_B", "处理B类型请求", 2),
-            new Request("TYPE_C", "处理C类型请求", 3),
-            new Request("TYPE_D", "无法处理的请求", 4)
+                new Request("TYPE_A", "处理A类型请求", 1),
+                new Request("TYPE_B", "处理B类型请求", 2),
+                new Request("TYPE_C", "处理C类型请求", 3),
+                new Request("TYPE_D", "无法处理的请求", 4)
         };
-        
+
         // 处理请求
         for (Request request : requests) {
             System.out.println("\n开始处理: " + request);
@@ -245,21 +254,29 @@ public class LeaveRequest {
     private String employeeName;
     private int days;
     private String reason;
-    
+
     public LeaveRequest(String employeeName, int days, String reason) {
         this.employeeName = employeeName;
         this.days = days;
         this.reason = reason;
     }
-    
-    public String getEmployeeName() { return employeeName; }
-    public int getDays() { return days; }
-    public String getReason() { return reason; }
-    
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public int getDays() {
+        return days;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
     @Override
     public String toString() {
-        return String.format("请假申请{员工='%s', 天数=%d, 原因='%s'}", 
-                           employeeName, days, reason);
+        return String.format("请假申请{员工='%s', 天数=%d, 原因='%s'}",
+                employeeName, days, reason);
     }
 }
 
@@ -269,15 +286,15 @@ public class LeaveRequest {
 public abstract class Approver {
     protected Approver nextApprover;
     protected String name;
-    
+
     public Approver(String name) {
         this.name = name;
     }
-    
+
     public void setNextApprover(Approver nextApprover) {
         this.nextApprover = nextApprover;
     }
-    
+
     /**
      * 处理请假申请
      */
@@ -291,10 +308,11 @@ public abstract class Approver {
             reject(request);
         }
     }
-    
+
     protected abstract boolean canApprove(LeaveRequest request);
+
     protected abstract void approve(LeaveRequest request);
-    
+
     protected void reject(LeaveRequest request) {
         System.out.println("❌ " + name + " 拒绝了请假申请: " + request);
         System.out.println("   原因: 超出所有审批者的权限范围");
@@ -305,16 +323,16 @@ public abstract class Approver {
  * 组长 - 可以审批1天以内的请假
  */
 public class TeamLeader extends Approver {
-    
+
     public TeamLeader(String name) {
         super(name);
     }
-    
+
     @Override
     protected boolean canApprove(LeaveRequest request) {
         return request.getDays() <= 1;
     }
-    
+
     @Override
     protected void approve(LeaveRequest request) {
         System.out.println("✅ 组长 " + name + " 批准了请假申请: " + request);
@@ -325,16 +343,16 @@ public class TeamLeader extends Approver {
  * 部门经理 - 可以审批3天以内的请假
  */
 public class DepartmentManager extends Approver {
-    
+
     public DepartmentManager(String name) {
         super(name);
     }
-    
+
     @Override
     protected boolean canApprove(LeaveRequest request) {
         return request.getDays() <= 3;
     }
-    
+
     @Override
     protected void approve(LeaveRequest request) {
         System.out.println("✅ 部门经理 " + name + " 批准了请假申请: " + request);
@@ -345,16 +363,16 @@ public class DepartmentManager extends Approver {
  * 总经理 - 可以审批7天以内的请假
  */
 public class GeneralManager extends Approver {
-    
+
     public GeneralManager(String name) {
         super(name);
     }
-    
+
     @Override
     protected boolean canApprove(LeaveRequest request) {
         return request.getDays() <= 7;
     }
-    
+
     @Override
     protected void approve(LeaveRequest request) {
         System.out.println("✅ 总经理 " + name + " 批准了请假申请: " + request);
@@ -365,16 +383,16 @@ public class GeneralManager extends Approver {
  * 董事长 - 可以审批任何请假
  */
 public class Chairman extends Approver {
-    
+
     public Chairman(String name) {
         super(name);
     }
-    
+
     @Override
     protected boolean canApprove(LeaveRequest request) {
         return request.getDays() <= 30; // 最多30天
     }
-    
+
     @Override
     protected void approve(LeaveRequest request) {
         System.out.println("✅ 董事长 " + name + " 批准了请假申请: " + request);
@@ -389,21 +407,21 @@ public class LeaveApprovalDemo {
         Approver deptManager = new DepartmentManager("李四");
         Approver generalManager = new GeneralManager("王五");
         Approver chairman = new Chairman("赵六");
-        
+
         // 构建责任链
         teamLeader.setNextApprover(deptManager);
         deptManager.setNextApprover(generalManager);
         generalManager.setNextApprover(chairman);
-        
+
         // 创建请假申请
         LeaveRequest[] requests = {
-            new LeaveRequest("小明", 1, "感冒发烧"),
-            new LeaveRequest("小红", 3, "家中有事"),
-            new LeaveRequest("小刚", 5, "结婚度蜜月"),
-            new LeaveRequest("小丽", 15, "生孩子"),
-            new LeaveRequest("小华", 45, "环游世界")
+                new LeaveRequest("小明", 1, "感冒发烧"),
+                new LeaveRequest("小红", 3, "家中有事"),
+                new LeaveRequest("小刚", 5, "结婚度蜜月"),
+                new LeaveRequest("小丽", 15, "生孩子"),
+                new LeaveRequest("小华", 45, "环游世界")
         };
-        
+
         // 处理请假申请
         for (LeaveRequest request : requests) {
             System.out.println("\n" + "=".repeat(50));
@@ -423,13 +441,13 @@ public class LeaveApprovalDemo {
  */
 public enum LogLevel {
     DEBUG(1), INFO(2), WARN(3), ERROR(4);
-    
+
     private final int level;
-    
+
     LogLevel(int level) {
         this.level = level;
     }
-    
+
     public int getLevel() {
         return level;
     }
@@ -442,17 +460,25 @@ public class LogMessage {
     private LogLevel level;
     private String message;
     private String timestamp;
-    
+
     public LogMessage(LogLevel level, String message) {
         this.level = level;
         this.message = message;
         this.timestamp = java.time.LocalDateTime.now().toString();
     }
-    
-    public LogLevel getLevel() { return level; }
-    public String getMessage() { return message; }
-    public String getTimestamp() { return timestamp; }
-    
+
+    public LogLevel getLevel() {
+        return level;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
     @Override
     public String toString() {
         return String.format("[%s] %s - %s", level, timestamp, message);
@@ -465,25 +491,25 @@ public class LogMessage {
 public abstract class LogHandler {
     protected LogHandler nextHandler;
     protected LogLevel level;
-    
+
     public LogHandler(LogLevel level) {
         this.level = level;
     }
-    
+
     public void setNextHandler(LogHandler nextHandler) {
         this.nextHandler = nextHandler;
     }
-    
+
     public final void handle(LogMessage message) {
         if (message.getLevel().getLevel() >= level.getLevel()) {
             writeLog(message);
         }
-        
+
         if (nextHandler != null) {
             nextHandler.handle(message);
         }
     }
-    
+
     protected abstract void writeLog(LogMessage message);
 }
 
@@ -491,11 +517,11 @@ public abstract class LogHandler {
  * 控制台日志处理器
  */
 public class ConsoleLogHandler extends LogHandler {
-    
+
     public ConsoleLogHandler(LogLevel level) {
         super(level);
     }
-    
+
     @Override
     protected void writeLog(LogMessage message) {
         System.out.println("控制台输出: " + message);
@@ -507,12 +533,12 @@ public class ConsoleLogHandler extends LogHandler {
  */
 public class FileLogHandler extends LogHandler {
     private String filename;
-    
+
     public FileLogHandler(LogLevel level, String filename) {
         super(level);
         this.filename = filename;
     }
-    
+
     @Override
     protected void writeLog(LogMessage message) {
         System.out.println("写入文件 " + filename + ": " + message);
@@ -525,12 +551,12 @@ public class FileLogHandler extends LogHandler {
  */
 public class EmailLogHandler extends LogHandler {
     private String emailAddress;
-    
+
     public EmailLogHandler(LogLevel level, String emailAddress) {
         super(level);
         this.emailAddress = emailAddress;
     }
-    
+
     @Override
     protected void writeLog(LogMessage message) {
         System.out.println("发送邮件到 " + emailAddress + ": " + message);
@@ -543,12 +569,12 @@ public class EmailLogHandler extends LogHandler {
  */
 public class DatabaseLogHandler extends LogHandler {
     private String tableName;
-    
+
     public DatabaseLogHandler(LogLevel level, String tableName) {
         super(level);
         this.tableName = tableName;
     }
-    
+
     @Override
     protected void writeLog(LogMessage message) {
         System.out.println("写入数据库表 " + tableName + ": " + message);
@@ -561,23 +587,23 @@ public class DatabaseLogHandler extends LogHandler {
  */
 public class Logger {
     private LogHandler handlerChain;
-    
+
     public Logger(LogHandler handlerChain) {
         this.handlerChain = handlerChain;
     }
-    
+
     public void debug(String message) {
         handlerChain.handle(new LogMessage(LogLevel.DEBUG, message));
     }
-    
+
     public void info(String message) {
         handlerChain.handle(new LogMessage(LogLevel.INFO, message));
     }
-    
+
     public void warn(String message) {
         handlerChain.handle(new LogMessage(LogLevel.WARN, message));
     }
-    
+
     public void error(String message) {
         handlerChain.handle(new LogMessage(LogLevel.ERROR, message));
     }
@@ -591,25 +617,25 @@ public class LoggingDemo {
         LogHandler fileHandler = new FileLogHandler(LogLevel.INFO, "app.log");
         LogHandler emailHandler = new EmailLogHandler(LogLevel.ERROR, "admin@example.com");
         LogHandler dbHandler = new DatabaseLogHandler(LogLevel.WARN, "log_table");
-        
+
         // 构建责任链
         consoleHandler.setNextHandler(fileHandler);
         fileHandler.setNextHandler(dbHandler);
         dbHandler.setNextHandler(emailHandler);
-        
+
         // 创建日志记录器
         Logger logger = new Logger(consoleHandler);
-        
+
         // 测试不同级别的日志
         System.out.println("=== DEBUG 级别日志 ===");
         logger.debug("这是一个调试信息");
-        
+
         System.out.println("\n=== INFO 级别日志 ===");
         logger.info("应用程序启动成功");
-        
+
         System.out.println("\n=== WARN 级别日志 ===");
         logger.warn("内存使用率超过80%");
-        
+
         System.out.println("\n=== ERROR 级别日志 ===");
         logger.error("数据库连接失败");
     }
@@ -672,7 +698,7 @@ public class LoggingDemo {
 public class HandlerChainBuilder {
     private Handler first;
     private Handler current;
-    
+
     public HandlerChainBuilder addHandler(Handler handler) {
         if (first == null) {
             first = current = handler;
@@ -682,7 +708,7 @@ public class HandlerChainBuilder {
         }
         return this;
     }
-    
+
     public Handler build() {
         return first;
     }

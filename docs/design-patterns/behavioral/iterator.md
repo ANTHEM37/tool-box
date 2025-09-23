@@ -3,9 +3,11 @@
 ## 📋 模式概述
 
 ### 定义
+
 迭代器模式提供一种方法顺序访问一个聚合对象中各个元素，而又不需暴露该对象的内部表示。
 
 ### 意图
+
 - 提供一种方法来访问聚合对象，而不用暴露这个对象的内部表示
 - 支持对聚合对象的多种遍历
 - 为遍历不同的聚合结构提供一个统一的接口
@@ -20,7 +22,7 @@ classDiagram
         +next(): Object
         +remove(): void
     }
-    
+
     class ConcreteIterator {
         -aggregate: ConcreteAggregate
         -current: int
@@ -28,12 +30,12 @@ classDiagram
         +next(): Object
         +remove(): void
     }
-    
+
     class Aggregate {
         <<interface>>
         +createIterator(): Iterator
     }
-    
+
     class ConcreteAggregate {
         -items: List
         +createIterator(): Iterator
@@ -42,11 +44,11 @@ classDiagram
         +addItem(Object): void
         +removeItem(Object): void
     }
-    
+
     Iterator <|.. ConcreteIterator
     Aggregate <|.. ConcreteAggregate
     ConcreteIterator --> ConcreteAggregate
-    ConcreteAggregate --> Iterator : creates
+    ConcreteAggregate --> Iterator: creates
 ```
 
 ## ⏱️ 时序图
@@ -56,19 +58,18 @@ sequenceDiagram
     participant Client
     participant Aggregate
     participant Iterator
-    
-    Client->>Aggregate: createIterator()
-    Aggregate->>Iterator: new Iterator(this)
-    Aggregate-->>Client: iterator
-    
+    Client ->> Aggregate: createIterator()
+    Aggregate ->> Iterator: new Iterator(this)
+    Aggregate -->> Client: iterator
+
     loop while hasNext()
-        Client->>Iterator: hasNext()
-        Iterator-->>Client: true/false
+        Client ->> Iterator: hasNext()
+        Iterator -->> Client: true/false
         alt has next
-            Client->>Iterator: next()
-            Iterator->>Aggregate: getItem(index)
-            Aggregate-->>Iterator: item
-            Iterator-->>Client: item
+            Client ->> Iterator: next()
+            Iterator ->> Aggregate: getItem(index)
+            Aggregate -->> Iterator: item
+            Iterator -->> Client: item
         end
     end
 ```
@@ -83,7 +84,9 @@ sequenceDiagram
  */
 public interface Iterator<T> {
     boolean hasNext();
+
     T next();
+
     void remove();
 }
 
@@ -99,46 +102,46 @@ public interface Aggregate<T> {
  */
 public class BookCollection implements Aggregate<Book> {
     private List<Book> books;
-    
+
     public BookCollection() {
         this.books = new ArrayList<>();
     }
-    
+
     public void addBook(Book book) {
         books.add(book);
     }
-    
+
     public void removeBook(Book book) {
         books.remove(book);
     }
-    
+
     public Book getBook(int index) {
         return books.get(index);
     }
-    
+
     public int getCount() {
         return books.size();
     }
-    
+
     @Override
     public Iterator<Book> createIterator() {
         return new BookIterator(this);
     }
-    
+
     // 内部迭代器类
     private class BookIterator implements Iterator<Book> {
         private BookCollection collection;
         private int current = 0;
-        
+
         public BookIterator(BookCollection collection) {
             this.collection = collection;
         }
-        
+
         @Override
         public boolean hasNext() {
             return current < collection.getCount();
         }
-        
+
         @Override
         public Book next() {
             if (!hasNext()) {
@@ -146,7 +149,7 @@ public class BookCollection implements Aggregate<Book> {
             }
             return collection.getBook(current++);
         }
-        
+
         @Override
         public void remove() {
             if (current <= 0) {
@@ -164,22 +167,30 @@ public class Book {
     private String title;
     private String author;
     private String isbn;
-    
+
     public Book(String title, String author, String isbn) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
     }
-    
+
     // getters
-    public String getTitle() { return title; }
-    public String getAuthor() { return author; }
-    public String getIsbn() { return isbn; }
-    
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
     @Override
     public String toString() {
-        return String.format("Book{title='%s', author='%s', isbn='%s'}", 
-                           title, author, isbn);
+        return String.format("Book{title='%s', author='%s', isbn='%s'}",
+                title, author, isbn);
     }
 }
 
@@ -191,7 +202,7 @@ public class IteratorDemo {
         library.addBook(new Book("设计模式", "GoF", "978-0201633610"));
         library.addBook(new Book("重构", "Martin Fowler", "978-0201485677"));
         library.addBook(new Book("代码整洁之道", "Robert Martin", "978-0132350884"));
-        
+
         // 使用迭代器遍历
         System.out.println("=== 遍历图书馆藏书 ===");
         Iterator<Book> iterator = library.createIterator();
@@ -199,14 +210,14 @@ public class IteratorDemo {
             Book book = iterator.next();
             System.out.println(book);
         }
-        
+
         // 使用迭代器删除元素
         System.out.println("\n=== 删除第二本书 ===");
         iterator = library.createIterator();
         iterator.next(); // 跳过第一本
         iterator.next(); // 到第二本
         iterator.remove(); // 删除第二本
-        
+
         System.out.println("删除后的藏书:");
         iterator = library.createIterator();
         while (iterator.hasNext()) {
@@ -228,12 +239,12 @@ public class Matrix implements Aggregate<Integer> {
     private int[][] data;
     private int rows;
     private int cols;
-    
+
     public Matrix(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
         this.data = new int[rows][cols];
-        
+
         // 初始化数据
         int value = 1;
         for (int i = 0; i < rows; i++) {
@@ -242,52 +253,57 @@ public class Matrix implements Aggregate<Integer> {
             }
         }
     }
-    
+
     public int get(int row, int col) {
         return data[row][col];
     }
-    
-    public int getRows() { return rows; }
-    public int getCols() { return cols; }
-    
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
     @Override
     public Iterator<Integer> createIterator() {
         return new RowMajorIterator();
     }
-    
+
     // 按行遍历的迭代器
     public Iterator<Integer> createRowMajorIterator() {
         return new RowMajorIterator();
     }
-    
+
     // 按列遍历的迭代器
     public Iterator<Integer> createColumnMajorIterator() {
         return new ColumnMajorIterator();
     }
-    
+
     // 对角线遍历的迭代器
     public Iterator<Integer> createDiagonalIterator() {
         return new DiagonalIterator();
     }
-    
+
     /**
      * 按行遍历迭代器
      */
     private class RowMajorIterator implements Iterator<Integer> {
         private int currentRow = 0;
         private int currentCol = 0;
-        
+
         @Override
         public boolean hasNext() {
             return currentRow < rows;
         }
-        
+
         @Override
         public Integer next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            
+
             int value = data[currentRow][currentCol];
             currentCol++;
             if (currentCol >= cols) {
@@ -296,31 +312,31 @@ public class Matrix implements Aggregate<Integer> {
             }
             return value;
         }
-        
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException("Matrix不支持删除操作");
         }
     }
-    
+
     /**
      * 按列遍历迭代器
      */
     private class ColumnMajorIterator implements Iterator<Integer> {
         private int currentRow = 0;
         private int currentCol = 0;
-        
+
         @Override
         public boolean hasNext() {
             return currentCol < cols;
         }
-        
+
         @Override
         public Integer next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            
+
             int value = data[currentRow][currentCol];
             currentRow++;
             if (currentRow >= rows) {
@@ -329,46 +345,46 @@ public class Matrix implements Aggregate<Integer> {
             }
             return value;
         }
-        
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException("Matrix不支持删除操作");
         }
     }
-    
+
     /**
      * 对角线遍历迭代器
      */
     private class DiagonalIterator implements Iterator<Integer> {
         private int current = 0;
         private int maxDiagonal;
-        
+
         public DiagonalIterator() {
             this.maxDiagonal = Math.min(rows, cols);
         }
-        
+
         @Override
         public boolean hasNext() {
             return current < maxDiagonal;
         }
-        
+
         @Override
         public Integer next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            
+
             int value = data[current][current];
             current++;
             return value;
         }
-        
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException("Matrix不支持删除操作");
         }
     }
-    
+
     public void printMatrix() {
         System.out.println("矩阵内容:");
         for (int i = 0; i < rows; i++) {
@@ -385,19 +401,19 @@ public class MatrixIteratorDemo {
     public static void main(String[] args) {
         Matrix matrix = new Matrix(3, 4);
         matrix.printMatrix();
-        
+
         System.out.println("\n=== 按行遍历 ===");
         Iterator<Integer> rowIterator = matrix.createRowMajorIterator();
         while (rowIterator.hasNext()) {
             System.out.print(rowIterator.next() + " ");
         }
-        
+
         System.out.println("\n\n=== 按列遍历 ===");
         Iterator<Integer> colIterator = matrix.createColumnMajorIterator();
         while (colIterator.hasNext()) {
             System.out.print(colIterator.next() + " ");
         }
-        
+
         System.out.println("\n\n=== 对角线遍历 ===");
         Iterator<Integer> diagIterator = matrix.createDiagonalIterator();
         while (diagIterator.hasNext()) {
@@ -417,16 +433,25 @@ public class MatrixIteratorDemo {
 public abstract class FileNode {
     protected String name;
     protected FileNode parent;
-    
+
     public FileNode(String name) {
         this.name = name;
     }
-    
-    public String getName() { return name; }
-    public FileNode getParent() { return parent; }
-    public void setParent(FileNode parent) { this.parent = parent; }
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public FileNode getParent() {
+        return parent;
+    }
+
+    public void setParent(FileNode parent) {
+        this.parent = parent;
+    }
+
     public abstract boolean isDirectory();
+
     public abstract long getSize();
 }
 
@@ -435,22 +460,22 @@ public abstract class FileNode {
  */
 public class File extends FileNode {
     private long size;
-    
+
     public File(String name, long size) {
         super(name);
         this.size = size;
     }
-    
+
     @Override
     public boolean isDirectory() {
         return false;
     }
-    
+
     @Override
     public long getSize() {
         return size;
     }
-    
+
     @Override
     public String toString() {
         return String.format("File{name='%s', size=%d}", name, size);
@@ -462,82 +487,82 @@ public class File extends FileNode {
  */
 public class Directory extends FileNode implements Aggregate<FileNode> {
     private List<FileNode> children;
-    
+
     public Directory(String name) {
         super(name);
         this.children = new ArrayList<>();
     }
-    
+
     public void addChild(FileNode child) {
         children.add(child);
         child.setParent(this);
     }
-    
+
     public void removeChild(FileNode child) {
         children.remove(child);
         child.setParent(null);
     }
-    
+
     public List<FileNode> getChildren() {
         return new ArrayList<>(children);
     }
-    
+
     @Override
     public boolean isDirectory() {
         return true;
     }
-    
+
     @Override
     public long getSize() {
         return children.stream()
-                      .mapToLong(FileNode::getSize)
-                      .sum();
+                .mapToLong(FileNode::getSize)
+                .sum();
     }
-    
+
     @Override
     public Iterator<FileNode> createIterator() {
         return new DepthFirstIterator();
     }
-    
+
     // 深度优先遍历迭代器
     public Iterator<FileNode> createDepthFirstIterator() {
         return new DepthFirstIterator();
     }
-    
+
     // 广度优先遍历迭代器
     public Iterator<FileNode> createBreadthFirstIterator() {
         return new BreadthFirstIterator();
     }
-    
+
     // 只遍历文件的迭代器
     public Iterator<FileNode> createFileOnlyIterator() {
         return new FileOnlyIterator();
     }
-    
+
     /**
      * 深度优先遍历迭代器
      */
     private class DepthFirstIterator implements Iterator<FileNode> {
         private Stack<FileNode> stack;
-        
+
         public DepthFirstIterator() {
             stack = new Stack<>();
             stack.push(Directory.this);
         }
-        
+
         @Override
         public boolean hasNext() {
             return !stack.isEmpty();
         }
-        
+
         @Override
         public FileNode next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            
+
             FileNode current = stack.pop();
-            
+
             // 如果是目录，将其子节点压入栈（逆序压入以保持正确的遍历顺序）
             if (current.isDirectory() && current != Directory.this) {
                 Directory dir = (Directory) current;
@@ -551,67 +576,67 @@ public class Directory extends FileNode implements Aggregate<FileNode> {
                     stack.push(children.get(i));
                 }
             }
-            
+
             return current;
         }
-        
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException("不支持删除操作");
         }
     }
-    
+
     /**
      * 广度优先遍历迭代器
      */
     private class BreadthFirstIterator implements Iterator<FileNode> {
         private Queue<FileNode> queue;
-        
+
         public BreadthFirstIterator() {
             queue = new LinkedList<>();
             queue.offer(Directory.this);
         }
-        
+
         @Override
         public boolean hasNext() {
             return !queue.isEmpty();
         }
-        
+
         @Override
         public FileNode next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            
+
             FileNode current = queue.poll();
-            
+
             // 如果是目录，将其子节点加入队列
             if (current.isDirectory()) {
                 Directory dir = (Directory) current;
                 queue.addAll(dir.getChildren());
             }
-            
+
             return current;
         }
-        
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException("不支持删除操作");
         }
     }
-    
+
     /**
      * 只遍历文件的迭代器
      */
     private class FileOnlyIterator implements Iterator<FileNode> {
         private Iterator<FileNode> baseIterator;
         private FileNode nextFile;
-        
+
         public FileOnlyIterator() {
             this.baseIterator = new DepthFirstIterator();
             findNextFile();
         }
-        
+
         private void findNextFile() {
             nextFile = null;
             while (baseIterator.hasNext()) {
@@ -622,33 +647,33 @@ public class Directory extends FileNode implements Aggregate<FileNode> {
                 }
             }
         }
-        
+
         @Override
         public boolean hasNext() {
             return nextFile != null;
         }
-        
+
         @Override
         public FileNode next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            
+
             FileNode result = nextFile;
             findNextFile();
             return result;
         }
-        
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException("不支持删除操作");
         }
     }
-    
+
     @Override
     public String toString() {
-        return String.format("Directory{name='%s', children=%d, size=%d}", 
-                           name, children.size(), getSize());
+        return String.format("Directory{name='%s', children=%d, size=%d}",
+                name, children.size(), getSize());
     }
 }
 
@@ -657,23 +682,23 @@ public class FileSystemIteratorDemo {
     public static void main(String[] args) {
         // 构建文件系统结构
         Directory root = new Directory("root");
-        
+
         Directory documents = new Directory("documents");
         documents.addChild(new File("resume.pdf", 1024));
         documents.addChild(new File("report.docx", 2048));
-        
+
         Directory photos = new Directory("photos");
         photos.addChild(new File("vacation.jpg", 5120));
         photos.addChild(new File("family.png", 3072));
-        
+
         Directory work = new Directory("work");
         work.addChild(new File("project.zip", 10240));
         work.addChild(documents);
-        
+
         root.addChild(photos);
         root.addChild(work);
         root.addChild(new File("readme.txt", 512));
-        
+
         System.out.println("=== 深度优先遍历 ===");
         Iterator<FileNode> dfsIterator = root.createDepthFirstIterator();
         while (dfsIterator.hasNext()) {
@@ -681,14 +706,14 @@ public class FileSystemIteratorDemo {
             String indent = "  ".repeat(getDepth(node));
             System.out.println(indent + node);
         }
-        
+
         System.out.println("\n=== 广度优先遍历 ===");
         Iterator<FileNode> bfsIterator = root.createBreadthFirstIterator();
         while (bfsIterator.hasNext()) {
             FileNode node = bfsIterator.next();
             System.out.println(node);
         }
-        
+
         System.out.println("\n=== 只遍历文件 ===");
         Iterator<FileNode> fileIterator = root.createFileOnlyIterator();
         while (fileIterator.hasNext()) {
@@ -696,7 +721,7 @@ public class FileSystemIteratorDemo {
             System.out.println(file);
         }
     }
-    
+
     private static int getDepth(FileNode node) {
         int depth = 0;
         FileNode current = node.getParent();
@@ -765,18 +790,18 @@ public class SafeIterator<T> implements Iterator<T> {
     private List<T> list;
     private int expectedModCount;
     private int cursor = 0;
-    
+
     public SafeIterator(List<T> list, int modCount) {
         this.list = list;
         this.expectedModCount = modCount;
     }
-    
+
     @Override
     public boolean hasNext() {
         checkForModification();
         return cursor < list.size();
     }
-    
+
     @Override
     public T next() {
         checkForModification();
@@ -785,7 +810,7 @@ public class SafeIterator<T> implements Iterator<T> {
         }
         return list.get(cursor++);
     }
-    
+
     private void checkForModification() {
         if (expectedModCount != list.getModCount()) {
             throw new ConcurrentModificationException();
@@ -799,13 +824,13 @@ public class FilterIterator<T> implements Iterator<T> {
     private Predicate<T> filter;
     private T nextItem;
     private boolean hasNextItem = false;
-    
+
     public FilterIterator(Iterator<T> baseIterator, Predicate<T> filter) {
         this.baseIterator = baseIterator;
         this.filter = filter;
         findNext();
     }
-    
+
     private void findNext() {
         hasNextItem = false;
         while (baseIterator.hasNext()) {
@@ -817,12 +842,12 @@ public class FilterIterator<T> implements Iterator<T> {
             }
         }
     }
-    
+
     @Override
     public boolean hasNext() {
         return hasNextItem;
     }
-    
+
     @Override
     public T next() {
         if (!hasNext()) {
