@@ -60,5 +60,29 @@ public final class FrameworkConstants {
 
         /** 验证失败 */
         public static final String VALIDATION_FAILED = "验证失败";
+
+        /**
+         * 格式化错误消息
+         *
+         * @param template 消息模板
+         * @param args 参数
+         * @return 格式化后的消息
+         */
+        public static String format(String template, Object... args) {
+            if (args == null || args.length == 0) {
+                return template;
+            }
+            return String.format(template, args);
+        }
+
+        /**
+         * 创建带参数的空参数错误消息
+         *
+         * @param paramName 参数名称
+         * @return 错误消息
+         */
+        public static String nullParameter(String paramName) {
+            return NULL_PARAMETER + ": " + paramName;
+        }
     }
 }

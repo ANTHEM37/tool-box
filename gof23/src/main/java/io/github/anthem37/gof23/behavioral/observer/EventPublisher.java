@@ -58,7 +58,7 @@ public class EventPublisher<T> {
      */
     public void subscribe(Observer<T> observer) {
         if (observer == null) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": observer");
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("observer"));
         }
 
         if (!observers.contains(observer)) {
@@ -90,7 +90,7 @@ public class EventPublisher<T> {
      */
     public void publish(T event) {
         if (event == null) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": event");
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("event"));
         }
 
         logger.debug("开始同步发布事件: {}", event.getClass().getSimpleName());
@@ -117,7 +117,7 @@ public class EventPublisher<T> {
      */
     public CompletableFuture<Void> publishAsync(T event) {
         if (event == null) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": event");
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("event"));
         }
 
         logger.debug("开始异步发布事件: {}", event.getClass().getSimpleName());

@@ -1,5 +1,6 @@
 package io.github.anthem37.gof23.structural.composite;
 
+import io.github.anthem37.gof23.common.FrameworkConstants;
 import io.github.anthem37.gof23.common.FrameworkException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public abstract class AbstractComposite<T> implements Component<T> {
      */
     protected AbstractComposite(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new FrameworkException("组件名称不能为空");
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("组件名称"));
         }
         this.name = name;
         logger.debug("创建组合组件: {}", name);
@@ -51,7 +52,7 @@ public abstract class AbstractComposite<T> implements Component<T> {
     @Override
     public void add(Component<T> component) {
         if (component == null) {
-            throw new FrameworkException("子组件不能为空");
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("子组件"));
         }
         if (component == this) {
             throw new FrameworkException("不能添加自己作为子组件");

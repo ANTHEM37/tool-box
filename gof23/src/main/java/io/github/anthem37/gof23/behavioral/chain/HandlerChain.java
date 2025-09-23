@@ -39,7 +39,7 @@ public class HandlerChain<T, R> {
      */
     public void addHandler(Handler<T, R> handler) {
         if (handler == null) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": handler");
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("handler"));
         }
 
         handlers.add(handler);
@@ -66,7 +66,7 @@ public class HandlerChain<T, R> {
      */
     public R handle(T request) {
         if (request == null) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": request");
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("request"));
         }
 
         ensureSorted();
@@ -90,7 +90,7 @@ public class HandlerChain<T, R> {
      */
     public List<R> handleAll(T request) {
         if (request == null) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": request");
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("request"));
         }
 
         ensureSorted();
