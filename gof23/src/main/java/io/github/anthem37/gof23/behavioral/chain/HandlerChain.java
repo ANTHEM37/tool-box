@@ -95,17 +95,21 @@ public class HandlerChain<T, R> {
 
         ensureSorted();
 
-        List<R> results = new ArrayList<>();
+        // 延迟初始化，只有在有结果时才创建列表
+        List<R> results = null;
         for (Handler<T, R> handler : handlers) {
             if (handler.canHandle(request)) {
                 R result = handler.handle(request);
                 if (result != null) {
+                    if (results == null) {
+                        results = new ArrayList<>();
+                    }
                     results.add(result);
                 }
             }
         }
 
-        return results;
+        return results == null ? Collections.emptyList() : results;
     }
 
     /**
@@ -132,14 +136,8 @@ public class HandlerChain<T, R> {
         if (!sorted) {
             synchronized (this) {
                 if (!sorted) {
-                    // 创建新的排序列表
-                    List<Handler<T, R>> sortedList = new ArrayList<>(handlers);
-                    sortedList.sort(Comparator.comparingInt(Handler::getPriority));
-
-                    // 清空原列表并添加排序后的元素
-                    handlers.clear();
-                    handlers.addAll(sortedList);
-
+                    // 直接对handlers进行排序，避免创建新的ArrayList
+                    handlers.sort(Comparator.comparingInt(Handler::getPriority));
                     sorted = true;
                 }
             }
