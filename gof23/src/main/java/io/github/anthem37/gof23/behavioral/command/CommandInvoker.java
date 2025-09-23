@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CommandInvoker<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandInvoker.class);
-
+    
     /**
      * 线程编号生成器
      */

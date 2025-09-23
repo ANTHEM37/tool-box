@@ -31,12 +31,12 @@ public class StrategyContext<T, R> {
      */
     public void registerStrategy(Strategy<T, R> strategy) {
         if (strategy == null) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("strategy"));
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": strategy");
         }
 
         String identifier = strategy.getIdentifier();
         if (identifier == null || identifier.trim().isEmpty()) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("strategy identifier"));
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": strategy identifier");
         }
 
         strategies.put(identifier, strategy);
@@ -52,7 +52,7 @@ public class StrategyContext<T, R> {
      */
     public R execute(String identifier, T input) {
         if (identifier == null || identifier.trim().isEmpty()) {
-            throw new FrameworkException(FrameworkConstants.ErrorMessages.nullParameter("identifier"));
+            throw new FrameworkException(FrameworkConstants.ErrorMessages.NULL_PARAMETER + ": identifier");
         }
 
         Strategy<T, R> strategy = strategies.get(identifier);
