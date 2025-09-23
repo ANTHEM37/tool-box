@@ -4,26 +4,34 @@ import io.github.anthem37.gof23.common.FrameworkException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 命令调用器
  * 负责执行命令和管理命令历史
  *
+ * @param <T> 命令执行结果的类型
  * @author anthem37
  * @version 1.0.0
  */
-public class CommandInvoker {
+public class CommandInvoker<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandInvoker.class);
+    
+    /**
+     * 线程编号生成器
+     */
+    private static final AtomicInteger threadNumber = new AtomicInteger(0);
 
     /**
      * 命令历史栈
      */
-    private final Stack<Command> commandHistory = new Stack<>();
+    private final Deque<Command<T>> commandHistory = new ArrayDeque<>();
 
     /**
      * 异步执行器
@@ -47,7 +55,7 @@ public class CommandInvoker {
 
         this.maxHistorySize = maxHistorySize;
         this.executor = Executors.newCachedThreadPool(r -> {
-            Thread thread = new Thread(r, "CommandInvoker-" + System.currentTimeMillis());
+            Thread thread = new Thread(r, "CommandInvoker-" + threadNumber.getAndIncrement());
             thread.setDaemon(true);
             return thread;
         });
@@ -67,7 +75,7 @@ public class CommandInvoker {
      * @param command 命令
      * @return 执行结果
      */
-    public Object execute(Command command) {
+    public T execute(Command<T> command) {
         if (command == null) {
             throw new FrameworkException("命令不能为空");
         }
@@ -79,7 +87,7 @@ public class CommandInvoker {
         try {
             logger.debug("执行命令: {} - {}", command.getName(), command.getDescription());
 
-            Object result = command.execute();
+            T result = command.execute();
 
             // 如果命令可撤销，添加到历史记录
             if (command.isUndoable()) {
@@ -101,7 +109,7 @@ public class CommandInvoker {
      * @param command 命令
      * @return 异步执行结果
      */
-    public CompletableFuture<Object> executeAsync(Command command) {
+    public CompletableFuture<T> executeAsync(Command<T> command) {
         return CompletableFuture.supplyAsync(() -> execute(command), executor);
     }
 
@@ -110,17 +118,17 @@ public class CommandInvoker {
      *
      * @return 撤销结果
      */
-    public Object undo() {
+    public T undo() {
         if (commandHistory.isEmpty()) {
             throw new FrameworkException("没有可撤销的命令");
         }
 
-        Command command = commandHistory.pop();
+        Command<T> command = commandHistory.pollLast();
 
         try {
             logger.debug("撤销命令: {}", command.getName());
 
-            Object result = command.undo();
+            T result = command.undo();
 
             logger.debug("命令撤销成功: {}", command.getName());
             return result;
@@ -128,7 +136,7 @@ public class CommandInvoker {
         } catch (Exception e) {
             logger.error("命令撤销失败: {}", command.getName(), e);
             // 撤销失败时，将命令重新放回历史记录
-            commandHistory.push(command);
+            commandHistory.offerLast(command);
             throw new FrameworkException("命令撤销失败: " + command.getName(), e);
         }
     }
@@ -138,13 +146,13 @@ public class CommandInvoker {
      *
      * @param command 命令
      */
-    private void addToHistory(Command command) {
+    private void addToHistory(Command<T> command) {
         // 如果历史记录已满，移除最旧的记录
         if (commandHistory.size() >= maxHistorySize) {
-            commandHistory.remove(0);
+            commandHistory.pollFirst();
         }
 
-        commandHistory.push(command);
+        commandHistory.offerLast(command);
         logger.debug("添加命令到历史记录: {} (历史记录数: {})",
                 command.getName(), commandHistory.size());
     }

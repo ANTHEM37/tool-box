@@ -4,24 +4,25 @@ package io.github.anthem37.gof23.behavioral.command;
  * 命令接口
  * 定义命令的标准契约
  *
+ * @param <T> 命令执行结果的类型
  * @author anthem37
  * @version 1.0.0
  */
-public interface Command {
+public interface Command<T> {
 
     /**
      * 执行命令
      *
      * @return 执行结果
      */
-    Object execute();
+    T execute();
 
     /**
      * 撤销命令
      *
      * @return 撤销结果
      */
-    default Object undo() {
+    default T undo() {
         throw new UnsupportedOperationException("该命令不支持撤销操作");
     }
 
