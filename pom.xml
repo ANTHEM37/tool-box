@@ -8,11 +8,36 @@
     <artifactId>tool-box</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <modules>
+        <module>gof23</module>
+        <module>algorithm</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <slf4j.version>1.7.36</slf4j.version>
+        <junit.version>4.13.2</junit.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 日志依赖 -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- 测试依赖 -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
