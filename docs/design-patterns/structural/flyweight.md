@@ -1,578 +1,319 @@
-# 享元模式 (Flyweight Pattern)
+# 享元模式 (Flyweight Pattern) ⚠️ 低应用价值
+
+> **⚠️ 注意：此模式在现代开发中应用价值较低**
+> - 现代JVM已经有很好的内存优化机制
+> - 增加了系统复杂度，收益有限
+> - 过早优化，违反KISS原则
+> - **代码已删除，仅保留文档作为学习参考**
 
 ## 📋 模式概述
 
 ### 定义
-
 享元模式运用共享技术有效地支持大量细粒度的对象。通过共享已经存在的对象来大幅度减少需要创建的对象数量、避免大量相似类的开销，从而提高系统资源的利用率。
 
-### 意图
+### 核心思想
+- 分离内部状态和外部状态
+- 共享内部状态相同的对象
+- 外部状态由客户端维护
+- 减少对象创建数量
 
-- 运用共享技术有效地支持大量细粒度对象
-- 减少创建对象的数量，降低内存占用
-- 将对象的状态分为内部状态和外部状态
-- 内部状态可以共享，外部状态由客户端维护
+## 🎯 解决的问题
 
-## 🏗️ 结构图
+### 主要问题
+1. **内存消耗大**：大量相似对象占用过多内存
+2. **对象创建开销**：频繁创建销毁对象影响性能
+3. **系统资源浪费**：相同数据被重复存储
+4. **内存溢出风险**：对象过多可能导致内存不足
 
+### 适用场景（现代开发中很少见）
+- 大量相似对象的场景
+- 对象的外部状态可以剥离
+- 内存资源极其有限的环境
+- 对象池的实现
+
+## 🏗️ 模式结构
+
+### UML类图
 ```mermaid
 classDiagram
     class Flyweight {
         <<interface>>
-        +operation(extrinsicState): void
+        +operation(extrinsicState: String)
     }
-
+    
     class ConcreteFlyweight {
         -intrinsicState: String
-        +operation(extrinsicState): void
+        +operation(extrinsicState: String)
     }
-
+    
+    class UnsharedConcreteFlyweight {
+        -allState: String
+        +operation(extrinsicState: String)
+    }
+    
     class FlyweightFactory {
         -flyweights: Map~String, Flyweight~
-        +getFlyweight(key): Flyweight
+        +getFlyweight(key: String) Flyweight
+        +getSize() int
     }
-
+    
     class Context {
-        -flyweight: Flyweight
         -extrinsicState: String
-        +operation(): void
+        -flyweight: Flyweight
+        +operation()
     }
-
-    Flyweight <|.. ConcreteFlyweight
+    
+    Flyweight <|-- ConcreteFlyweight
+    Flyweight <|-- UnsharedConcreteFlyweight
     FlyweightFactory --> Flyweight
     Context --> Flyweight
 ```
 
-## 💻 代码实现
+## 💻 代码示例
 
-### 基础实现
-
-```java
-/**
- * 享元接口
- */
-public interface Flyweight {
-    void operation(String extrinsicState);
-}
-
-/**
- * 具体享元类
- */
-public class ConcreteFlyweight implements Flyweight {
-    private String intrinsicState; // 内部状态，可共享
-
-    public ConcreteFlyweight(String intrinsicState) {
-        this.intrinsicState = intrinsicState;
-    }
-
-    @Override
-    public void operation(String extrinsicState) {
-        System.out.println("ConcreteFlyweight: 内部状态=" + intrinsicState +
-                ", 外部状态=" + extrinsicState);
-    }
-}
-
-/**
- * 享元工厂
- */
-public class FlyweightFactory {
-    private Map<String, Flyweight> flyweights = new HashMap<>();
-
-    public Flyweight getFlyweight(String key) {
-        if (!flyweights.containsKey(key)) {
-            flyweights.put(key, new ConcreteFlyweight(key));
-            System.out.println("创建新的享元对象: " + key);
-        } else {
-            System.out.println("复用现有享元对象: " + key);
-        }
-        return flyweights.get(key);
-    }
-
-    public int getFlyweightCount() {
-        return flyweights.size();
-    }
-}
-
-/**
- * 上下文类
- */
-public class Context {
-    private Flyweight flyweight;
-    private String extrinsicState; // 外部状态，不可共享
-
-    public Context(String intrinsicState, String extrinsicState) {
-        this.flyweight = FlyweightFactory.getInstance().getFlyweight(intrinsicState);
-        this.extrinsicState = extrinsicState;
-    }
-
-    public void operation() {
-        flyweight.operation(extrinsicState);
-    }
-}
-```
-
-## 🧪 实际应用示例
-
-### 1. 文本编辑器字符渲染
+### 基础实现（已删除源码）
 
 ```java
-/**
- * 字符享元接口
- */
-public interface CharacterFlyweight {
-    void render(int x, int y, String color, String font);
+// 享元接口
+public interface TreeType {
+    void render(Canvas canvas, int x, int y);
 }
 
-/**
- * 具体字符享元
- */
-public class ConcreteCharacter implements CharacterFlyweight {
-    private char character; // 内部状态：字符本身
-
-    public ConcreteCharacter(char character) {
-        this.character = character;
-    }
-
-    @Override
-    public void render(int x, int y, String color, String font) {
-        // 模拟字符渲染
-        System.out.printf("渲染字符 '%c' 在位置(%d,%d)，颜色:%s，字体:%s%n",
-                character, x, y, color, font);
-    }
-
-    public char getCharacter() {
-        return character;
-    }
-}
-
-/**
- * 字符工厂
- */
-public class CharacterFactory {
-    private static CharacterFactory instance = new CharacterFactory();
-    private Map<Character, CharacterFlyweight> characters = new HashMap<>();
-
-    private CharacterFactory() {
-    }
-
-    public static CharacterFactory getInstance() {
-        return instance;
-    }
-
-    public CharacterFlyweight getCharacter(char c) {
-        CharacterFlyweight character = characters.get(c);
-        if (character == null) {
-            character = new ConcreteCharacter(c);
-            characters.put(c, character);
-            System.out.println("创建字符享元: " + c);
-        }
-        return character;
-    }
-
-    public int getCreatedCharactersCount() {
-        return characters.size();
-    }
-
-    public void printStatistics() {
-        System.out.println("字符享元统计:");
-        System.out.println("创建的字符类型数量: " + characters.size());
-        System.out.println("字符类型: " + characters.keySet());
-    }
-}
-
-/**
- * 文档字符（上下文）
- */
-public class DocumentCharacter {
-    private CharacterFlyweight flyweight; // 享元对象
-    private int x, y; // 外部状态：位置
-    private String color; // 外部状态：颜色
-    private String font; // 外部状态：字体
-
-    public DocumentCharacter(char character, int x, int y, String color, String font) {
-        this.flyweight = CharacterFactory.getInstance().getCharacter(character);
-        this.x = x;
-        this.y = y;
+// 具体享元类
+public class TreeTypeImpl implements TreeType {
+    private String name;        // 内部状态
+    private String color;       // 内部状态
+    private String sprite;      // 内部状态
+    
+    public TreeTypeImpl(String name, String color, String sprite) {
+        this.name = name;
         this.color = color;
-        this.font = font;
-    }
-
-    public void render() {
-        flyweight.render(x, y, color, font);
-    }
-
-    // Getters and setters for extrinsic state
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public void setFont(String font) {
-        this.font = font;
-    }
-}
-
-/**
- * 文档类
- */
-public class Document {
-    private List<DocumentCharacter> characters = new ArrayList<>();
-
-    public void addCharacter(char c, int x, int y, String color, String font) {
-        DocumentCharacter docChar = new DocumentCharacter(c, x, y, color, font);
-        characters.add(docChar);
-    }
-
-    public void render() {
-        System.out.println("渲染文档:");
-        for (DocumentCharacter character : characters) {
-            character.render();
-        }
-    }
-
-    public int getCharacterCount() {
-        return characters.size();
-    }
-}
-
-// 使用示例
-public class TextEditorDemo {
-    public static void main(String[] args) {
-        Document document = new Document();
-
-        // 添加文本 "Hello World!"
-        String text = "Hello World!";
-        int x = 10, y = 20;
-
-        System.out.println("=== 创建文档字符 ===");
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            String color = (i % 2 == 0) ? "黑色" : "红色";
-            String font = (i < 5) ? "Arial" : "Times";
-
-            document.addCharacter(c, x + i * 10, y, color, font);
-        }
-
-        System.out.println("\n=== 渲染文档 ===");
-        document.render();
-
-        System.out.println("\n=== 统计信息 ===");
-        System.out.println("文档中字符总数: " + document.getCharacterCount());
-        CharacterFactory.getInstance().printStatistics();
-
-        // 添加更多相同字符
-        System.out.println("\n=== 添加更多字符 ===");
-        for (int i = 0; i < 5; i++) {
-            document.addCharacter('H', x + i * 15, y + 30, "蓝色", "Arial");
-        }
-
-        System.out.println("添加5个'H'字符后:");
-        System.out.println("文档中字符总数: " + document.getCharacterCount());
-        CharacterFactory.getInstance().printStatistics();
-    }
-}
-```
-
-### 2. 游戏中的粒子系统
-
-```java
-/**
- * 粒子类型枚举
- */
-public enum ParticleType {
-    FIRE("🔥", "红色", 2),
-    WATER("💧", "蓝色", 1),
-    EARTH("🌍", "棕色", 3),
-    AIR("💨", "白色", 1);
-
-    private final String sprite;
-    private final String color;
-    private final int damage;
-
-    ParticleType(String sprite, String color, int damage) {
         this.sprite = sprite;
-        this.color = color;
-        this.damage = damage;
     }
-
-    public String getSprite() {
-        return sprite;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-}
-
-/**
- * 粒子享元接口
- */
-public interface ParticleFlyweight {
-    void render(int x, int y, int velocity, int direction);
-
-    void move(int deltaX, int deltaY);
-}
-
-/**
- * 具体粒子享元
- */
-public class ConcreteParticle implements ParticleFlyweight {
-    private ParticleType type; // 内部状态：粒子类型
-
-    public ConcreteParticle(ParticleType type) {
-        this.type = type;
-    }
-
+    
     @Override
-    public void render(int x, int y, int velocity, int direction) {
-        System.out.printf("%s 粒子在位置(%d,%d)，速度:%d，方向:%d°，颜色:%s%n",
-                type.getSprite(), x, y, velocity, direction, type.getColor());
-    }
-
-    @Override
-    public void move(int deltaX, int deltaY) {
-        System.out.printf("%s 粒子移动 (%d,%d)%n", type.getSprite(), deltaX, deltaY);
-    }
-
-    public ParticleType getType() {
-        return type;
+    public void render(Canvas canvas, int x, int y) {
+        // 使用内部状态和外部状态(x, y)进行渲染
+        System.out.println("Rendering " + name + " tree at (" + x + ", " + y + ")");
     }
 }
 
-/**
- * 粒子工厂
- */
-public class ParticleFactory {
-    private static ParticleFactory instance = new ParticleFactory();
-    private Map<ParticleType, ParticleFlyweight> particles = new HashMap<>();
-
-    private ParticleFactory() {
-    }
-
-    public static ParticleFactory getInstance() {
-        return instance;
-    }
-
-    public ParticleFlyweight getParticle(ParticleType type) {
-        ParticleFlyweight particle = particles.get(type);
-        if (particle == null) {
-            particle = new ConcreteParticle(type);
-            particles.put(type, particle);
-            System.out.println("创建新的粒子享元: " + type);
+// 享元工厂
+public class TreeTypeFactory {
+    private static Map<String, TreeType> treeTypes = new HashMap<>();
+    
+    public static TreeType getTreeType(String name, String color, String sprite) {
+        String key = name + color + sprite;
+        TreeType treeType = treeTypes.get(key);
+        
+        if (treeType == null) {
+            treeType = new TreeTypeImpl(name, color, sprite);
+            treeTypes.put(key, treeType);
+            System.out.println("Creating new TreeType: " + key);
         }
-        return particle;
+        
+        return treeType;
     }
-
-    public int getParticleTypesCount() {
-        return particles.size();
-    }
-
-    public void printStatistics() {
-        System.out.println("粒子享元统计:");
-        System.out.println("创建的粒子类型数量: " + particles.size());
-        System.out.println("粒子类型: " + particles.keySet());
+    
+    public static int getCreatedTreeTypesCount() {
+        return treeTypes.size();
     }
 }
 
-/**
- * 游戏粒子（上下文）
- */
-public class GameParticle {
-    private ParticleFlyweight flyweight; // 享元对象
-    private int x, y; // 外部状态：位置
-    private int velocity; // 外部状态：速度
-    private int direction; // 外部状态：方向
-    private int lifeTime; // 外部状态：生命周期
-
-    public GameParticle(ParticleType type, int x, int y, int velocity, int direction) {
-        this.flyweight = ParticleFactory.getInstance().getParticle(type);
+// 上下文类
+public class Tree {
+    private int x, y;           // 外部状态
+    private TreeType treeType;  // 享元引用
+    
+    public Tree(int x, int y, TreeType treeType) {
         this.x = x;
         this.y = y;
-        this.velocity = velocity;
-        this.direction = direction;
-        this.lifeTime = 100; // 默认生命周期
+        this.treeType = treeType;
     }
-
-    public void render() {
-        flyweight.render(x, y, velocity, direction);
-    }
-
-    public void update() {
-        // 根据速度和方向更新位置
-        int deltaX = (int) (velocity * Math.cos(Math.toRadians(direction)));
-        int deltaY = (int) (velocity * Math.sin(Math.toRadians(direction)));
-
-        x += deltaX;
-        y += deltaY;
-        lifeTime--;
-
-        flyweight.move(deltaX, deltaY);
-    }
-
-    public boolean isAlive() {
-        return lifeTime > 0;
-    }
-
-    // Getters
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getLifeTime() {
-        return lifeTime;
+    
+    public void render(Canvas canvas) {
+        treeType.render(canvas, x, y);
     }
 }
 
-/**
- * 粒子系统
- */
-public class ParticleSystem {
-    private List<GameParticle> particles = new ArrayList<>();
-    private Random random = new Random();
-
-    public void createExplosion(int centerX, int centerY, int particleCount) {
-        System.out.println("在位置(" + centerX + "," + centerY + ")创建爆炸效果");
-
-        for (int i = 0; i < particleCount; i++) {
-            ParticleType type = ParticleType.values()[random.nextInt(ParticleType.values().length)];
-            int x = centerX + random.nextInt(20) - 10;
-            int y = centerY + random.nextInt(20) - 10;
-            int velocity = random.nextInt(10) + 1;
-            int direction = random.nextInt(360);
-
-            GameParticle particle = new GameParticle(type, x, y, velocity, direction);
-            particles.add(particle);
+// 森林类（客户端）
+public class Forest {
+    private List<Tree> trees = new ArrayList<>();
+    
+    public void plantTree(int x, int y, String name, String color, String sprite) {
+        TreeType type = TreeTypeFactory.getTreeType(name, color, sprite);
+        Tree tree = new Tree(x, y, type);
+        trees.add(tree);
+    }
+    
+    public void render(Canvas canvas) {
+        for (Tree tree : trees) {
+            tree.render(canvas);
         }
-    }
-
-    public void update() {
-        System.out.println("更新粒子系统...");
-        Iterator<GameParticle> iterator = particles.iterator();
-        while (iterator.hasNext()) {
-            GameParticle particle = iterator.next();
-            particle.update();
-
-            if (!particle.isAlive()) {
-                iterator.remove();
-            }
-        }
-    }
-
-    public void render() {
-        System.out.println("渲染粒子系统:");
-        for (GameParticle particle : particles) {
-            particle.render();
-        }
-    }
-
-    public int getActiveParticleCount() {
-        return particles.size();
-    }
-
-    public void printStatistics() {
-        System.out.println("粒子系统统计:");
-        System.out.println("活跃粒子数量: " + particles.size());
-        ParticleFactory.getInstance().printStatistics();
-    }
-}
-
-// 使用示例
-public class ParticleSystemDemo {
-    public static void main(String[] args) {
-        ParticleSystem particleSystem = new ParticleSystem();
-
-        System.out.println("=== 创建爆炸效果 ===");
-        particleSystem.createExplosion(100, 100, 8);
-
-        System.out.println("\n=== 初始渲染 ===");
-        particleSystem.render();
-
-        System.out.println("\n=== 统计信息 ===");
-        particleSystem.printStatistics();
-
-        // 模拟几帧更新
-        for (int frame = 1; frame <= 3; frame++) {
-            System.out.println("\n=== 第" + frame + "帧更新 ===");
-            particleSystem.update();
-            System.out.println("活跃粒子数: " + particleSystem.getActiveParticleCount());
-        }
-
-        // 创建更多爆炸
-        System.out.println("\n=== 创建更多爆炸 ===");
-        particleSystem.createExplosion(200, 150, 6);
-        particleSystem.createExplosion(50, 200, 10);
-
-        System.out.println("\n=== 最终统计 ===");
-        particleSystem.printStatistics();
     }
 }
 ```
 
-## 🎯 适用场景
+## 🔄 时序图
 
-### 适合使用享元模式的场景：
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Forest
+    participant TreeTypeFactory
+    participant TreeType
+    participant Tree
+    
+    Client->>Forest: plantTree(10, 20, "Oak", "Green", "oak.png")
+    Forest->>TreeTypeFactory: getTreeType("Oak", "Green", "oak.png")
+    TreeTypeFactory->>TreeType: new TreeTypeImpl(...) [if not exists]
+    TreeTypeFactory-->>Forest: treeType
+    Forest->>Tree: new Tree(10, 20, treeType)
+    
+    Client->>Forest: plantTree(30, 40, "Oak", "Green", "oak.png")
+    Forest->>TreeTypeFactory: getTreeType("Oak", "Green", "oak.png")
+    TreeTypeFactory-->>Forest: existing treeType [reused]
+    Forest->>Tree: new Tree(30, 40, treeType)
+    
+    Client->>Forest: render(canvas)
+    Forest->>Tree: render(canvas)
+    Tree->>TreeType: render(canvas, x, y)
+```
 
-1. **大量相似对象** - 系统中存在大量相似的对象
-2. **内存优化** - 需要优化内存使用
-3. **对象创建成本高** - 对象创建和销毁成本较高
-4. **状态可分离** - 对象状态可以分为内部和外部状态
+## ⚡ 实际应用案例
 
-### 具体应用场景：
+### 案例1：文本编辑器字符渲染（学术示例）
+```java
+// 字符享元
+public class Character {
+    private char symbol;        // 内部状态
+    private String fontFamily;  // 内部状态
+    private int fontSize;       // 内部状态
+    
+    public Character(char symbol, String fontFamily, int fontSize) {
+        this.symbol = symbol;
+        this.fontFamily = fontFamily;
+        this.fontSize = fontSize;
+    }
+    
+    public void render(int x, int y, String color) {
+        // 渲染字符，使用外部状态 x, y, color
+        System.out.println("Rendering '" + symbol + "' at (" + x + ", " + y + ") in " + color);
+    }
+}
 
-- **文本编辑器** - 字符对象的共享
-- **游戏开发** - 粒子系统、瓦片地图
-- **图形界面** - 图标、按钮等UI元素
-- **数据库连接池** - 连接对象的复用
-- **缓存系统** - 缓存对象的共享
+// 字符工厂
+public class CharacterFactory {
+    private static Map<String, Character> characters = new HashMap<>();
+    
+    public static Character getCharacter(char symbol, String fontFamily, int fontSize) {
+        String key = symbol + fontFamily + fontSize;
+        Character character = characters.get(key);
+        
+        if (character == null) {
+            character = new Character(symbol, fontFamily, fontSize);
+            characters.put(key, character);
+        }
+        
+        return character;
+    }
+}
+```
 
-## ✅ 优点
+## ⚠️ 为什么应用价值低
 
-1. **减少内存使用** - 通过共享减少对象数量
-2. **提高性能** - 减少对象创建和销毁的开销
-3. **集中管理** - 通过工厂集中管理享元对象
-4. **状态分离** - 清晰地分离内部和外部状态
+### 主要问题
+1. **现代JVM优化**：
+   - 字符串常量池自动共享字符串
+   - 对象池和缓存机制
+   - 垃圾回收器优化
+   - JIT编译器优化
 
-## ❌ 缺点
+2. **过早优化**：
+   - 增加代码复杂度
+   - 违反KISS原则
+   - 维护成本高
+   - 收益不明显
 
-1. **增加复杂性** - 需要分离内部和外部状态
-2. **运行时开销** - 需要维护外部状态
-3. **线程安全** - 共享对象的线程安全问题
-4. **不适用于所有场景** - 只适用于有大量相似对象的场景
+3. **现代替代方案更好**：
+   - 使用缓存框架（Redis、Caffeine）
+   - 利用数据库连接池
+   - 采用对象池模式
+   - 使用现代集合框架
 
-## 🔄 与其他模式的关系
+### 更好的替代方案
 
-- **单例模式** - 享元工厂通常设计为单例
-- **工厂模式** - 使用工厂来管理享元对象
-- **组合模式** - 享元可以作为组合模式的叶子节点
-- **状态模式** - 可以使用享元来共享状态对象
+```java
+// 使用Caffeine缓存替代享元模式
+public class ModernTreeService {
+    private final Cache<String, TreeType> cache = Caffeine.newBuilder()
+            .maximumSize(1000)
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .build();
+    
+    public TreeType getTreeType(String name, String color, String sprite) {
+        String key = name + color + sprite;
+        return cache.get(key, k -> new TreeTypeImpl(name, color, sprite));
+    }
+}
 
-## 📝 最佳实践
+// 使用Spring的@Cacheable注解
+@Service
+public class TreeService {
+    @Cacheable(value = "treeTypes", key = "#name + #color + #sprite")
+    public TreeType getTreeType(String name, String color, String sprite) {
+        return new TreeTypeImpl(name, color, sprite);
+    }
+}
 
-1. **正确分离状态** - 准确识别内部状态和外部状态
-2. **工厂管理** - 使用工厂模式管理享元对象
-3. **线程安全** - 确保享元对象的线程安全
-4. **内存监控** - 监控享元对象的内存使用
-5. **适度使用** - 只在确实需要时使用享元模式
+// 使用对象池
+public class TreeTypePool {
+    private final Queue<TreeType> pool = new ConcurrentLinkedQueue<>();
+    
+    public TreeType borrowObject() {
+        TreeType obj = pool.poll();
+        return obj != null ? obj : new TreeTypeImpl();
+    }
+    
+    public void returnObject(TreeType obj) {
+        // 重置对象状态
+        obj.reset();
+        pool.offer(obj);
+    }
+}
 
-## 🚨 注意事项
+// 使用现代集合框架
+Map<String, TreeType> treeTypes = new ConcurrentHashMap<>();
+TreeType treeType = treeTypes.computeIfAbsent(key, 
+    k -> new TreeTypeImpl(name, color, sprite));
+```
 
-1. **状态分离的正确性** - 确保内部状态真正可以共享
-2. **外部状态管理** - 正确管理外部状态的传递
-3. **对象生命周期** - 考虑享元对象的生命周期管理
-4. **性能测试** - 验证享元模式确实带来性能提升
+## 📊 优缺点分析
 
----
+### 优点
+- ✅ 减少内存使用
+- ✅ 提高系统性能（理论上）
 
-*享元模式是优化内存使用的重要模式，通过对象共享技术有效减少系统中对象的数量，特别适用于需要创建大量相似对象的场景。*
+### 缺点（现代开发中的问题）
+- ❌ 增加系统复杂度
+- ❌ 现代JVM已有优化
+- ❌ 维护成本高
+- ❌ 过早优化
+- ❌ 现有工具更好用
+
+## 🎯 总结
+
+享元模式在现代软件开发中应用价值较低：
+
+1. **历史价值**：在内存稀缺时代有其价值
+2. **现代价值**：有限，现代技术已经解决了这些问题
+3. **建议**：优先使用现代缓存和优化技术
+
+**推荐替代方案**：
+- 使用现代缓存框架（Caffeine、Redis）
+- 利用Spring Cache抽象
+- 采用对象池模式
+- 使用数据库连接池
+- 依赖JVM自身优化
+
+> 💡 **学习建议**：了解其设计思想，但在实际项目中优先选择现代化的解决方案。除非在极其特殊的内存受限环境中，否则不建议使用。

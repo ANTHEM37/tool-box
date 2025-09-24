@@ -16,11 +16,11 @@
 
 | 模式名称                      | 描述                  | 状态    | 文档链接                                     |
 |---------------------------|---------------------|-------|------------------------------------------|
-| 单例模式 (Singleton)          | 确保一个类只有一个实例         | ✅ 已完成 | [查看详情](./creational/singleton.md)        |
-| 工厂方法模式 (Factory Method)   | 创建对象的接口，让子类决定实例化哪个类 | ✅ 已完成 | [查看详情](./creational/factory-method.md)   |
-| 抽象工厂模式 (Abstract Factory) | 提供创建相关对象族的接口        | ✅ 已完成 | [查看详情](./creational/abstract-factory.md) |
-| 建造者模式 (Builder)           | 分步骤创建复杂对象           | ✅ 已完成 | [查看详情](./creational/builder.md)          |
-| 原型模式 (Prototype)          | 通过复制现有实例来创建新实例      | ✅ 已完成 | [查看详情](./creational/prototype.md)        |
+| 单例模式 (Singleton) 🔧       | 确保一个类只有一个实例         | 🔧 有框架方案 | [查看详情](./creational/singleton.md)        |
+| 工厂方法模式 (Factory Method) 🔧 | 创建对象的接口，让子类决定实例化哪个类 | 🔧 有框架方案 | [查看详情](./creational/factory-method.md)   |
+| 抽象工厂模式 (Abstract Factory) 🔧 | 提供创建相关对象族的接口        | 🔧 有框架方案 | [查看详情](./creational/abstract-factory.md) |
+| 建造者模式 (Builder) 🔧        | 分步骤创建复杂对象           | 🔧 有框架方案 | [查看详情](./creational/builder.md)          |
+| 原型模式 (Prototype) ⚠️       | 通过复制现有实例来创建新实例      | ⚠️ 低价值 | [查看详情](./creational/prototype.md)        |
 
 ### 🔧 结构型模式 (Structural Patterns)
 
@@ -28,13 +28,13 @@
 
 | 模式名称              | 描述              | 状态    | 文档链接                              |
 |-------------------|-----------------|-------|-----------------------------------|
-| 适配器模式 (Adapter)   | 让接口不兼容的类能够相互合作  | ✅ 已完成 | [查看详情](./structural/adapter.md)   |
-| 桥接模式 (Bridge)     | 将抽象与实现分离        | ✅ 已完成 | [查看详情](./structural/bridge.md)    |
+| 适配器模式 (Adapter) 🔧 | 让接口不兼容的类能够相互合作  | 🔧 有框架方案 | [查看详情](./structural/adapter.md)   |
+| 桥接模式 (Bridge) ⚠️   | 将抽象与实现分离        | ⚠️ 低价值 | [查看详情](./structural/bridge.md)    |
 | 组合模式 (Composite)  | 将对象组合成树形结构      | ✅ 已完成 | [查看详情](./structural/composite.md) |
-| 装饰器模式 (Decorator) | 动态地给对象添加新功能     | ✅ 已完成 | [查看详情](./structural/decorator.md) |
-| 外观模式 (Facade)     | 为复杂子系统提供简单接口    | ✅ 已完成 | [查看详情](./structural/facade.md)    |
-| 享元模式 (Flyweight)  | 通过共享技术支持大量细粒度对象 | ✅ 已完成 | [查看详情](./structural/flyweight.md) |
-| 代理模式 (Proxy)      | 为其他对象提供代理以控制访问  | ✅ 已完成 | [查看详情](./structural/proxy.md)     |
+| 装饰器模式 (Decorator) 🔧 | 动态地给对象添加新功能     | 🔧 有框架方案 | [查看详情](./structural/decorator.md) |
+| 外观模式 (Facade) 🔧  | 为复杂子系统提供简单接口    | 🔧 有框架方案 | [查看详情](./structural/facade.md)    |
+| 享元模式 (Flyweight) ⚠️ | 通过共享技术支持大量细粒度对象 | ⚠️ 低价值 | [查看详情](./structural/flyweight.md) |
+| 代理模式 (Proxy) 🔧   | 为其他对象提供代理以控制访问  | 🔧 有框架方案 | [查看详情](./structural/proxy.md)     |
 
 ### 🎯 行为型模式 (Behavioral Patterns)
 
@@ -42,24 +42,110 @@
 
 | 模式名称                            | 描述               | 状态    | 文档链接                                            |
 |---------------------------------|------------------|-------|-------------------------------------------------|
-| 观察者模式 (Observer)                | 定义对象间的一对多依赖关系    | ✅ 已完成 | [查看详情](./behavioral/observer.md)                |
+| 观察者模式 (Observer) 🔧             | 定义对象间的一对多依赖关系    | 🔧 有框架方案 | [查看详情](./behavioral/observer.md)                |
 | 策略模式 (Strategy)                 | 定义算法族，使它们可以互相替换  | ✅ 已完成 | [查看详情](./behavioral/strategy.md)                |
-| 命令模式 (Command)                  | 将请求封装成对象         | ✅ 已完成 | [查看详情](./behavioral/command.md)                 |
-| 状态模式 (State)                    | 允许对象在内部状态改变时改变行为 | ✅ 已完成 | [查看详情](./behavioral/state.md)                   |
-| 模板方法模式 (Template Method)        | 定义算法骨架，延迟具体步骤到子类 | ✅ 已完成 | [查看详情](./behavioral/template-method.md)         |
-| 责任链模式 (Chain of Responsibility) | 将请求沿着处理者链传递      | ✅ 已完成 | [查看详情](./behavioral/chain-of-responsibility.md) |
-| 解释器模式 (Interpreter)             | 定义语言的文法表示        | ✅ 已完成 | [查看详情](./behavioral/interpreter.md)             |
-| 迭代器模式 (Iterator)                | 提供访问聚合对象元素的统一接口  | ✅ 已完成 | [查看详情](./behavioral/iterator.md)                |
-| 中介者模式 (Mediator)                | 定义对象间交互的中介对象     | ✅ 已完成 | [查看详情](./behavioral/mediator.md)                |
-| 备忘录模式 (Memento)                 | 捕获对象内部状态并在外部保存   | ✅ 已完成 | [查看详情](./behavioral/memento.md)                 |
-| 访问者模式 (Visitor)                 | 在不修改类的前提下定义新操作   | ✅ 已完成 | [查看详情](./behavioral/visitor.md)                 |
+| 命令模式 (Command) 🔧               | 将请求封装成对象         | 🔧 有框架方案 | [查看详情](./behavioral/command.md)                 |
+| 状态模式 (State) 🔧                 | 允许对象在内部状态改变时改变行为 | 🔧 有框架方案 | [查看详情](./behavioral/state.md)                   |
+| 模板方法模式 (Template Method) 🔧     | 定义算法骨架，延迟具体步骤到子类 | 🔧 有框架方案 | [查看详情](./behavioral/template-method.md)         |
+| 责任链模式 (Chain of Responsibility) 🔧 | 将请求沿着处理者链传递      | 🔧 有框架方案 | [查看详情](./behavioral/chain-of-responsibility.md) |
+| 解释器模式 (Interpreter) ⚠️           | 定义语言的文法表示        | ⚠️ 低价值 | [查看详情](./behavioral/interpreter.md)             |
+| 迭代器模式 (Iterator) ⚠️             | 提供访问聚合对象元素的统一接口  | ⚠️ 低价值 | [查看详情](./behavioral/iterator.md)                |
+| 中介者模式 (Mediator) ⚠️              | 定义对象间交互的中介对象     | ⚠️ 低价值 | [查看详情](./behavioral/mediator.md)                |
+| 备忘录模式 (Memento) ⚠️               | 捕获对象内部状态并在外部保存   | ⚠️ 低价值 | [查看详情](./behavioral/memento.md)                 |
+| 访问者模式 (Visitor) ⚠️               | 在不修改类的前提下定义新操作   | ⚠️ 低价值 | [查看详情](./behavioral/visitor.md)                 |
 
 ## 完成进度
 
 - **创建型模式**: 5/5 ✅ 100%
-- **结构型模式**: 7/7 ✅ 100%
-- **行为型模式**: 11/11 ✅ 100%
+- **结构型模式**: 7/7 ✅ 100% (其中2个标记为低价值)
+- **行为型模式**: 11/11 ✅ 100% (其中4个标记为低价值)
 - **总体进度**: 23/23 ✅ 100%
+
+## 🔧 已有成熟框架方案的模式说明
+
+在现代Java生态系统中，以下设计模式已经有非常成熟的第三方框架解决方案，**建议优先使用框架提供的实现**：
+
+### 创建型模式中的框架方案
+
+- **单例模式 (Singleton)** 🔧 - Spring IoC容器默认Bean作用域就是单例，使用`@Component`、`@Service`等注解即可
+- **工厂方法模式 (Factory Method)** 🔧 - Spring的`@Bean`、`@Configuration`提供了完善的Bean工厂机制
+- **抽象工厂模式 (Abstract Factory)** 🔧 - Spring Boot的自动配置和条件注解(`@ConditionalOnProperty`等)提供了更强大的抽象工厂
+- **建造者模式 (Builder)** 🔧 - Lombok的`@Builder`注解可以自动生成建造者模式代码
+
+### 结构型模式中的框架方案
+
+- **适配器模式 (Adapter)** 🔧 - Spring提供了大量的Adapter类和接口转换器
+- **装饰器模式 (Decorator)** 🔧 - Spring AOP、各种拦截器框架提供了完善的装饰功能
+- **外观模式 (Facade)** 🔧 - Spring Boot的Starter机制就是外观模式的最佳实践
+- **代理模式 (Proxy)** 🔧 - Spring AOP、JDK动态代理、CGLIB等提供了完善的代理机制
+
+### 行为型模式中的框架方案
+
+- **观察者模式 (Observer)** 🔧 - Spring Events、消息队列(RabbitMQ、Kafka)、响应式编程(RxJava、Reactor)
+- **命令模式 (Command)** 🔧 - Spring的`@Async`、消息队列、任务调度框架提供了完善的命令处理
+- **状态模式 (State)** 🔧 - Spring State Machine提供了完整的状态机实现
+- **模板方法模式 (Template Method)** 🔧 - Spring的各种Template类(`JdbcTemplate`、`RestTemplate`等)
+- **责任链模式 (Chain of Responsibility)** 🔧 - Spring Security的过滤器链、Web框架的中间件机制
+
+### 为什么推荐使用框架方案？
+
+1. **成熟稳定** - 经过大量项目验证，bug少，性能优化好
+2. **功能丰富** - 提供了更多高级特性和配置选项
+3. **维护成本低** - 不需要自己维护代码，框架会持续更新
+4. **团队协作** - 团队成员都熟悉框架，降低学习成本
+5. **生态完整** - 与其他框架组件集成良好
+
+### 学习建议
+
+虽然有框架方案，但**理解这些设计模式的原理仍然很重要**：
+- 帮助更好地理解框架的设计思路
+- 在框架无法满足需求时，能够自己实现
+- 面试和技术交流中经常涉及
+- 提升整体的设计思维和架构能力
+
+## ⚠️ 低应用价值模式说明
+
+在现代软件开发中，以下8个设计模式的实际应用价值较低，**代码已删除，仅保留文档作为学习参考**：
+
+### 结构型模式中的低价值模式
+
+- **桥接模式 (Bridge)** ⚠️ - Java的接口和抽象类已提供更好的抽象机制
+- **享元模式 (Flyweight)** ⚠️ - 现代JVM已有很好的内存优化，手动优化意义不大
+
+### 创建型模式中的低价值模式
+
+- **原型模式 (Prototype)** ⚠️ - Java的clone()机制有深浅拷贝问题，现代开发更倾向于使用构造器或建造者模式
+
+### 行为型模式中的低价值模式
+
+- **解释器模式 (Interpreter)** ⚠️ - 除非开发DSL或编译器，否则很少使用，现有工具更强大
+- **迭代器模式 (Iterator)** ⚠️ - Java内置Iterator接口和Stream API已提供更强大的遍历功能
+- **中介者模式 (Mediator)** ⚠️ - 容易导致中介者过于复杂，现代事件总线更优雅
+- **备忘录模式 (Memento)** ⚠️ - 内存消耗大，现代框架提供更好的状态管理方案
+- **访问者模式 (Visitor)** ⚠️ - 违反开闭原则，破坏封装性，函数式编程提供更好替代
+
+### 为什么删除这些模式的代码？
+
+1. **实际应用价值低** - 在现代项目中很少使用
+2. **有更好的替代方案** - 现代技术和框架提供了更优雅的解决方案
+3. **增加不必要复杂度** - 可能导致过度设计
+4. **学习优先级低** - 开发者应该优先掌握高价值的模式
+
+### 推荐的学习重点
+
+**🔧 有框架方案但仍需理解原理的模式**：
+- 创建型：单例、工厂方法、抽象工厂、建造者
+- 结构型：适配器、装饰器、外观、代理
+- 行为型：观察者、命令、状态、模板方法、责任链
+
+**✅ 需要手动实现的高价值模式**：
+- 结构型：组合
+- 行为型：策略
+
+**⚠️ 低价值模式（了解即可）**：
+- 创建型：原型
+- 结构型：桥接、享元
+- 行为型：解释器、迭代器、中介者、备忘录、访问者
 
 ## 🎉 项目完成状态
 
