@@ -594,6 +594,7 @@ stateDiagram-v2
 ### 设计模式在不同行业的使用频率
 
 ```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 600}}}%%
 xychart-beta
     title "设计模式在不同行业的使用频率"
     x-axis [电商, 金融, 游戏, 出行, 社交, 教育]
@@ -604,6 +605,7 @@ xychart-beta
 ### 最受欢迎的设计模式排行
 
 ```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 600}}}%%
 xychart-beta
     title "业界最受欢迎的设计模式Top 10"
     x-axis [单例, 工厂, 观察者, 策略, 装饰器, 代理, 适配器, 外观, 命令, 状态]

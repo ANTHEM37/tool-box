@@ -427,6 +427,7 @@ graph LR
 ### 内存使用对比
 
 ```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 600}}}%%
 xychart-beta
     title "设计模式内存使用对比"
     x-axis [单例, 工厂, 原型, 适配器, 装饰器, 代理, 观察者, 策略]
@@ -437,6 +438,7 @@ xychart-beta
 ### 执行时间对比
 
 ```mermaid
+%%{init: {"xyChart": {"width": 900, "height": 600}}}%%
 xychart-beta
     title "设计模式执行时间对比"
     x-axis [直接调用, 工厂模式, 代理模式, 装饰器, 责任链, 观察者]
